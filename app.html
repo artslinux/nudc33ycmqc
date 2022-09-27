@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="day-prompt" content="days ago">
+<meta name="hour-prompt" content="hours ago">
+<meta name="minute-prompt" content="minutes ago">
+<meta name="justnow-prompt" content="just now">
+<meta name="generator" content="Jekyll v4.2.2" />
+<title>Tanggalan V1.0.2</title>
+<meta itemprop="description" name="description" content="Aplikasi Kalender Jawa Offline lengkap dengan Jam Digital, Dina Pasaran, Neptu, Sasi, Tahun Masehi, Tahun Hijriyah lan Wuku." />
+<meta property="og:locale" content="en">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tanggalan V1.0.2">
+<meta property="og:url" content="https://mohamadrido.com/app">
+<meta property="og:site_name" content="Tanggalan V1.0">
+<meta property="article:publisher" content="http://www.facebook.com/blogrido" />
+<meta property="article:author" content="https://www.facebook.com/blogrido" />
+<meta property="og:description" content="Aplikasi Kalender Jawa Offline lengkap dengan Jam Digital, Dina Pasaran, Neptu, Sasi, Tahun Masehi, Tahun Hijriyah lan Wuku.">
+<meta content="Mohamad Rido" name="Author">
+<link rel="canonical" href="https://mohamadrido.com/app">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="/assets/style-app.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css">
+</head>
+<body>
+<!-- Navbar (sit on top) -->
+<div class="top">
+  <div class="bar" id="myNavbar">
+    <a class="bar-item button hover-black hide-medium hide-large right" href="javascript:void(0);" onclick="toggleFunction()" title="Toggle Navigation Menu">
+      <i class="fa fa-bars"></i>
+    </a>
+    <a href="https://mohamadrido.com" class="bar-item button"><b>Mohamad Rido</b></a>
+    <a href="/support" class="bar-item button hide-small">Support</a>
+    <a href="https://blog.mohamadrido.com" class="bar-item button hide-small">Blog</a>
+    <a href="/license" class="bar-item button hide-small">License</a>
+    <a class="bar-item button hide-small right hover-red" onclick="document.getElementById('searchModal').style.display='block'">
+      <i class="fa fa-search"></i>
+    </a>
+  </div>
+  <!-- Navbar on small screens -->
+  <div id="navBar" class="bar-block white hide hide-large hide-medium">
+    <a href="/about" class="bar-item button" onclick="toggleFunction()">ABOUT</a>
+    <a href="https://blog.mohamadrido.com" class="bar-item button" onclick="toggleFunction()">BLOG</a>
+    <a href="/contact" class="bar-item button" onclick="toggleFunction()">CONTACT</a>
+    <a class="bar-item button" onclick="document.getElementById('searchModal').style.display='block'">SEARCH</a>
+  </div>
+</div>
+
+<header class="bgimg-1 display-container" id="home">
+  <div class="display-bottomleft text-white" style="padding:48px">
+    <span class="jumbo hide-small" style="font-color:f44336;">Tanggalan V1.0.2</span><br>
+    <span class="xxlarge hide-large hide-medium" style="font-color:f44336;">Tanggalan V1.0.2</span><br>
+    <span class="large" style="font-color:f44336;">Kalender Jawa Offline dengan Jam Digital, Hari Pasaran, Hitungan Neptu, Wuku, Tahun Hijriyah &amp; Masehi.</span><br>
+    <!--span class="medium" style="font-color:f44336;">SHA256: c35310e33e729f8e86a32cbc1213f450e76f32e6644fcc7afe05a38ca3e01c71</span-->
+    <p><a title='Tanggalan.apk V1.0.2 (4.8MB)' href='' onclick='app_tanggalan()' class="button white padding-large large margin-top opacity hover-opacity-off">DOWNLOAD&nbsp;<i class="fab fa-android"></i></a></p>
+  </div> 
+</header>
+
+  <!-- Search Modal -->
+  <div id="searchModal" class="modal">
+    <div class="modal-content animate-top card-4">
+      <header class="container bg-color center padding-32"> 
+        <span onclick="document.getElementById('searchModal').style.display='none'" 
+       class="button bg-color xlarge display-topright">×</span>
+        <h2 class="wide"><i class="fa fa-search margin-right"></i>Search</h2>
+      </header>
+      <div class="container">
+        <div id="search-container">
+        <input type="text" id="search-input" placeholder="Search...">
+        </div>
+        <div class="column">
+        <div id="results-container" class="page-card">
+        <!-- Search results here -->
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- End Page Content -->
+<script>
+function app_tanggalan(){window.open('https://mohamadrido.com/Tanggalan_V1.0.2.apk');}
+</script>
+<script src="/assets/slideshow.js"></script>
+<script src="/assets/navbar.js"></script>
+<script src="/assets/search.min.js"></script>
+<script>
+   window.simpleJekyllSearch = new SimpleJekyllSearch({
+     searchInput: document.getElementById('search-input'),
+     resultsContainer: document.getElementById('results-container'),
+     json: 'https://blog.mohamadrido.com/search.json',
+     searchResultTemplate: '<a href="https://blog.mohamadrido.com{url}" title="{title}"><img style="border-radius: 5px; width: 100%;" src="https://blog.mohamadrido.com/assets/images{url}.jpg"><h6>{title}</h6></a>',
+     noResultsText: 'No results found',
+     limit: 10,
+     fuzzy: false,
+     exclude: ['Welcome']
+      })
+</script>
+</body>
+</html>
