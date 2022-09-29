@@ -2,6 +2,7 @@ name: 'Mohamad Rido'
 description: 'Author & 3D Modeler'
 author: 'Mohamad Rido'
 email: 'mohamad.rido@yandex.com'
+baseurl: ''
 permalink: /:title
 plugin:
   - jekyll-feed
