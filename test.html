@@ -47,7 +47,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 .table td,.table th,.table-all td,.table-all th{padding:8px 8px;display:table-cell;text-align:left;vertical-align:top}
 .table th:first-child,.table td:first-child,.table-all th:first-child,.table-all td:first-child{padding-left:16px}
 .btn,.button{border:none;display:inline-block;padding:8px 16px;vertical-align:middle;overflow:hidden;text-decoration:none;color:inherit;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap}
-.button-close{border:none;display:inline-block;padding:0px 6px;margin:8px;vertical-align:middle;overflow:hidden;text-decoration:none;color:#fff;background-color:deeppink;border-radius:25px;text-align:center;cursor:pointer;white-space:nowrap}
+.button-close{border:none;display:inline-block;margin:8px;width:24px;height:24px;overflow:hidden;text-decoration:none;color:#fff;background-color:deeppink;border-radius:50%;text-align:center;cursor:pointer;}
 .button-modal{color:grey;border:none;display:inline-block;padding:0px 6px;vertical-align:middle;overflow:hidden;text-decoration:none;background-color:inherit;text-align:center;cursor:pointer;white-space:nowrap}
 .button-modal:hover{color:#0089f2;}
 .btn:hover{box-shadow:0 8px 16px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19)}
@@ -421,7 +421,9 @@ center{
       <header class="container"> 
         <span
         onclick="document.getElementById('id01').style.display='none'" 
-        class="button-close display-topright large">&times;</span>
+        class="button-close display-topright">
+        <svg height="24" viewBox="0 0 24 24" width="24"><path d="m 12.002,10.43254 3.986703,-3.9881711 c 0.214229,-0.2142285 0.497421,-0.3213427 0.779147,-0.3213427 0.592796,0 1.100488,0.4768784 1.100488,1.1004887 0,0.2831924 -0.107114,0.5634501 -0.321342,0.7791459 l -3.986704,3.9867042 4.001377,4.002843 c 0.215696,0.215697 0.322809,0.497421 0.322809,0.779146 0,0.626546 -0.512094,1.100489 -1.100488,1.100489 -0.281726,0 -0.56345,-0.107114 -0.777678,-0.321342 L 12.002,13.547656 7.9991559,17.550501 c -0.2142285,0.214228 -0.4959536,0.321342 -0.7776786,0.321342 -0.5883947,0 -1.101956,-0.473943 -1.101956,-1.100489 0,-0.281725 0.1071142,-0.563449 0.32281,-0.779146 L 10.445175,11.989365 6.4511352,7.9953242 C 6.2369068,7.7796285 6.1297925,7.4993707 6.1297925,7.2161782 c 0,-0.6236102 0.5076921,-1.0990212 1.1004887,-1.0990212 0.2817251,0 0.5649175,0.1071141 0.779146,0.3213426 z" fill="#ffffff"></path></svg>
+        </span>
         <h2>Modal Header</h2>
       </header>
       <div class="container">
