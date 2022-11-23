@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Dark Mode Toggle Example</title>
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {font-weight:400;}
+  font-size: 18px;
+  line-height: 1.7;
+  background-color: #eaeaea;
+  color: #333;
+  -webkit-transition: background-color 800ms ease;
+  transition: background-color 800ms ease;
+}
+body.dark {
+  background-color: #222;
+  color: #eaeaea;
+}
+body.dark .masthead,
+body.dark .footer {
+  background-color: #121212;
+}
+body.dark img {
+  -webkit-filter: brightness(70%);
+          filter: brightness(70%);
+}
+
+h2 {
+  font-size: 3rem;
+  line-height: 1.2;
+}
+
+img {
+  width: 100%;
+}
+img.small {
+  width: 60%;
+  float: right;
+  padding: 1rem;
+}
+
+.masthead,
+.footer {
+  padding: 0 1rem;
+  background-color: #ddd;
+  -webkit-transition: background-color 800ms ease;
+  transition: background-color 800ms ease;
+}
+
+.masthead-inner,
+.footer-inner {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+          align-items: center;
+  max-width: 900px;
+  margin: auto;
+}
+
+.nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+button {
+  border: 1px solid #333;
+  padding: 0.5rem;
+  background: #333;
+  border-radius: 5px;
+  -webkit-transition: background 200ms ease;
+  transition: background 200ms ease;
+  color: #eaeaea;
+}
+button:hover {
+  background: rgba(51, 51, 51, 0.8);
+}
+
+.dark-button i {
+  -webkit-transform: rotate(35deg);
+          transform: rotate(35deg);
+  margin-left: 0.3rem;
+}
+
+main {
+  padding: 1rem;
+  max-width: 900px;
+  margin: auto;
+}
+</style>
+
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <h1 class="logo">Dark Mode Toggle Example</h1>
+    <nav class="nav">
+      <ul>
+        <li>
+          <button class="dark-button">
+          Dark <svg height="16" viewBox="0 0 24 24" width="16"><path d="M 0,4.999 C 1.437,5.437 2.562,6.563 2.999,8 3.439,6.563 4.564,5.438 6,5 4.564,4.561 3.439,3.437 2.999,2 2.562,3.436 1.437,4.561 0,4.999 Z m 8.001,4.3095824 c 0.958,0.293 1.707,1.0419996 2,2.0009996 0.291,-0.959 1.042,-1.7089996 1.999,-2.0009996 -0.957,-0.292 -1.707,-1.042 -2,-2 -0.293,0.958 -1.042,1.708 -1.999,2 z M 20.479539,3.0076211 c 4.678926,4.6789256 4.678926,12.2916379 0,16.9705639 -4.678925,4.678925 -12.2916374,4.678925 -16.9705629,0 C 2.1697159,18.638925 1.2936104,17.059955 0.54549128,15.347342 2.986424,17.075511 9.4804923,19.663522 14.822684,14.32133 20.093458,9.0505555 17.856882,2.9192332 15.848696,0.04413636 17.507569,0.50658464 19.140279,1.6683609 20.479539,3.0076211 Z" fill="#ffcc00"></path></svg>
+          </button>
+        </li>
+        <li>
+          <button class="light-button" hidden="hidden">
+          Light <svg height="16" viewBox="0 0 24 24" width="16"><path d="M 22.088,13.126 24,12 22.088,10.874 C 21.067,10.272 20.716,8.964 21.3,7.932 L 22.393,6 20.173,5.98 C 18.988,5.97 18.03,5.012 18.02,3.827 L 18,1.608 16.068,2.701 C 15.037,3.284 13.728,2.934 13.127,1.913 L 12,0 10.873,1.913 C 10.271,2.934 8.963,3.285 7.932,2.701 L 6,1.608 5.98,3.827 C 5.97,5.012 5.012,5.97 3.827,5.98 L 1.607,6 2.7,7.932 c 0.584,1.032 0.233,2.34 -0.788,2.942 L 0,12 1.912,13.126 c 1.021,0.602 1.372,1.91 0.788,2.942 L 1.607,18 l 2.22,0.02 c 1.185,0.01 2.143,0.968 2.153,2.153 L 6,22.392 7.932,21.299 c 1.031,-0.583 2.34,-0.233 2.941,0.788 L 12,24 13.127,22.087 c 0.602,-1.021 1.91,-1.372 2.941,-0.788 L 18,22.392 18.02,20.173 c 0.011,-1.185 0.969,-2.143 2.153,-2.153 L 22.393,18 21.3,16.068 c -0.584,-1.031 -0.234,-2.34 0.788,-2.942 z m -10.117,6.351373 c -4.1228365,0 -7.4773729,-3.354537 -7.4773729,-7.477373 0,-4.1228365 3.3536017,-7.4773729 7.4773729,-7.4773729 4.123771,0 7.477373,3.3545364 7.477373,7.4773729 0,4.122836 -3.354537,7.477373 -7.477373,7.477373 z M 17.606135,12 c 0,3.096567 -2.511462,5.60803 -5.60803,5.60803 -3.0965666,0 -5.6080292,-2.511463 -5.6080292,-5.60803 0,-3.0965671 2.5114626,-5.6080297 5.6080292,-5.6080297 3.096568,0 5.60803,2.5114626 5.60803,5.6080297 z" fill="#ffcc00"></path></svg>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main>
+  <h2>Dark Mode Toggle With Local Storage Example</h2>
+  <div id="carbon-block"></div>
+  <p>Yet another dark mode toggle that enables the visitor to toggle between Dark Mode and Light Mode with a smooth color transition effect.</p>
+  <p>Marley was dead: to begin with. There is no doubt whatever about that. The register of his burial was signed by the clergyman, the clerk, the undertaker, and the chief mourner. Scrooge signed it: and Scrooge’s name was good upon ’Change, for anything he chose to put his hand to. Old Marley was as dead as a door-nail.</p>
+  <p>Mind! I don’t mean to say that I know, of my own knowledge, what there is particularly dead about a door-nail. I might have been inclined, myself, to regard a coffin-nail as the deadest piece of ironmongery in the trade. But the wisdom of our ancestors is in the simile; and my unhallowed hands shall not disturb it, or the Country’s done for. You will therefore permit me to repeat, emphatically, that Marley was as dead as a door-nail.</p>
+  <p>Scrooge knew he was dead? Of course he did. How could it be otherwise? Scrooge and he were partners for I don’t know how many years. Scrooge was his sole executor, his sole administrator, his sole assign, his sole residuary legatee, his sole friend, and sole mourner. And even Scrooge was not so dreadfully cut up by the sad event, but that he was an excellent man of business on the very day of the funeral, and solemnised it with an undoubted bargain.</p>
+  <p>The mention of Marley’s funeral brings me back to the point I started from. There is no doubt that Marley was dead. This must be distinctly understood, or nothing wonderful can come of the story I am going to relate. If we were not perfectly convinced that Hamlet’s Father died before the play began, there would be nothing more remarkable in his taking a stroll at night, in an easterly wind, upon his own ramparts, than there would be in any other middle-aged gentleman rashly turning out after dark in a breezy spot—say Saint Paul’s Churchyard for instance—literally to astonish his son’s weak mind.</p>
+  <p>Scrooge never painted out Old Marley’s name. There it stood, years afterwards, above the warehouse door: Scrooge and Marley. The firm was known as Scrooge and Marley. Sometimes people new to the business called Scrooge Scrooge, and sometimes Marley, but he answered to both names. It was all the same to him.</p><img class="small" src="https://source.unsplash.com/1600x900?wrigley"/>
+  <p>Oh! But he was a tight-fisted hand at the grindstone, Scrooge! a squeezing, wrenching, grasping, scraping, clutching, covetous, old sinner! Hard and sharp as flint, from which no steel had ever struck out generous fire; secret, and self-contained, and solitary as an oyster. The cold within him froze his old features, nipped his pointed nose, shrivelled his cheek, stiffened his gait; made his eyes red, his thin lips blue; and spoke out shrewdly in his grating voice. A frosty rime was on his head, and on his eyebrows, and his wiry chin. He carried his own low temperature always about with him; he iced his office in the dog-days; and didn’t thaw it one degree at Christmas.</p>
+  <p>External heat and cold had little influence on Scrooge. No warmth could warm, no wintry weather chill him. No wind that blew was bitterer than he, no falling snow was more intent upon its purpose, no pelting rain less open to entreaty. Foul weather didn’t know where to have him. The heaviest rain, and snow, and hail, and sleet, could boast of the advantage over him in only one respect. They often “came down” handsomely, and Scrooge never did.</p>
+</main>
+<footer class="footer">
+  <div class="footer-inner">
+    <h1 class="logo">Dark Mode Toggle Example</h1>
+    <nav class="nav">
+      <ul>
+        <li>
+          <button class="dark-button">Dark <i class="zmdi zmdi-brightness-2 zmdi-hc-fw"></i> </button>
+        </li>
+        <li>
+          <button class="light-button" hidden="hidden">Light <i class="zmdi zmdi-sun zmdi-hc-fw"></i></button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</footer>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script><script>
+//- To see the process of how I made this dark mode toggle, watch this tutorial video:
+//- https://youtu.be/42gltu11wb8
+
+
+
+// Dark Mode Setup
+
+var darkMode;
+
+if (localStorage.getItem('dark-mode')) {  
+  // if dark mode is in storage, set variable with that value
+  darkMode = localStorage.getItem('dark-mode');  
+} else {  
+  // if dark mode is not in storage, set variable to 'light'
+  darkMode = 'light';  
+}
+
+// set new localStorage value
+localStorage.setItem('dark-mode', darkMode);
+
+
+if (localStorage.getItem('dark-mode') == 'dark') {
+  // if the above is 'dark' then apply .dark to the body
+  $('body').addClass('dark');  
+  // hide the 'dark' button
+  $('.dark-button').hide();
+  // show the 'light' button
+  $('.light-button').show();
+}
+
+
+// Toggle dark UI
+
+$('.dark-button').on('click', function() {  
+  $('.dark-button').hide();
+  $('.light-button').show();
+  $('body').addClass('dark');  
+  // set stored value to 'dark'
+  localStorage.setItem('dark-mode', 'dark');
+});
+
+$('.light-button').on('click', function() {  
+  $('.light-button').hide();
+  $('.dark-button').show();
+  $('body').removeClass('dark');
+  // set stored value to 'light'
+  localStorage.setItem('dark-mode', 'light');   
+});
+
+
+
+//--------------------------------------------------
+// Below is all that is neede for the basic toggle
+//--------------------------------------------------
+
+// $('.dark-button').on('click', function() {  
+//   $('.dark-button').hide();
+//   $('.light-button').show();
+//   $('body').addClass('dark');
+// });
+
+// $('.light-button').on('click', function() {  
+//   $('.light-button').hide();
+//   $('.dark-button').show();
+//   $('body').removeClass('dark');  
+// });
+</script>
+</body>
+</html>
