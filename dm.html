@@ -35,15 +35,9 @@ body.dark a{
   color: #eaeaea;
 }
 body.dark .masthead,
-body.dark .footer {
-  background-color: #121212;
-}
-body.dark .nav{
-  background-color: #121212;
-}
-body.dark .topnav-left{
-  background-color: #121212;
-}
+body.dark .footer,
+body.dark .nav, 
+body.dark .topnav-left, 
 body.dark .modal-menu-content{
   background-color: #121212;
 }
@@ -99,8 +93,7 @@ img.small {
 
 button {
   border: none;
-  font-size: 1.1em;
-  background: #333;
+  background: transparent;
   border-radius:50%;
   margin-left:8px;
   width:24px;
@@ -108,10 +101,11 @@ button {
   -webkit-transition: background 200ms ease;
   transition: background 200ms ease;
   color: #eaeaea;
-  vertical-align: baseline;
+  vertical-align: middle;
+  cursor:pointer;
 }
 button:hover {
-  background: rgba(51, 51, 51, 0.8);
+  background: transparent;
 }
 
 .dark-button i {
