@@ -50,6 +50,9 @@ body.dark  #search-input{
   background-color: #333;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.24);
 }
+body.dark  .copy01{
+  fill: #eaeaea;
+}
 body.dark .sidebar a:hover {
   display: block;
   background-color: #2e2e2e;
@@ -90,8 +93,7 @@ img.small {
   transition: background-color 800ms ease;
 }
 
-.masthead-inner,
-.footer-inner {
+.masthead-inner {
   display: -webkit-box;
   display: flex;
   -webkit-box-pack: justify;
@@ -100,6 +102,11 @@ img.small {
           align-items: center;
   max-width: 900px;
   margin: auto;
+}
+.footer-inner {
+  max-width: 900px;
+  margin: auto;
+  text-align: center;
 }
 .nav{
   position: fixed;
@@ -192,6 +199,9 @@ main {
   font-size: 17px;
 }
 /* svg fill color */
+.copy01{
+  fill: #333;
+}
 .f01{
   fill: #00acff;
 }
@@ -367,31 +377,52 @@ p a:hover {
         class="button-close display-topright">
         <svg height="24" viewBox="0 0 24 24" width="24"><path d="m 12.002,10.43254 3.986703,-3.9881711 c 0.214229,-0.2142285 0.497421,-0.3213427 0.779147,-0.3213427 0.592796,0 1.100488,0.4768784 1.100488,1.1004887 0,0.2831924 -0.107114,0.5634501 -0.321342,0.7791459 l -3.986704,3.9867042 4.001377,4.002843 c 0.215696,0.215697 0.322809,0.497421 0.322809,0.779146 0,0.626546 -0.512094,1.100489 -1.100488,1.100489 -0.281726,0 -0.56345,-0.107114 -0.777678,-0.321342 L 12.002,13.547656 7.9991559,17.550501 c -0.2142285,0.214228 -0.4959536,0.321342 -0.7776786,0.321342 -0.5883947,0 -1.101956,-0.473943 -1.101956,-1.100489 0,-0.281725 0.1071142,-0.563449 0.32281,-0.779146 L 10.445175,11.989365 6.4511352,7.9953242 C 6.2369068,7.7796285 6.1297925,7.4993707 6.1297925,7.2161782 c 0,-0.6236102 0.5076921,-1.0990212 1.1004887,-1.0990212 0.2817251,0 0.5649175,0.1071141 0.779146,0.3213426 z" fill="#ffffff"></path></svg>
         </span>
-        <h3>Menu</h3>
         </div>
       <div class="container">
+        <h3>Short by Categories</h3>
         <p>
-        <a href="/vehicle"><svg class="f01" style="vertical-align:middle" height="24" viewBox="0 0 24 24" width="24"><path d="M11 11v-3h1.247c.882 0 1.235.297 1.828.909.452.465 1.925 2.091 1.925 2.091h-5zm-1-3h-2.243c-.688 0-1.051.222-1.377.581-.316.348-.895.948-1.506 1.671 1.719.644 4.055.748 5.126.748v-3zm14 5.161c0-2.823-2.03-3.41-2.794-3.631-1.142-.331-1.654-.475-3.031-.794-.55-.545-2.052-2.036-2.389-2.376l-.089-.091c-.666-.679-1.421-1.269-3.172-1.269h-7.64c-.547 0-.791.456-.254.944-.534.462-1.944 1.706-2.34 2.108-1.384 1.402-2.291 2.48-2.291 4.603 0 2.461 1.361 4.258 3.179 4.332.41 1.169 1.512 2.013 2.821 2.013 1.304 0 2.403-.838 2.816-2h6.367c.413 1.162 1.512 2 2.816 2 1.308 0 2.409-.843 2.82-2.01 1.934-.056 3.181-1.505 3.181-3.829zm-18 4.039c-.662 0-1.2-.538-1.2-1.2s.538-1.2 1.2-1.2 1.2.538 1.2 1.2-.538 1.2-1.2 1.2zm12 0c-.662 0-1.2-.538-1.2-1.2s.538-1.2 1.2-1.2 1.2.538 1.2 1.2-.538 1.2-1.2 1.2zm2.832-2.15c-.399-1.188-1.509-2.05-2.832-2.05-1.327 0-2.44.868-2.836 2.062h-6.328c-.396-1.194-1.509-2.062-2.836-2.062-1.319 0-2.426.857-2.829 2.04-.586-.114-1.171-1.037-1.171-2.385 0-1.335.47-1.938 1.714-3.199.725-.735 1.31-1.209 2.263-2.026.34-.291.774-.432 1.222-.43h5.173c1.22 0 1.577.385 2.116.892.419.393 2.682 2.665 2.682 2.665s2.303.554 3.48.895c.84.243 1.35.479 1.35 1.71 0 1.196-.396 1.826-1.168 1.888z"></path></svg> Vehicle</a>
-        <a href="/architecture"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d="M16 7h8v17h-24v-24h16v7zm-9 12h-2v4h2v-4zm4 0h-2v4h2v-4zm7 0h-2v4h2v-4zm4-10h-6v8h4v5h2v-13zm-8-7h-12v20h1v-5h10v5h1v-20zm-8 13h-2v-2h2v2zm3 0h-2v-2h2v2zm3 0h-2v-2h2v2zm8-2v2h-2v-2h2zm-14-1h-2v-2h2v2zm3 0h-2v-2h2v2zm3 0h-2v-2h2v2zm6-2h2v2h-2v-2zm-12-1h-2v-2h2v2zm3 0h-2v-2h2v2zm3 0h-2v-2h2v2zm-6-3h-2v-2h2v2zm3 0h-2v-2h2v2zm3 0h-2v-2h2v2z"></path></svg> Architecture</a>
-        <a href="/instrument"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d=""></path></svg> Instrument</a>
-        <a href="/food"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d="M9.46 11.039l-.48-4.039h-.98v-1.382c.87 0 2-.697 2-1.618h6.185l2.113-4 1.359.634-1.817 3.366h4.199c0 .922 1.092 1.618 1.961 1.618v1.382h-1l-2 17s-15.839.007-17.094-.005c-2.168-.068-3.017-1.656-3.041-3.743-.569-.472-.909-1.485-.861-2.409.044-.872.467-1.674 1.139-2.203.669-3.206 3.591-4.594 7.28-4.64.352 0 .698.013 1.037.039zm-6.466 9.957h-.002c.031.791.267.979.954.999 1.241.013 8.514 0 9.098-.009.679-.022.92-.269.96-.943 0 0-4.384.036-11.01-.047zm8.513-9.608c2.212.616 3.855 1.986 4.344 4.247.676.529 1.101 1.333 1.145 2.208.048.931-.437 1.866-.996 2.418.018.643-.061 1.23-.235 1.739h3.5l1.735-15h-10l.507 4.388zm2.493 5.612l-3.831.005c-.962.007-1.433 1.342-3.068 1.326-1.732-.018-1.855-1.313-2.723-1.309l-1.454-.022c-.54.046-.899.472-.923.943-.026.523.354 1.033 1.005 1.053h11.008c.645-.034 1.01-.539.985-1.053-.027-.49-.438-.92-.999-.943zm-.52-2.006c-.971-1.579-3.186-1.994-5.042-1.994-1.859.025-3.981.417-4.942 1.997l1.098.021c1.443.009 1.549 1.487 2.517 1.482.839-.004 1.404-1.492 2.834-1.494.141-.001 2.675-.012 3.535-.012z"></path></svg> Food</a>
-        <a href="/vegetation"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d="M24 24.015h-24s.835-.809 4-1.398v-2.036c-2.281-.463-4-2.482-4-4.899 0-1.302.018-1.022 4.23-11.154.013 0 .186-.513.77-.513.581 0 .757.511.771.511.734 1.761 1.342 3.2 1.844 4.387.751-1.803 1.851-4.409 3.461-8.283.016 0 .223-.615.924-.615.697 0 .909.613.925.613 1.621 3.89 2.729 6.472 3.484 8.261.497-1.187 1.097-2.62 1.821-4.361.013 0 .186-.513.77-.513.581 0 .757.511.771.511 3.879 9.309 4.229 9.622 4.229 11.156 0 2.417-1.719 4.436-4 4.899v2.036c3.161.588 3.998 1.396 4 1.398zm-8.71-4.983c-.68.447-1.456.759-2.29.9v2.09c1.993.028 3.641.14 5 .297v-1.738c-1.065-.217-2.008-.772-2.71-1.549zm-6.58 0c-.702.777-1.645 1.332-2.71 1.549v1.738c1.359-.157 3.007-.269 5-.297v-2.09c-.834-.141-1.61-.453-2.29-.9zm-2.157-7.503c-.102-.239-1.102-2.597-1.55-3.659l-.974 2.328c-2.029 4.843-2.029 4.867-2.029 5.484 0 2.64 2.433 3.062 3 3.062.377 0 1.521-.184 2.282-1.023-.803-1.021-1.282-2.308-1.282-3.706 0-.743.005-1.056.553-2.486zm10.163 6.194c.765.843 1.916 1.021 2.284 1.021.583 0 3-.44 3-3.062 0-.702-.1-.978-1.773-4.921l-1.224-2.891-1.525 3.645c.446 1.198.522 1.716.522 2.5 0 1.399-.48 2.687-1.284 3.708zm-4.713-14.116c.732 1.744 1.337 3.169 1.836 4.344 2.06 4.852 2.161 5.135 2.161 6.064 0 1.961-1.401 3.619-3.332 3.944-.613.104-.834.084-1.336 0-1.931-.324-3.332-1.983-3.332-3.944 0-.833 0-.849 2.46-6.72.437-1.043.948-2.261 1.543-3.688z"></path></svg> Vegetation</a>
-        <a href="/accessories"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d=""></path></svg> Accessories</a>
-        <a href="/houseware"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d=""></path></svg> Houseware</a>
-        <a href="/furniture"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d=""></path></svg> Furniture</a>
-        <a href="/currency"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d=""></path></svg> Currency</a>
-        <a href="/electronic"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d=""></path></svg> Electronic</a>
-        <a href="/weapon"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d="M19.431 8.657c-1.391-.155-2.937-1.369-3.532-2.653h-7.899v5.113c2.798 0 1.686 3.634 4.996 4.146 1.988.307 3.258-.694 3.381-1.93.198-1.974 1.331-3.725 3.054-4.676zm-9.122-1.699h3.561c.189 0 .343.153.343.343 0 .189-.153.342-.343.342h-3.561v-.685zm0 1.287h3.561c.189 0 .343.153.343.342 0 .189-.153.342-.343.342h-3.561v-.684zm0 1.971v-.685h3.561c.189 0 .343.153.343.343 0 .189-.153.342-.343.342h-3.561zm3.125 4.257c-2.814-.28-2.644-3.545.518-3.057 2.192.34 2.045 3.312-.518 3.057zm-6.434-8.469v2.996h-6.014c-.06-.491-.35-1.006-.986-1.157v-1.839h7zm-4-.734h-2.297v-1.031c0-.188.188-.3.366-.204l1.931 1.235zm14.81 2.07c-.247-.179-.479-.38-.702-.618.529-.297 1.027-.494 1.681-.542.241-.018.349.273.107.376-.486.208-.818.413-1.086.784zm-3.033 5.293c-.326.57-.875 1.146-1.341 1.184-.145.012-.244-.123-.188-.253.107-.247.778-.745.622-1.552.492.08.783.331.907.621zm5.29-3.16c-1.557.802-2.597 2.354-2.738 4.11.777.323 1.671.917 1.671 2.938v2.465c0 .847.34 1.014 1.216 1.014h2.493c.99 0 1.291-.309 1.291-.999 0-1.527-.396-3.828-1.997-6.079-.782-1.101-1.803-1.85-1.936-3.449zm-.63 3.973c-.391 0-.707-.316-.707-.708s.316-.708.707-.708.708.316.708.708-.318.708-.708.708z"></path></svg> Weapon</a>
-        <a href="/character"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d="M10.119 16.064c2.293-.53 4.427-.994 3.394-2.946-3.147-5.941-.835-9.118 2.488-9.118 3.388 0 5.643 3.299 2.488 9.119-1.065 1.964 1.149 2.427 3.393 2.946 1.985.458 2.118 1.428 2.118 3.107l-.003.828h-1.329c0-2.089.083-2.367-1.226-2.669-1.901-.438-3.695-.852-4.351-2.304-.239-.53-.395-1.402.226-2.543 1.372-2.532 1.719-4.726.949-6.017-.902-1.517-3.617-1.509-4.512-.022-.768 1.273-.426 3.479.936 6.05.607 1.146.447 2.016.206 2.543-.66 1.445-2.472 1.863-4.39 2.305-1.252.29-1.172.588-1.172 2.657h-1.331c0-2.196-.176-3.406 2.116-3.936zm-10.117 3.936h1.329c0-1.918-.186-1.385 1.824-1.973 1.014-.295 1.91-.723 2.316-1.612.212-.463.355-1.22-.162-2.197-.952-1.798-1.219-3.374-.712-4.215.547-.909 2.27-.908 2.819.015.935 1.567-.793 3.982-1.02 4.982h1.396c.44-1 1.206-2.208 1.206-3.9 0-2.01-1.312-3.1-2.998-3.1-2.493 0-4.227 2.383-1.866 6.839.774 1.464-.826 1.812-2.545 2.209-1.49.345-1.589 1.072-1.589 2.334l.002.618z"></path></svg> Character</a>
+        <a href="/vehicle">Vehicle</a>
+        <a href="/architecture">Architecture</a>
+        <a href="/instrument">Instrument</a>
+        <a href="/food">Food</a>
+        <a href="/vegetation">Vegetation</a>
+        <a href="/accessories">Accessories</a>
+        <a href="/houseware">Houseware</a>
+        <a href="/furniture">Furniture</a>
+        <a href="/currency">Currency</a>
+        <a href="/electronic">Electronic</a>
+        <a href="/weapon">Weapon</a>
+        <a href="/character">Character</a>
         <a href="/cosmetic">Cosmetic</a>
-        <a href="/fashion"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d="M20.207 8.53l-2.193-1.405v15.884h-12.024v-15.854l-2.195 1.318-2.426-2.92 4.833-4.553h1.424c.51 1.754 2.018 3.5 4.377 3.5 2.392 0 3.876-1.699 4.381-3.5h1.42l4.826 4.586-2.423 2.944zm-4.858-7.53c-.466 1.322-1.604 2.5-3.346 2.5-1.73 0-2.868-1.178-3.342-2.5h6.688zm2.853-1h-12.396999999999998l-5.805 5.469 3.574 4.303 1.416-.85v15.087h14.024v-15.056l1.402.898 3.577-4.349-5.791-5.502z"></path></svg> Fashion</a>
-        <a href="/aircraft"><svg class="f01" style="vertical-align:middle" height="18" viewBox="0 0 24 24" width="18"><path d="M8.801 9l-2.602-6h3.688l6.182 6c1.373 0 2.93-.012 4.303.001 1.622.057 3.628 1.465 3.628 2.996 0 1.557-2.038 2.97-3.67 3.003h-4.236l-6.208 6h-3.658l2.594-6h-3.506l-2.164 2h-3.152l1.742-4.998-1.742-5.002h3.142l2.149 2h3.51zm3.034 2l-7.205-.004-2.017-1.996 1.26 2.998-1.283 3.002 1.997-2h7.246l-2.472 5.727 5.924-5.727c1.633 0 3.452.077 5.082-.002.791-.058 1.615-.809 1.615-.996 0-.211-.915-.995-1.694-1.002h-5.03l-5.909-5.735"></path></svg> Aircraft</a>
+        <a href="/fashion">Fashion</a>
+        <a href="/aircraft">Aircraft</a>
         </p>
-        <hr/>
+        <h3>Short by Tags</h3>
         <p>
-        <a href="/license">License</a>
-        <a href="/about">About</a>
-        <a href="/support">Support</a>
+        <a href="/">supercar</a>
+        <a href="/">truck</a>
+        <a href="/">interior</a>
+        <a href="/">design</a>
+        <a href="/">string</a>
+        <a href="/">keys</a>
+        <a href="/">fruit</a>
+        <a href="/">cookie</a>
+        <a href="/">tree</a>
+        <a href="/">eyewear</a>
+        <a href="/">ceramic</a>
+        <a href="/">softdrink</a>
+        <a href="/">cabinet</a>
+        <a href="/">lamp</a>
+        <a href="/">bus</a>
+        <a href="/">crypto</a>
+        <a href="/">computer</a>
+        <a href="/">gun</a>
+        <a href="/">dessert</a>
+        <a href="/">chair</a>
+        <a href="/">toy</a>
+        <a href="/">makeup</a>
+        <a href="/">apparel</a>
+        <a href="/">sailplane</a>
         </p>
       </div>
     </div>
@@ -429,19 +460,66 @@ p a:hover {
 </div>
 <div class="p-layout">
 <div class="p-content">
-  <h2>Responsive Sidebar Example</h2>
-  <p>This example use media queries to transform the sidebar to a top navigation bar when the screen size is 700px or less.</p>
-  <p>We have also added a media query for screens that are 400px or less, which will vertically stack and center the navigation links.</p>
-  <h3>Resize the browser window to see the effect.</h3>
+  <h2>Support</h2>
+  <p>Just as a reminder, I’m not sure if this artwork is worthy or not if given support by you. Because you know this is just the file from learning to make 3D Models like everyone else. So you can consider before spending on something like this. But that’s okay, if you really think it’s worth it and can help to create even better next works. </p>
+  <p>If you want to support me or just to appreciate it you can share this website link to social media group/pages. Here it is my PayPal options for your one time donation or just buy me a coffee. For those of you with the same country as me, you can go to this page more easily way to support me.</p>
 </div>
 </div>
   
 </main>
+<style>
+.column {
+  float: left;
+}
+.column a {
+  text-decoration:none;
+}
+.column a:hover {
+  color:#00acff;
+}
+
+.left {
+  width: 25%;
+}
+
+.right {
+  width: 75%;
+}
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+@media screen and (max-width: 600px) {
+  .column {
+    width: 100%;
+  }
+}
+</style>
 <footer class="footer">
   <div class="footer-inner">
-    <h1 class="logo">The Public Domain 3D Models</h1>
 
+  <div class="row">
+  <div class="column left"">
+    <svg class="copy01" height="12" viewBox="0 0 24 24" width="12"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10 0-2.397.85-4.6 2.262-6.324l14.062 14.062c-1.724 1.412-3.927 2.262-6.324 2.262zm7.738-3.676l-9.587-9.587c.549-.319 1.174-.519 1.855-.519 1.171 0 2.306.523 3.136 1.669l1.858-1.217c-1.281-1.826-3.133-2.67-4.994-2.67-1.295 0-2.49.42-3.471 1.122l-2.86-2.86c1.725-1.412 3.928-2.262 6.325-2.262 5.514 0 10 4.486 10 10 0 2.397-.85 4.6-2.262 6.324zm-5.352-.827c-.758.331-1.564.503-2.38.503-3.308 0-6-2.692-6-6 0-.847.179-1.653.497-2.385l1.783 1.783c-.032.197-.06.396-.06.602 0 2.085 1.696 3.781 3.781 3.781.205 0 .408-.022.609-.055l1.77 1.771z"></path></svg> 2018 - <span id="pdm"></span> &middot;<a href="/">CG 3D</a>
   </div>
+  <div class="column right"">
+    <a href="/tos">Terms</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/license">License</a>
+    <a href="/help">Help</a>
+    <a href="/disclaimer">Disclaimer</a>
+    <a href="/support">Support</a>
+    <a href="/contact">Contact</a>
+    <a href="/about">About</a>
+    <a href="/faq">FAQ</a>
+  </div>
+  </div>
+  
+  </div>
+<script>
+document.getElementById("pdm").innerHTML = new Date().getFullYear();
+</script>
 </footer>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
