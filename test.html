@@ -330,6 +330,7 @@ p a:hover {
 }
 .column a {
   text-decoration:none;
+  padding: 5px;
 }
 .column a:hover {
   color:#00acff;
@@ -352,6 +353,14 @@ p a:hover {
     width: 100%;
   }
 }
+.fcopy a {
+  text-decoration:none;
+  padding: 5px;
+}
+.fcopy a:hover {
+  color:#00acff;
+}
+.page-card {padding: 10px 15px; text-align: center; background-color: transparent; color: #333;}
 </style>
 
 </head>
@@ -497,11 +506,9 @@ p a:hover {
 <footer class="footer">
   <div class="footer-inner">
 
-  <div class="row">
-  <div class="column left">
-    <svg class="copy01" height="12" viewBox="0 0 24 24" width="12"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10 0-2.397.85-4.6 2.262-6.324l14.062 14.062c-1.724 1.412-3.927 2.262-6.324 2.262zm7.738-3.676l-9.587-9.587c.549-.319 1.174-.519 1.855-.519 1.171 0 2.306.523 3.136 1.669l1.858-1.217c-1.281-1.826-3.133-2.67-4.994-2.67-1.295 0-2.49.42-3.471 1.122l-2.86-2.86c1.725-1.412 3.928-2.262 6.325-2.262 5.514 0 10 4.486 10 10 0 2.397-.85 4.6-2.262 6.324zm-5.352-.827c-.758.331-1.564.503-2.38.503-3.308 0-6-2.692-6-6 0-.847.179-1.653.497-2.385l1.783 1.783c-.032.197-.06.396-.06.602 0 2.085 1.696 3.781 3.781 3.781.205 0 .408-.022.609-.055l1.77 1.771z"></path></svg> 2018 - <span id="pdm"></span> &middot;<a href="/">CG 3D</a>
-  </div>
-  <div class="column right">
+
+  
+  <div class="fcopy">
     <a href="/tos">Terms</a>
     <a href="/privacy">Privacy</a>
     <a href="/license">License</a>
@@ -512,15 +519,28 @@ p a:hover {
     <a href="/about">About</a>
     <a href="/faq">FAQ</a>
   </div>
+  <div class="fcopy">
+    <svg class="copy01" height="12" viewBox="0 0 24 24" width="12"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm0 22c-5.514 0-10-4.486-10-10 0-2.397.85-4.6 2.262-6.324l14.062 14.062c-1.724 1.412-3.927 2.262-6.324 2.262zm7.738-3.676l-9.587-9.587c.549-.319 1.174-.519 1.855-.519 1.171 0 2.306.523 3.136 1.669l1.858-1.217c-1.281-1.826-3.133-2.67-4.994-2.67-1.295 0-2.49.42-3.471 1.122l-2.86-2.86c1.725-1.412 3.928-2.262 6.325-2.262 5.514 0 10 4.486 10 10 0 2.397-.85 4.6-2.262 6.324zm-5.352-.827c-.758.331-1.564.503-2.38.503-3.308 0-6-2.692-6-6 0-.847.179-1.653.497-2.385l1.783 1.783c-.032.197-.06.396-.06.602 0 2.085 1.696 3.781 3.781 3.781.205 0 .408-.022.609-.055l1.77 1.771z"></path></svg> 2018 - <span id="pdm"></span> &middot;<a href="/">CG 3D</a> Made by <a href="/">Mohamad Rido</a>
   </div>
-  
   </div>
 <script>
 document.getElementById("pdm").innerHTML = new Date().getFullYear();
 </script>
 </footer>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-
+<script src="https://cg3d.org/assets/search.min.js"></script>
+<script>
+   window.simpleJekyllSearch = new SimpleJekyllSearch({
+     searchInput: document.getElementById('search-input'),
+     resultsContainer: document.getElementById('results-container'),
+     json: 'https://cg3d.org/search.json',
+     searchResultTemplate: '<div class="card" style="box-shadow:0 1px 2px 0 #999;text-align:center;"><a href="https://cg3d.org{url}" alt="Free 3D {title} Models" title="Free 3D {title} Models"><img class="img" src="https://cg3d.org/assets/images{url}.jpg" alt="Free 3D {title} Models" title="Free 3D {title} Models"><h6 style="padding:0px 10px 10px 10px;">{title}</h6></a></div>',
+     noResultsText: 'No results found',
+     limit: 10,
+     fuzzy: false,
+     exclude: ['Welcome']
+      })
+</script>
 <script>
 //- To see the process of how I made this dark mode toggle, watch this tutorial video:
 //- https://youtu.be/42gltu11wb8
