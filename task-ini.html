@@ -15,7 +15,7 @@
     <script>
         function downloadFile() {
             // Replace 'YOUR_GOOGLE_DRIVE_LINK' with the actual Google Drive link
-            const googleDriveLink = 'https://drive.google.com/file/d/1OUGFDWTeuHzsl2NGguTMgjgZ_0a2U9NA';
+            const googleDriveLink = 'https://drive.google.com/uc?export=download&id=1OUGFDWTeuHzsl2NGguTMgjgZ_0a2U9NA';
 
             // Create a temporary anchor element
             const a = document.createElement('a');
@@ -26,7 +26,7 @@
             a.href = googleDriveLink;
 
             // Set the anchor's download attribute to specify the file name
-            a.download = 'task-ini.zip'; // Replace with the desired file name
+            a.download = 'task-ini.txt'; // Replace with the desired file name
 
             // Trigger a click event on the anchor element to initiate the download
             a.click();
