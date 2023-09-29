@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task ini</title>
+</head>
+<body>
+    <!-- Your Vue app content -->
+
+    <div>
+        <button id="downloadButton">Download File</button>
+    </div>
+
+    <script>
+        function downloadFile() {
+            // Replace 'YOUR_GOOGLE_DRIVE_LINK' with the actual Google Drive link
+            const googleDriveLink = 'https://drive.google.com/file/d/1OUGFDWTeuHzsl2NGguTMgjgZ_0a2U9NA';
+
+            // Create a temporary anchor element
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            document.body.appendChild(a);
+
+            // Set the anchor's href attribute to the Google Drive link
+            a.href = googleDriveLink;
+
+            // Set the anchor's download attribute to specify the file name
+            a.download = 'task-ini.zip'; // Replace with the desired file name
+
+            // Trigger a click event on the anchor element to initiate the download
+            a.click();
+
+            // Remove the anchor element from the DOM
+            document.body.removeChild(a);
+        }
+
+        // Attach the downloadFile function to the button's click event
+        document.getElementById('downloadButton').addEventListener('click', downloadFile);
+    </script>
+</body>
+</html>
