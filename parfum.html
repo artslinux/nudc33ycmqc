@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Form</title>
+</head>
+<body>
+    <h1>Order Form</h1>
+    <form id="orderForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" name="phone" required>
+        
+        <label for="product">Product:</label>
+        <select id="product" name="product">
+            <option value="Product 1">Product 1</option>
+            <option value="Product 2">Product 2</option>
+            <!-- Add more product options here -->
+        </select>
+        
+        <button type="submit">Order Now</button>
+    </form>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const orderForm = document.getElementById("orderForm");
+
+            orderForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const name = document.getElementById("name").value;
+                const phone = document.getElementById("phone").value;
+                const product = document.getElementById("product").value;
+
+                // Create a WhatsApp message
+                const message = `New order from ${name}\nPhone: ${phone}\nProduct: ${product}`;
+
+                // Construct the WhatsApp URL
+                const whatsappURL = `https://api.whatsapp.com/send?phone=6288212776419&text=${encodeURIComponent(message)}`;
+
+                // Redirect to WhatsApp
+                window.location.href = whatsappURL;
+            });
+        });
+    </script>
+</body>
+</html>
