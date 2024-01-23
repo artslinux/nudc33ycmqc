@@ -1,0 +1,181 @@
+@charset "UTF-8";
+/*
+    Project: Martfury HTML Template (Custom Style by Mohamad Rido)
+    Version: 1.3.0
+    Date Created: 06/12/2018
+    Date Updated: 2019-10-26T15:35:55+07:00
+    Developed by: diaryforlife
+*/
+/*
+    TABLE OF CONTENT
+        1. RESET AND TYPHOGRAPHY
+            1.1 reset
+            1.2 typhography
+        2. ELEMENTS
+            2.1 grid
+            2.2 list
+            2.3 button
+            2.4 form
+            2.5 post
+            2.6 pagination
+            2.7 breadcrumb
+            2.8 block
+            2.9 widget
+            2.10 slider
+            2.11 masonry
+            2.12 product
+            2.13 banner
+            2.14 filter
+            2.15 table
+            2.16 loader
+            2.17 modal
+        3. COMPONENTS
+             3.1 Cart
+             3.2 forms
+             3.3 search
+             3.4 section
+             3.5 pages
+        4. MODULES
+            4.1 header
+            4.2 footer
+        5. HELPERS
+        6. CUSTOM
+*/
+
+/* ------------------------Menu Pop-up Dropdown------------------------ */
+.menu > li.menu-item-has-children > a:before {
+  content: '';
+  width: 13px;
+  height: 13px;
+  background-color: #fff;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  z-index: 10000;
+  border-left: 1px solid #f0f0f0;        /* Change Color */
+  border-top: 1px solid #f0f0f0;        /* Change Color */
+  -webkit-transform: rotate(45deg) translate(-50%, -50%);
+  transform: rotate(45deg) translate(-50%, -50%);
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.sub-menu > li {
+  display: block;
+  margin: 8px;        /* Add New */
+  border-bottom: 0px solid #fff;        /* Change Pixel and Color */
+}
+
+.sub-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 250px;        /* Change Pixel */
+  z-index: 1000;
+  -webkit-transition: all 0.4s ease;
+  transition: all 0.4s ease;
+  background-color: #fff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);        /* Add New */
+  border: 1px solid #f0f0f0;        /* Change Color */
+  border-radius: 20px;        /* Add New */
+  visibility: hidden;
+  opacity: 0;
+}
+
+.sub-menu > li > a:hover {
+  color: #000;
+  background:#e3e3e3;
+  border-radius: 10px;        /* Add New */
+}
+
+/* -----------------------Pop-up Screen Homepage----------------------- */
+.ps-popup__content {
+  position: relative;
+  max-width: 830px;
+  width: 100%;
+  -webkit-transition: tranform 0.4s ease;
+  transition: tranform 0.4s ease;
+  border-radius: 22px;        /* Add New */
+}
+
+.ps-popup__close {
+  display: inline-block;
+  position: absolute;
+  width: 24px;        /* Change Size */
+  height: 24px;        /* Change Size */
+  top: 10px;
+  right: 10px;
+  background-color: #000;
+  border: none;
+  border-radius: 22px;        /* Change Rounded */
+}
+
+.ps-form--subscribe-popup input {
+  margin-bottom: 20px;
+  height: 40px;
+  border: 1px solid #c9c9c9;        /* Change Pixel */
+  border-radius: 22px;        /* Add New */
+}
+
+.ps-checkbox label:before {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0px;
+  height: 20px;
+  width: 20px;
+  z-index: 10;
+  border: 1px solid #c9c9c9;        /* Change Color */
+  -webkit-transition: all .4s ease;
+  transition: all .4s ease;
+}
+
+.ps-form--subscribe-popup .ps-checkbox > label:before {
+  border-radius: 22px;        /* Change Rounded */
+}
+
+.ps-btn, button.ps-btn {
+  display: inline-block;
+  padding: 10px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  color: #fff !important;
+  border: none;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: #26901b;
+  -webkit-transition: all .4s ease;
+  transition: all .4s ease;
+  cursor: pointer;
+  border-radius: 22px;        /* Add New */
+}
+
+/* -----------------------Pop-up Menu Kategori----------------------- */
+
+/* -----------------------Search-bar and button----------------------- */
+
+/* -------------------------Nav-bar Homepage------------------------- */
+
+/* ---------------------Thumbnail produk Homepage--------------------- */
+
+/* --------------------Pop-up View produk Homepage-------------------- */
+
+
+/* ------------------------Nav-bar Produk-page------------------------ */
+
+/* ------------------------Side-bar Produk-page------------------------ */
+
+/* -----------------------Pagination Produk-page----------------------- */
+
+
+/* ---------------------Nav-bar Produk detail-page--------------------- */
+
+
+
+
+
+
