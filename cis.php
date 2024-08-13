@@ -21,7 +21,7 @@ function generate_signature($data, $secret) {
 if ($_POST) {
     $received_data = $_POST['data'] ?? '';
     $received_signature = $_POST['signature'] ?? '';
-    $secret = 'your_secret_key';
+    $secret = getenv('SECRET_KEY');  // Use environment variable for the secret key
 
     if (!hash_equals(generate_signature($received_data, $secret), $received_signature)) {
         die('Data integrity check failed. Possible MitM attack detected.');
@@ -241,7 +241,7 @@ if ($this->session->userdata('logged_in')) {
 
 // 18. Check for Library Updates
 function check_library_updates() {
-    // This is a placeholder function. Implement your own update mechanism.
+    // Implement your own update mechanism
     $current_version = '1.0.0';
     $latest_version = '1.0.1'; // This would be retrieved from an external source
 
@@ -281,6 +281,10 @@ authenticate_api_request();
 
 // Log the start of script execution for audit purposes
 log_file_activity('Script execution started', __FILE__);
+
+// Run all detection and security mechanisms
+detect_anomalies();
+check_library_updates();
 
 // Log script completion for audit purposes
 log_file_activity('Script execution completed', __FILE__);
