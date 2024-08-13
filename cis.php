@@ -1,4 +1,3 @@
-
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
@@ -12,7 +11,7 @@ if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
 header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
 
 // 2. Content Security Policy (CSP)
-header("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; frame-ancestors 'none';");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; frame-ancestors 'none';");
 
 // 3. Data Signature Generation and Validation
 function generate_signature($data, $secret) {
@@ -73,11 +72,13 @@ function check_for_backdoor($file) {
 // 6. Validate File Inclusions
 function validate_file_inclusion($file) {
     $allowed_directories = array(
-        '/path/to/your/codeigniter/application/views/', 
-        '/path/to/your/codeigniter/application/controllers/'
+        realpath('/path/to/your/codeigniter/application/views/'), 
+        realpath('/path/to/your/codeigniter/application/controllers/')
     );
+    $real_file_path = realpath($file);
+
     foreach ($allowed_directories as $dir) {
-        if (strpos(realpath($file), realpath($dir)) === 0) {
+        if (strpos($real_file_path, $dir) === 0) {
             return true;
         }
     }
@@ -131,7 +132,7 @@ $config['global_xss_filtering'] = TRUE;
 
 // 11. XSS and Input Validation
 $this->load->library('form_validation');
-$this->form_validation->set_rules('input_field', 'Input Field', 'required|xss_clean');
+$this->form_validation->set_rules('input_field', 'Input Field', 'required');
 if ($this->form_validation->run() == FALSE) {
     die('Input validation failed.');
 }
@@ -160,11 +161,15 @@ function monitor_sql_injection($input) {
     }
 }
 
-// Example input validation with SQL Injection monitoring
+// Monitor SQL Injection attempts on both $_POST and $_SERVER data
 if ($_POST) {
     foreach ($_POST as $input) {
         monitor_sql_injection($input);
     }
+}
+
+foreach ($_SERVER as $key => $value) {
+    monitor_sql_injection($value);
 }
 
 // 14. Detect Zero-Day Exploits via Anomaly Detection
@@ -273,4 +278,10 @@ if ($_FILES) {
 
 // Example API request authentication
 authenticate_api_request();
+
+// Log the start of script execution for audit purposes
+log_file_activity('Script execution started', __FILE__);
+
+// Log script completion for audit purposes
+log_file_activity('Script execution completed', __FILE__);
 ?>
