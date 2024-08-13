@@ -9,6 +9,9 @@ if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
     }
 }
 header("Strict-Transport-Security: max-age=31536000; includeSubDomains; preload");
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: DENY');
+header('X-XSS-Protection: 1; mode=block');
 
 // 2. Content Security Policy (CSP)
 header("Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; frame-ancestors 'none';");
@@ -21,7 +24,7 @@ function generate_signature($data, $secret) {
 if ($_POST) {
     $received_data = $_POST['data'] ?? '';
     $received_signature = $_POST['signature'] ?? '';
-    $secret = getenv('SECRET_KEY');  // Use environment variable for the secret key
+    $secret = getenv('SECRET_KEY');
 
     if (!hash_equals(generate_signature($received_data, $secret), $received_signature)) {
         die('Data integrity check failed. Possible MitM attack detected.');
@@ -241,7 +244,6 @@ if ($this->session->userdata('logged_in')) {
 
 // 18. Check for Library Updates
 function check_library_updates() {
-    // Implement your own update mechanism
     $current_version = '1.0.0';
     $latest_version = '1.0.1'; // This would be retrieved from an external source
 
@@ -253,12 +255,67 @@ function check_library_updates() {
 // Check for library updates
 check_library_updates();
 
+// 19. Directory Traversal Protection
+function sanitize_file_path($path) {
+    // Normalize the path to prevent directory traversal attacks
+    $normalized_path = realpath($path);
+    if ($normalized_path === false) {
+        return false;
+    }
+    return strpos($normalized_path, realpath('/path/to/your/allowed/directory/')) === 0;
+}
+
+// 20. Secure Configuration Files
+function secure_configuration_files() {
+    $config_files = ['/path/to/your/config.php', '/path/to/your/database.php'];
+    foreach ($config_files as $file) {
+        if (file_exists($file)) {
+            chmod($file, 0600); // Set permissions to be readable and writable only by the owner
+        }
+    }
+}
+
+// 21. Protect Against Clickjacking
+header('X-Frame-Options: SAMEORIGIN');
+
+// 22. Prevent Cross-Site Scripting (XSS)
+function prevent_xss($input) {
+    return htmlspecialchars($input, ENT_QUOTES, 'UTF-8');
+}
+
+// Example usage of XSS prevention
+if ($this->input->post()) {
+    $clean_input = prevent_xss($this->input->post('input_field'));
+}
+
+// 23. Log Suspicious Activities
+function log_suspicious_activity($message) {
+    $log_file = '/path/to/your/logs/suspicious_activity.log';
+    $entry = date('Y-m-d H:i:s') . " - $message\n";
+    file_put_contents($log_file, $entry, FILE_APPEND);
+}
+
+// Example usage of suspicious activity logging
+log_suspicious_activity('Suspicious login attempt detected.');
+
+// 24. Implement Web Application Firewall (WAF)
+function apply_waf() {
+    // This is a placeholder for WAF configuration
+    // Consider using services or libraries for real WAF implementation
+}
+
+// 25. Regular Security Audits
+function perform_security_audit() {
+    // Implement regular security audits and vulnerability scans
+}
+
+// Example usage of security audit
+perform_security_audit();
+
 // Implementing All Checks
 $files = scan_files('/path/to/your/codeigniter/application');
 foreach ($files as $file) {
     check_for_backdoor($file);
-
-    // Log file access
     log_file_activity('File accessed', $file);
 
     // Validate file inclusion example
@@ -285,6 +342,10 @@ log_file_activity('Script execution started', __FILE__);
 // Run all detection and security mechanisms
 detect_anomalies();
 check_library_updates();
+sanitize_file_path('/path/to/file');
+secure_configuration_files();
+apply_waf();
+perform_security_audit();
 
 // Log script completion for audit purposes
 log_file_activity('Script execution completed', __FILE__);
