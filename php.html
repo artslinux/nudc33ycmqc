@@ -13,6 +13,19 @@
         <input type="submit" value="Upload">
     </form>
 
+    <div id="progress">
+        <p id="fileSize"></p>
+        <p id="uploadSpeed"></p>
+        <p id="progressPercentage">Progress: 0%</p>
+    </div>
+
+    <div id="stats">
+        <p id="totalFiles">Total Files: 0</p>
+        <p id="cleanFiles">Clean: 0</p>
+        <p id="suspiciousFiles">Suspicious: 0</p>
+        <p id="dangerousFiles">Dangerous: 0</p>
+    </div>
+
     <div id="results"></div>
 
     <script>
@@ -24,20 +37,42 @@
                 alert('Please select a ZIP file.');
                 return;
             }
-            
+
             const file = fileInput.files[0];
+            const startTime = Date.now();
             const resultsDiv = document.getElementById('results');
+            const fileSizeDiv = document.getElementById('fileSize');
+            const uploadSpeedDiv = document.getElementById('uploadSpeed');
+            const progressDiv = document.getElementById('progressPercentage');
+            const totalFilesDiv = document.getElementById('totalFiles');
+            const cleanFilesDiv = document.getElementById('cleanFiles');
+            const suspiciousFilesDiv = document.getElementById('suspiciousFiles');
+            const dangerousFilesDiv = document.getElementById('dangerousFiles');
             
+            const fileSize = file.size / (1024 * 1024); // Size in MB
+            fileSizeDiv.textContent = `File Size: ${fileSize.toFixed(2)} MB`;
+
             try {
                 const zip = await JSZip.loadAsync(file);
                 const files = Object.values(zip.files);
+                let totalFiles = 0;
+                let cleanFiles = 0;
+                let suspiciousFiles = 0;
+                let dangerousFiles = 0;
+
                 let resultsHtml = '<table border="1"><tr><th>File</th><th>Status</th><th>Details</th></tr>';
                 
                 for (const file of files) {
                     if (!file.dir) {
+                        totalFiles++;
                         const fileContents = await file.async('text');
                         const result = scanFile(fileContents, file.name);
-                        const statusColor = (result.status === 'clean') ? 'green' : 'yellow';
+
+                        if (result.status === 'clean') cleanFiles++;
+                        else if (result.status === 'suspicious') suspiciousFiles++;
+                        else dangerousFiles++;
+
+                        const statusColor = (result.status === 'clean') ? 'green' : (result.status === 'suspicious' ? 'yellow' : 'red');
                         
                         resultsHtml += `<tr style="background-color: ${statusColor};">
                             <td>${file.name}</td>
@@ -46,9 +81,21 @@
                         </tr>`;
                     }
                 }
-                
+
                 resultsHtml += '</table>';
                 resultsDiv.innerHTML = resultsHtml;
+
+                totalFilesDiv.textContent = `Total Files: ${totalFiles}`;
+                cleanFilesDiv.textContent = `Clean: ${cleanFiles}`;
+                suspiciousFilesDiv.textContent = `Suspicious: ${suspiciousFiles}`;
+                dangerousFilesDiv.textContent = `Dangerous: ${dangerousFiles}`;
+                
+                const endTime = Date.now();
+                const elapsedTime = (endTime - startTime) / 1000; // Time in seconds
+                const uploadSpeed = (fileSize / elapsedTime).toFixed(2); // MB/s
+                uploadSpeedDiv.textContent = `Upload Speed: ${uploadSpeed} MB/s`;
+                
+                progressDiv.textContent = 'Progress: 100%';
             } catch (error) {
                 console.error('Failed to process ZIP file:', error);
             }
