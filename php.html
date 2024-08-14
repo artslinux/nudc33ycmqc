@@ -3,9 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="robots" content="noindex, nofollow">
+    <meta name="robots" content="noindex, nofollow">
     <title>Upload ZIP</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        #progress { margin-top: 20px; }
+        #stats { margin-top: 20px; }
+        #results table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        #results th, #results td { border: 1px solid #ddd; padding: 8px; }
+        #results th { background-color: #f2f2f2; }
+        .dangerous { background-color: #f8d7da; }
+        .suspicious { background-color: #fff3cd; }
+        .clean { background-color: #d4edda; }
+    </style>
 </head>
 <body>
     <form id="uploadForm">
@@ -15,8 +25,8 @@
     </form>
 
     <div id="progress">
-        <p id="fileSize"></p>
-        <p id="uploadSpeed"></p>
+        <p id="fileSize">File Size: 0 MB</p>
+        <p id="uploadSpeed">Upload Speed: 0 MB/s</p>
         <p id="progressPercentage">Progress: 0%</p>
     </div>
 
