@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload ZIP</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <form id="uploadForm">
+        <label for="file">Upload ZIP File:</label>
+        <input type="file" id="file" accept=".zip">
+        <input type="submit" value="Upload">
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('file');
+            if (!fileInput.files.length) {
+                alert('Please select a ZIP file.');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const resultsDiv = document.getElementById('results');
+            
+            try {
+                const zip = await JSZip.loadAsync(file);
+                const files = Object.values(zip.files);
+                let resultsHtml = '<table border="1"><tr><th>File</th><th>Status</th><th>Details</th></tr>';
+                
+                for (const file of files) {
+                    if (!file.dir) {
+                        const fileContents = await file.async('text');
+                        const result = scanFile(fileContents, file.name);
+                        const statusColor = (result.status === 'clean') ? 'green' : 'yellow';
+                        
+                        resultsHtml += `<tr style="background-color: ${statusColor};">
+                            <td>${file.name}</td>
+                            <td>${result.status.charAt(0).toUpperCase() + result.status.slice(1)}</td>
+                            <td>${result.details.map(detail => `Type: ${detail.type}<br>Line: ${detail.line}`).join('<br>')}</td>
+                        </tr>`;
+                    }
+                }
+                
+                resultsHtml += '</table>';
+                resultsDiv.innerHTML = resultsHtml;
+            } catch (error) {
+                console.error('Failed to process ZIP file:', error);
+            }
+        });
+
+        function scanFile(fileContents, filename) {
+            const patterns = [
+                { pattern: /eval\(base64_decode\(/i, type: 'Base64 Decode' },
+                { pattern: /system\(/i, type: 'System Command' },
+                { pattern: /shell_exec\(/i, type: 'Shell Exec' },
+                { pattern: /passthru\(/i, type: 'Passthru' },
+                { pattern: /exec\(/i, type: 'Exec' },
+                { pattern: /popen\(/i, type: 'Popen' },
+                { pattern: /proc_open\(/i, type: 'Proc Open' },
+                { pattern: /include\($_GET\[/i, type: 'Remote File Inclusion' },
+                { pattern: /file_get_contents\($_GET\[/i, type: 'SSRF' },
+                { pattern: /unserialize\(/i, type: 'Unserialize' },
+                { pattern: /base64_decode\(/i, type: 'Base64 Decode' },
+                { pattern: /mysql_query\(/i, type: 'SQL Injection' },
+                { pattern: /ldap_search\(/i, type: 'LDAP Injection' },
+                { pattern: /document\.write\(/i, type: 'XSS' },
+                { pattern: /move_uploaded_file\(/i, type: 'File Upload' }
+            ];
+
+            const result = { status: 'clean', details: [] };
+
+            patterns.forEach(({ pattern, type }) => {
+                if (pattern.test(fileContents)) {
+                    result.status = 'suspicious';
+                    result.details.push({
+                        type: type,
+                        filename: filename,
+                        line: detectLine(fileContents, pattern)
+                    });
+                }
+            });
+
+            return result;
+        }
+
+        function detectLine(fileContents, pattern) {
+            const lines = fileContents.split('\n');
+            for (let i = 0; i < lines.length; i++) {
+                if (pattern.test(lines[i])) {
+                    return i + 1;
+                }
+            }
+            return null;
+        }
+    </script>
+</body>
+</html>
