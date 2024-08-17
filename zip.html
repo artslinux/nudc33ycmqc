@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Upload ZIP</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        #progress { margin-top: 20px; }
+        #stats { margin-top: 20px; }
+        #results table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        #results th, #results td { border: 1px solid #ddd; padding: 8px; }
+        #results th { background-color: #f2f2f2; }
+        .dangerous { background-color: #f8d7da; }
+        .suspicious { background-color: #fff3cd; }
+        .clean { background-color: #d4edda; }
+        .code-snippet { background-color: #f2f2f2; padding: 8px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <form id="uploadForm">
+        <label for="file">Upload ZIP File:</label>
+        <input type="file" id="file" accept=".zip">
+        <input type="submit" value="Upload">
+    </form>
+
+    <div id="progress">
+        <p id="fileSize">File Size: 0 MB</p>
+        <p id="uploadSpeed">Upload Speed: 0 MB/s</p>
+        <p id="progressPercentage">Progress: 0%</p>
+    </div>
+
+    <div id="stats">
+        <p id="totalFiles">Total Files: 0</p>
+        <p id="cleanFiles">Clean: 0</p>
+        <p id="suspiciousFiles">Suspicious: 0</p>
+        <p id="dangerousFiles">Dangerous: 0</p>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('file');
+            if (!fileInput.files.length) {
+                alert('Please select a ZIP file.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const startTime = Date.now();
+            const resultsDiv = document.getElementById('results');
+            const fileSizeDiv = document.getElementById('fileSize');
+            const uploadSpeedDiv = document.getElementById('uploadSpeed');
+            const progressDiv = document.getElementById('progressPercentage');
+            const totalFilesDiv = document.getElementById('totalFiles');
+            const cleanFilesDiv = document.getElementById('cleanFiles');
+            const suspiciousFilesDiv = document.getElementById('suspiciousFiles');
+            const dangerousFilesDiv = document.getElementById('dangerousFiles');
+            
+            const fileSize = file.size / (1024 * 1024); // Size in MB
+            fileSizeDiv.textContent = `File Size: ${fileSize.toFixed(2)} MB`;
+
+            try {
+                const zip = await JSZip.loadAsync(file);
+                const files = Object.values(zip.files);
+                let totalFiles = 0;
+                let cleanFiles = 0;
+                let suspiciousFiles = 0;
+                let dangerousFiles = 0;
+
+                let resultsHtml = '<table border="1"><tr><th>File</th><th>Status</th><th>Details</th></tr>';
+                
+                for (const file of files) {
+                    if (!file.dir) {
+                        totalFiles++;
+                        const fileContents = await file.async('text');
+                        const result = scanFile(fileContents, file.name);
+
+                        if (result.status === 'clean') cleanFiles++;
+                        else if (result.status === 'suspicious') suspiciousFiles++;
+                        else dangerousFiles++;
+
+                        const statusClass = (result.status === 'clean') ? 'clean' : (result.status === 'suspicious' ? 'suspicious' : 'dangerous');
+                        
+                        resultsHtml += `<tr class="${statusClass}">
+                            <td>${file.name}</td>
+                            <td>${result.status.charAt(0).toUpperCase() + result.status.slice(1)}</td>
+                            <td>${result.details.map(detail => `Type: ${detail.type}<br>Line: ${detail.line}<br><div class="code-snippet"><pre>${detail.code}</pre></div>`).join('<br>')}</td>
+                        </tr>`;
+                    }
+                }
+
+                resultsHtml += '</table>';
+                resultsDiv.innerHTML = resultsHtml;
+
+                totalFilesDiv.textContent = `Total Files: ${totalFiles}`;
+                cleanFilesDiv.textContent = `Clean: ${cleanFiles}`;
+                suspiciousFilesDiv.textContent = `Suspicious: ${suspiciousFiles}`;
+                dangerousFilesDiv.textContent = `Dangerous: ${dangerousFiles}`;
+                
+                const endTime = Date.now();
+                const elapsedTime = (endTime - startTime) / 1000; // Time in seconds
+                const uploadSpeed = (fileSize / elapsedTime).toFixed(2); // MB/s
+                uploadSpeedDiv.textContent = `Upload Speed: ${uploadSpeed} MB/s`;
+                
+                progressDiv.textContent = 'Progress: 100%';
+            } catch (error) {
+                console.error('Failed to process ZIP file:', error);
+            }
+        });
+
+        function scanFile(fileContents, filename) {
+            const patterns = [
+                { pattern: /eval\(base64_decode\(/i, type: 'Base64 Decode' },
+                { pattern: /system\(/i, type: 'System Command' },
+                { pattern: /shell_exec\(/i, type: 'Shell Exec' },
+                { pattern: /passthru\(/i, type: 'Passthru' },
+                { pattern: /exec\(/i, type: 'Exec' },
+                { pattern: /popen\(/i, type: 'Popen' },
+                { pattern: /proc_open\(/i, type: 'Proc Open' },
+                { pattern: /include\($_GET\[/i, type: 'Remote File Inclusion' },
+                { pattern: /file_get_contents\($_GET\[/i, type: 'SSRF' },
+                { pattern: /unserialize\(/i, type: 'Unserialize' },
+                { pattern: /base64_decode\(/i, type: 'Base64 Decode' },
+                { pattern: /mysql_query\(/i, type: 'SQL Injection' },
+                { pattern: /ldap_search\(/i, type: 'LDAP Injection' },
+                { pattern: /document\.write\(/i, type: 'XSS' },
+                { pattern: /move_uploaded_file\(/i, type: 'File Upload' }
+            ];
+
+            const result = { status: 'clean', details: [] };
+
+            patterns.forEach(({ pattern, type }) => {
+                if (pattern.test(fileContents)) {
+                    const line = detectLine(fileContents, pattern);
+                    const codeSnippet = extractCodeSnippet(fileContents, line);
+
+                    result.status = 'suspicious';
+                    result.details.push({
+                        type: type,
+                        filename: filename,
+                        line: line,
+                        code: codeSnippet
+                    });
+                }
+            });
+
+            return result;
+        }
+
+        function detectLine(fileContents, pattern) {
+            const lines = fileContents.split('\n');
+            for (let i = 0; i < lines.length; i++) {
+                if (pattern.test(lines[i])) {
+                    return i + 1;
+                }
+            }
+            return null;
+        }
+
+        function extractCodeSnippet(fileContents, line, context = 2) {
+            const lines = fileContents.split('\n');
+            const startLine = Math.max(0, line - 1 - context);
+            const endLine = Math.min(lines.length, line + context);
+            return lines.slice(startLine, endLine).join('\n');
+        }
+    </script>
+</body>
+</html>
