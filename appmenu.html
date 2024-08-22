@@ -6,38 +6,59 @@
     <title>Responsive Scroll Hide/Show Header and Footer for Marketplace</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
     <style>
-        /* Basic Styles */
-        body {
-            font-family: 'FreeSans', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+/* Basic Styles */
+body {
+    font-family: 'FreeSans', Arial, sans-serif;
+    margin: 0;
+    box-sizing: border-box;
+}
 
-        header, .footer-menu {
-            width: 100%;
-            height: 50px;
-            position: fixed;
-            left: 0;
-            z-index: 1000;
-            background-color: white;
-            color: darkgrey;
-            padding: 10px 0 3px 0;
-            transform: translateY(0);
-            transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
-            box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1); /* Transparent shadow */
-        }
+/* Pastikan semua elemen menggunakan border-box untuk perhitungan lebar */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
+header, .footer-menu {
+    width: 100%;
+    height: 54px;
+    position: fixed;
+    left: 0;
+    z-index: 1000;
+    background-color: white;
+    color: darkgrey;
+    padding: 10px 0 0 0;
+    transform: translateY(0);
+    transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+    box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1); /* Transparent shadow */
+}
+        
         header {
             top: 0;
             display: flex;
-            justify-content: center;
+            justify-content: space-between; /* Adjusted for search bar */
             align-items: center;
+            padding: 0 20px; /* Added padding for spacing */
         }
 
         #site-title img {
             max-height: 30px;
             object-fit: contain;
+        }
+
+        .search-bar {
+            width: 50%;
+            max-width: 300px; /* Adjust this as needed */
+            position: relative;
+        }
+
+        .search-bar input[type="text"] {
+            width: 100%;
+            padding: 5px 10px;
+            border: 1px solid darkgrey;
+            border-radius: 20px;
+            font-size: 14px;
         }
 
         .footer-menu {
@@ -49,7 +70,7 @@
         .footer-menu a {
             color: darkgrey;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -110,6 +131,10 @@
             .content {
                 padding-bottom: 0;
             }
+
+            .search-bar {
+                max-width: 400px; /* Adjust for larger screens */
+            }
         }
     </style>
 </head>
@@ -119,6 +144,13 @@
         <div id="site-title">
             <img src="http://cg3d.org/assets/img/pretended-studio.png" alt="Site Title">
         </div>
+        <div class="search-bar">
+            <form action="/search" method="get">
+                <input type="text" name="q" placeholder="Search...">
+            </form>
+        </div>
+<i class="fas fa-bell"></i>
+<i class="fas fa-bars"></i>
     </header>
 
     <div class="content">
