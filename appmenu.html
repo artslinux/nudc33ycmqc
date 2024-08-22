@@ -8,7 +8,7 @@
     <style>
         /* Basic Styles */
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'FreeSans', Arial, sans-serif;
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -16,15 +16,16 @@
 
         header, .footer-menu {
             width: 100%;
-            height: 50px; /* Reduced height for both header and footer */
+            height: 50px;
             position: fixed;
             left: 0;
             z-index: 1000;
-            background-color: #333;
-            color: white;
+            background-color: white;
+            color: darkgrey;
             padding: 10px 0 3px 0;
             transform: translateY(0);
-            transition: transform 0.5s ease-in-out;
+            transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+            box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1); /* Transparent shadow */
         }
 
         header {
@@ -35,7 +36,7 @@
         }
 
         #site-title img {
-            max-height: 30px; /* Adjusted image height to fit within the reduced menu */
+            max-height: 30px;
             object-fit: contain;
         }
 
@@ -46,24 +47,29 @@
         }
 
         .footer-menu a {
-            color: white;
+            color: darkgrey;
             text-decoration: none;
             font-size: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .footer-menu a.active, .footer-menu a:hover {
+            color: deepskyblue;
         }
 
         .footer-menu i {
-            font-size: 20px; /* Adjusted icon size */
+            font-size: 20px;
             margin-bottom: 3px;
         }
 
         /* Content Styling */
         .content {
-            padding-top: 60px;  /* Adjust to the height of the header */
-            padding-bottom: 60px; /* Adjust to the height of the footer */
-            min-height: 200vh; /* Just for demonstration purposes */
+            padding-top: 60px;
+            padding-bottom: 60px;
+            min-height: 200vh;
             background-color: #f4f4f4;
             font-size: 18px;
             text-align: center;
@@ -73,7 +79,7 @@
         /* Footer Copyright Styles */
         .footer-copyright {
             display: none;
-            background-color: #444; /* Slightly different color for separation */
+            background-color: #444;
             padding: 10px 0;
             font-size: 14px;
             text-align: center;
@@ -83,25 +89,24 @@
         /* Transition Styles */
         .header-hidden {
             transform: translateY(-100%);
+            box-shadow: none;
         }
 
         .footer-hidden {
             transform: translateY(100%);
+            box-shadow: none;
         }
 
         /* Responsive Styles */
         @media (min-width: 1024px) {
-            /* Hide footer menu on larger screens (laptop and desktop) */
             .footer-menu {
                 display: none;
             }
 
-            /* Display footer copyright on larger screens */
             .footer-copyright {
                 display: block;
             }
 
-            /* Adjust content padding since footer menu is not displayed */
             .content {
                 padding-bottom: 0;
             }
@@ -126,7 +131,7 @@
     </div>
 
     <div class="footer-menu" id="site-footer-menu">
-        <a href="#home">
+        <a href="https://mohamadrido.com/appmenu">
             <i class="fas fa-home"></i>
             Home
         </a>
@@ -149,7 +154,7 @@
     </div>
 
     <div class="footer-copyright">
-        <p>&copy; 2024 My Marketplace. All rights reserved.</p>
+        <p>&copy; 2024 Mohamad Rido. All rights reserved.</p>
     </div>
 
     <script>
@@ -175,18 +180,24 @@
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
             if (scrollTop > lastScrollTop) {
-                // Scroll down: Hide both
                 hideHeaderFooter();
             } else {
-                // Scroll up: Hide header, show footer
                 header.classList.add('header-hidden');
                 footerMenu.classList.remove('footer-hidden');
             }
 
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
 
-            // After stopping scrolling
-            scrollTimeout = setTimeout(showFooterFirstThenHeader, 800); // Show footer after 800ms
+            scrollTimeout = setTimeout(showFooterFirstThenHeader, 800);
+        });
+
+        // Adding active class to the clicked link in the footer menu
+        const footerLinks = document.querySelectorAll('.footer-menu a');
+        footerLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                footerLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
         });
     </script>
 
