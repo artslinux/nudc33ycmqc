@@ -22,24 +22,35 @@ body {
 
 header, .footer-menu {
     width: 100%;
-    height: 54px;
+    height: 64px;
     position: fixed;
     left: 0;
     z-index: 1000;
     background-color: white;
     color: darkgrey;
-    padding: 10px 0 0 0;
+    padding: 14px 0 0 0;
     transform: translateY(0);
     transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
     box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1); /* Transparent shadow */
 }
-        
+        header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
         header {
             top: 0;
             display: flex;
             justify-content: space-between; /* Adjusted for search bar */
             align-items: center;
-            padding: 0 20px; /* Added padding for spacing */
+            padding: 0 20px 0 20px; /* Added padding for spacing */
+        }
+        
+        header i {
+            font-size: 18x;
         }
 
         #site-title img {
@@ -56,6 +67,7 @@ padding: 10px 0 5px 0;
 
         .search-bar input[type="text"] {
             width: 100%;
+height: 36px;
             padding: 5px 10px;
             border: 1px solid darkgrey;
             border-radius: 20px;
@@ -150,6 +162,7 @@ padding: 10px 0 5px 0;
                 <input type="text" name="q" placeholder="Search...">
             </form>
         </div>
+<i class="fas fa-paper-plane"></i>
 <i class="fas fa-bell"></i>
 <i class="fas fa-bars"></i>
     </header>
@@ -164,7 +177,7 @@ padding: 10px 0 5px 0;
     </div>
 
     <div class="footer-menu" id="site-footer-menu">
-        <a href="https://mohamadrido.com/appmenu">
+        <a href="https://tanggalan.id/tryit">
             <i class="fas fa-home"></i>
             Home
         </a>
