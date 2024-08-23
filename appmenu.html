@@ -61,7 +61,7 @@
         .search-bar input[type="text"] {
             width: 100%;
             height: 36px;
-            padding: 5px 40px 5px 10px; /* Adjusted for icon padding */
+            padding: 5px 70px 5px 10px; /* Adjusted for both clear and search icons */
             border: 1px solid darkgrey;
             border-radius: 20px;
             font-size: 14px;
@@ -69,15 +69,24 @@
 
         .search-bar button {
             position: absolute;
-            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             border: none;
             background: none;
             cursor: pointer;
             color: darkgrey;
+            display: none; /* Hide by default */
         }
 
+        .search-bar button.clear-btn {
+    right: 40px; /* Posisi sebelum tombol search */
+    display: none; /* Tombol clear disembunyikan secara default */
+}
+
+.search-bar button.search-btn {
+    right: 10px;
+    display: block; /* Pastikan tombol pencarian selalu terlihat */
+}
         .search-bar button:hover {
             color: deepskyblue;
         }
@@ -171,8 +180,9 @@
         </div>
         <div class="search-bar">
             <form action="/search" method="get">
-                <input type="text" name="q" placeholder="Search...">
-                <button type="submit"><i class="fas fa-search"></i></button>
+                <input type="text" id="search-input" name="q" placeholder="Search...">
+                <button type="button" class="clear-btn" id="clear-search"><i class="fas fa-times"></i></button>
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
             </form>
         </div>
         <i class="fas fa-paper-plane"></i>
@@ -258,7 +268,31 @@
                 this.classList.add('active');
             });
         });
-    </script>
 
+        // Mendapatkan referensi ke elemen input dan tombol clear
+        const searchInput = document.getElementById('search-input');
+        const clearButton = document.getElementById('clear-search');
+
+        // Fungsi untuk memperbarui visibilitas tombol clear
+        function updateClearButtonVisibility() {
+            if (searchInput.value.length > 0) {
+                clearButton.style.display = 'block';
+            } else {
+                clearButton.style.display = 'none';
+            }
+        }
+
+        // Menampilkan tombol clear hanya jika ada karakter yang diinput
+        searchInput.addEventListener('input', updateClearButtonVisibility);
+
+        // Menghapus teks di kotak pencarian dan menyembunyikan tombol clear ketika tombol clear diklik
+        clearButton.addEventListener('click', function() {
+            searchInput.value = '';
+            updateClearButtonVisibility();
+        });
+
+        // Sembunyikan tombol clear pada awalnya
+        updateClearButtonVisibility();
+    </script>
 </body>
 </html>
