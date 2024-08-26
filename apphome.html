@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Scroll Hide/Show Header and Footer for Marketplace</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
+    <style>
+        /* Basic Styles */
+        body {
+            font-family: 'FreeSans', Arial, sans-serif;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* Pastikan semua elemen menggunakan border-box untuk perhitungan lebar */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        header, .footer-menu {
+            width: 100%;
+            height: 64px;
+            position: fixed;
+            left: 0;
+            z-index: 1000;
+            background-color: white;
+            color: darkgrey;
+            padding: 14px 0 0 0;
+            transform: translateY(0);
+            transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+            box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1); /* Transparent shadow */
+        }
+
+        header {
+            top: 0;
+            display: flex;
+            justify-content: space-between; /* Adjusted for search bar */
+            align-items: center;
+            padding: 0 20px; /* Added padding for spacing */
+        }
+
+        header i {
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        #site-title img {
+            max-height: 50px;
+            padding: 10px 0 5px 0;
+            object-fit: contain;
+        }
+
+        .search-bar {
+            width: 50%;
+            max-width: 300px; /* Adjust this as needed */
+            position: relative;
+        }
+
+        .search-bar input[type="text"] {
+            width: 100%;
+            height: 36px;
+            padding: 5px 70px 5px 10px; /* Adjusted for both clear and search icons */
+            border: 1px solid darkgrey;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: darkgrey;
+            display: none; /* Hide by default */
+        }
+
+        .search-bar button.clear-btn {
+            right: 40px; /* Posisi sebelum tombol search */
+            display: none; /* Tombol clear disembunyikan secara default */
+        }
+
+        .search-bar button.search-btn {
+            right: 10px;
+            display: block; /* Pastikan tombol pencarian selalu terlihat */
+        }
+
+        .search-bar button:hover {
+            color: deepskyblue;
+        }
+
+        .footer-menu {
+            bottom: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .footer-menu a {
+            color: darkgrey;
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .footer-menu a.active {
+            color: deepskyblue;
+        }
+
+        .footer-menu a:hover {
+            color: orange;
+        }
+
+        .footer-menu i {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        /* Content Styling */
+        .content {
+            padding-top: 60px;
+            padding-bottom: 60px;
+            min-height: 200vh;
+            background-color: #f4f4f4;
+            font-size: 18px;
+            text-align: center;
+            line-height: 2;
+        }
+
+        /* Footer Copyright Styles */
+        .footer-copyright {
+            display: none;
+            background-color: #444;
+            padding: 10px 0;
+            font-size: 14px;
+            text-align: center;
+            color: white;
+        }
+
+        /* Transition Styles */
+        .header-hidden {
+            transform: translateY(-100%);
+            box-shadow: none;
+        }
+
+        .footer-hidden {
+            transform: translateY(100%);
+            box-shadow: none;
+        }
+
+        /* Responsive Styles */
+        @media (min-width: 1024px) {
+            .footer-menu {
+                display: none;
+            }
+
+            .footer-copyright {
+                display: block;
+            }
+
+            .content {
+                padding-bottom: 0;
+            }
+
+            .search-bar {
+                max-width: 400px; /* Adjust for larger screens */
+            }
+        }
+
+        /* Gaya untuk pop-up */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 70px; /* Pastikan pop-up muncul di bawah header */
+            right: 20px; /* Sesuaikan posisi berdasarkan layout */
+            width: 300px;
+            background-color: white;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            z-index: 1001; /* Pastikan pop-up berada di atas elemen lainnya */
+            border-radius: 8px;
+            border: 1px solid darkgrey;
+        }
+
+        .popup h3 {
+            margin-top: 0;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .popup form input[type="email"],
+        .popup form button {
+            width: calc(100% - 20px);
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid darkgrey;
+        }
+
+        .popup form button {
+            background-color: deepskyblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .popup form button:hover {
+            background-color: dodgerblue;
+        }
+
+        /* Gaya untuk tombol close */
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: darkgrey;
+        }
+
+        .close-btn:hover {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+
+    <header id="site-header">
+        <div id="site-title">
+            <img src="http://cg3d.org/assets/img/pretended-studio.png" alt="Site Title">
+        </div>
+        <div class="search-bar">
+            <form action="/search" method="get">
+                <input type="text" id="search-input" name="q" placeholder="Search...">
+                <button type="button" class="clear-btn" id="clear-search"><i class="fas fa-times"></i></button>
+                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+        <i class="fas fa-paper-plane"></i>
+        <i class="fas fa-bell"></i>
+        <i class="fas fa-bars"></i>
+    </header>
+
+    <!-- Pop-up untuk icon bell -->
+    <div id="popup-bell" class="popup">
+        <button class="close-btn">&times;</button>
+        <h3>Subscribe to our newsletter</h3>
+        <form action="/subscribe" method="post">
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <button type="submit">Subscribe</button>
+        </form>
+    </div>
+
+    <!-- Pop-up untuk icon bars -->
+    <div id="popup-bars" class="popup">
+        <button class="close-btn">&times;</button>
+        <h3>Categories</h3>
+        <ul>
+            <li><a href="#category1">Category 1</a></li>
+            <li><a href="#category2">Category 2</a></li>
+            <li><a href="#category3">Category 3</a></li>
+            <!-- Tambahkan lebih banyak kategori sesuai kebutuhan -->
+        </ul>
+    </div>
+
+    <div class="content">
+        <p>Scroll up to show the footer menu and hide the header. After stopping the scroll, the footer will appear first, followed by the header.</p>
+        <p>Keep scrolling...</p>
+        <p>... and scrolling...</p>
+        <p>... still scrolling...</p>
+        <p>... almost there...</p>
+        <p>You made it! Now try scrolling back up.</p>
+    </div>
+
+    <div class="footer-menu" id="site-footer-menu">
+        <a href="https://tanggalan.id/tryit">
+            <i class="fas fa-home"></i>
+            Home
+        </a>
+        <a href="#blog">
+            <i class="fas fa-tools"></i>
+            Tools
+        </a>
+        <a href="#shop">
+            <i class="fas fa-shopping-cart"></i>
+            Shop
+        </a>
+        <a href="#tool">
+            <i class="fas fa-file-lines"></i>
+            Files
+        </a>
+        <a href="#account">
+            <i class="fas fa-user"></i>
+            Account
+        </a>
+    </div>
+
+    <div class="footer-copyright">
+        <p>&copy; 2024 Your Website. All rights reserved.</p>
+    </div>
+
+    <script>
+        // Show/hide header and footer on scroll
+        let lastScroll = 0;
+        const header = document.getElementById('site-header');
+        const footerMenu = document.getElementById('site-footer-menu');
+        const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search');
+        const popupBell = document.getElementById('popup-bell');
+        const popupBars = document.getElementById('popup-bars');
+        const closeButtons = document.querySelectorAll('.close-btn');
+
+        window.addEventListener('scroll', function () {
+            let currentScroll = window.pageYOffset;
+
+            if (currentScroll > lastScroll) {
+                // Scroll down
+                header.classList.add('header-hidden');
+                footerMenu.classList.remove('footer-hidden');
+            } else {
+                // Scroll up
+                header.classList.remove('header-hidden');
+                footerMenu.classList.add('footer-hidden');
+            }
+
+            lastScroll = currentScroll;
+        });
+
+        // Show clear button if search input is not empty
+        searchInput.addEventListener('input', function () {
+            if (this.value.length > 0) {
+                clearSearchBtn.style.display = 'block';
+            } else {
+                clearSearchBtn.style.display = 'none';
+            }
+        });
+
+        // Clear search input
+        clearSearchBtn.addEventListener('click', function () {
+            searchInput.value = '';
+            clearSearchBtn.style.display = 'none';
+        });
+
+        // Tampilkan pop-up saat icon bell diklik
+        document.querySelector('.fa-bell').addEventListener('click', function () {
+            popupBell.style.display = 'block';
+            popupBars.style.display = 'none';
+        });
+
+        // Tampilkan pop-up saat icon bars diklik
+        document.querySelector('.fa-bars').addEventListener('click', function () {
+            popupBars.style.display = 'block';
+            popupBell.style.display = 'none';
+        });
+
+        // Menutup pop-up saat tombol close diklik
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                this.parentElement.style.display = 'none';
+            });
+        });
+
+        // Klik di luar pop-up untuk menutupnya
+        window.addEventListener('click', function (event) {
+            if (!popupBell.contains(event.target) && !popupBars.contains(event.target) && !event.target.matches('.fa-bell, .fa-bars')) {
+                popupBell.style.display = 'none';
+                popupBars.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
