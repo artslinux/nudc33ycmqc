@@ -36,12 +36,40 @@
 <body>
   <h1>OpenAI Search</h1>
   <p>Enter your query below:</p>
-  <input type="text" id="query" placeholder="Ask something..." />
-  <button onclick="search()">Search</button>
+<input type="text" id="query" placeholder="Ask something..." />
+<button onclick="search()">Search</button>
   
   <div id="response"></div>
 
   <script>
+function search() {
+    const query = document.getElementById('query').value;
+    console.log("Query:", query);  // Untuk memastikan input ditangkap
+
+    // Cek apakah query kosong
+    if (!query) {
+      alert('Please enter a query.');
+      return;
+    }
+
+    // Proses permintaan ke backend
+    fetch('https://senirekayasa.com/openai.php', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ query })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('response').innerText = data.choices[0].text;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('response').innerText = "Error: " + error.message;
+    });
+}
+
     async function search() {
       const query = document.getElementById('query').value;
       const responseDiv = document.getElementById('response');
