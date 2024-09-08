@@ -274,7 +274,7 @@ color: deepskyblue;
         </div>
         <i class="fas fa-paper-plane"></i>
         <i class="fas fa-bell"></i>
-        <i class="fas fa-bars"></i>
+        <i class="fas fa-ellipsis-vertical"></i>
     </header>
 
 <!-- Pop-up untuk icon bell -->
@@ -288,17 +288,18 @@ color: deepskyblue;
 </div>
 
 <!-- Pop-up untuk icon bars -->
-<div id="popup-bars" class="popup">
+<div id="popup-ellipsis" class="popup">
     <button class="close-btn">&times;</button>
     <i id="dark-mode-btn" class="fas fa-moon"></i>
 <i id="light-mode-btn" class="fas fa-sun"></i>
 <i id="toggle-mode-btn" class="fas fa-desktop"></i>
-    <h3>Categories</h3>
+    <h3><i class="fas fa-list-ul"></i> Categories</h3>
     <ul>
         <li><a href="#category1">Category 1</a></li>
         <li><a href="#category2">Category 2</a></li>
         <li><a href="#category3">Category 3</a></li>
     </ul>
+    <h3><i class="fas fa-list-ul"></i> Categories</h3>
 </div>
     <div class="content">
         <p>Scroll up to show the footer menu and hide the header. After stopping the scroll, the footer will appear first, followed by the header.</p>
@@ -452,9 +453,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Dapatkan referensi ke elemen icon dan pop-up
 const bellIcon = document.querySelector('.fa-bell');
-const barsIcon = document.querySelector('.fa-bars');
+const ellipsisIcon = document.querySelector('.fa-ellipsis-vertical');
 const popupBell = document.getElementById('popup-bell');
-const popupBars = document.getElementById('popup-bars');
+const popupEllipsis = document.getElementById('popup-ellipsis');
 
 // Dapatkan referensi ke tombol close
 const closeButtons = document.querySelectorAll('.close-btn');
@@ -467,12 +468,12 @@ function togglePopup(popup) {
 // Event listener untuk icon bell
 bellIcon.addEventListener('click', function() {
     togglePopup(popupBell);
-    popupBars.style.display = 'none'; // Tutup popup lain jika terbuka
+    popupEllipsis.style.display = 'none'; // Tutup popup lain jika terbuka
 });
 
 // Event listener untuk icon bars
-barsIcon.addEventListener('click', function() {
-    togglePopup(popupBars);
+ellipsisIcon.addEventListener('click', function() {
+    togglePopup(popupEllipsis);
     popupBell.style.display = 'none'; // Tutup popup lain jika terbuka
 });
 
@@ -485,10 +486,10 @@ closeButtons.forEach(button => {
 
 // Event listener untuk menutup popup jika klik di luar popup
 window.addEventListener('click', function(event) {
-    if (event.target !== bellIcon && event.target !== barsIcon &&
-        !popupBell.contains(event.target) && !popupBars.contains(event.target)) {
+    if (event.target !== bellIcon && event.target !== ellipsisIcon &&
+        !popupBell.contains(event.target) && !popupEllipsis.contains(event.target)) {
         popupBell.style.display = 'none';
-        popupBars.style.display = 'none';
+        popupEllipsis.style.display = 'none';
     }
 });
     </script>
