@@ -29,11 +29,19 @@
             border-radius: 6px;
         }
         iframe {
-            width: 90%;
-            height: 400px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-        }
+    width: 83%;
+    height: 400px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+}
+
+/* Tambahkan padding hanya pada tampilan laptop dan desktop */
+@media (min-width: 1024px) {
+    iframe {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
         .buttons {
             margin-bottom: 10px;
         }
@@ -141,7 +149,7 @@
         <button onclick="pasteCode()">Paste</button>
         <input type="file" id="fileInput" accept=".txt,.js,.html,.css" onchange="loadFile()">
     </div>
-    <iframe id="result"></iframe>
+    <iframe id="result" style="padding: 0 20px;"></iframe>
     <div class="device-buttons">
         <button onclick="setFrameSize('360px', '640px')">Android</button>
         <button onclick="setFrameSize('375px', '667px')">iPhone</button>
