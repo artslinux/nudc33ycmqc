@@ -195,7 +195,7 @@ background-color: #0d1117;
         }
 
 /* Gaya untuk pop-up */
-.popup {
+.popup-header {
     display: none;
     position: fixed;
     top: 65px; /* Pastikan pop-up muncul di bawah header */
@@ -210,14 +210,14 @@ color: darkgrey;
     border: 1px solid f9f9f9;
 }
 
-.popup h3 {
+.popup-header .popup-footer h3 {
     margin-top: 0;
     font-size: 18px;
     margin-bottom: 10px;
 }
 
-.popup form input[type="email"],
-.popup form button {
+.popup-header form input[type="email"],
+.popup-header form button {
     width: calc(100% - 0px);
     margin-bottom: 10px;
     padding: 10px;
@@ -225,7 +225,7 @@ color: darkgrey;
     border: 1px solid darkgrey;
 }
 
-.popup form button {
+.popup-header form button {
     background-color: deepskyblue;
     color: white;
     border: none;
@@ -233,12 +233,17 @@ color: darkgrey;
     font-weight: bold;
 }
 
-.popup li a {
+.popup-header li a {
 text-decoration: none;
 color: deepskyblue;
 }
 
-.popup form button:hover {
+.popup-footer li a {
+text-decoration: none;
+color: deepskyblue;
+}
+
+.popup-header form button:hover {
     background-color: dodgerblue;
 }
 
@@ -256,6 +261,21 @@ color: deepskyblue;
 
 .close-btn:hover {
     color: darkorange;
+}
+
+/* Gaya untuk pop-up menu Tools */
+.popup-footer {
+    display: none; /* Sembunyikan pop-up secara default */
+    position: fixed;
+    bottom: 65px; /* Agar muncul di atas footer */
+    left: 20px; /* Sesuaikan posisi berdasarkan layout */
+    width: 300px;
+    background-color: white;
+    color: darkgrey;
+    box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 1001;
+    border-radius: 18px;
 }
     </style>
 </head>
@@ -278,7 +298,7 @@ color: deepskyblue;
     </header>
 
 <!-- Pop-up untuk icon bell -->
-<div id="popup-bell" class="popup">
+<div id="popup-bell" class="popup-header">
     <button class="close-btn">&times;</button>
     <h3>Subscribe to our newsletter</h3>
     <form action="/subscribe" method="post">
@@ -288,7 +308,7 @@ color: deepskyblue;
 </div>
 
 <!-- Pop-up untuk icon bars -->
-<div id="popup-ellipsis" class="popup">
+<div id="popup-ellipsis" class="popup-header">
     <button class="close-btn">&times;</button>
     <i id="dark-mode-btn" class="fas fa-moon"></i>
 <i id="light-mode-btn" class="fas fa-sun"></i>
@@ -333,11 +353,66 @@ color: deepskyblue;
         </a>
     </div>
 
+<!-- Pop-up untuk menu Tools -->
+<div id="popup-tools" class="popup-footer">
+    <button class="close-btn">&times;</button>
+    <h3>Tools Menu</h3>
+    <ul>
+        <li><a href="#tool1">Tool 1</a></li>
+        <li><a href="#tool2">Tool 2</a></li>
+        <li><a href="#tool3">Tool 3</a></li>
+    </ul>
+</div>
+
     <div class="footer-copyright">
         <p>&copy; 2024 Mohamad Rido. All rights reserved.</p>
     </div>
 
     <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toolsLink = document.querySelector('.footer-menu a[href="#blog"]');
+    const toolsPopup = document.getElementById('popup-tools');
+    const closeBtn = toolsPopup.querySelector('.close-btn');
+
+    toolsLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        toolsPopup.style.display = 'block';  // Tampilkan pop-up
+    });
+
+    closeBtn.addEventListener('click', function() {
+        toolsPopup.style.display = 'none';  // Sembunyikan pop-up
+    });
+
+    // Tutup pop-up saat klik di luar pop-up
+    window.addEventListener('click', function(event) {
+        if (event.target === toolsPopup) {
+            toolsPopup.style.display = 'none';  // Sembunyikan pop-up
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const toolsLink = document.querySelector('.footer-menu a[href="#blog"]');
+    const toolsPopup = document.getElementById('popup-tools');
+    const closeBtn = toolsPopup.querySelector('.close-btn');
+
+    toolsLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        toolsPopup.style.display = 'block';  // Tampilkan pop-up
+    });
+
+    closeBtn.addEventListener('click', function() {
+        toolsPopup.style.display = 'none';  // Sembunyikan pop-up
+    });
+
+    // Tutup pop-up saat klik di luar pop-up
+    window.addEventListener('click', function(event) {
+        if (event.target === toolsPopup) {
+            toolsPopup.style.display = 'none';
+        }
+    });
+});
+
 // Fungsi untuk menerapkan tema sesuai dengan yang disimpan di localStorage
 function initTheme() {
     const currentTheme = localStorage.getItem('theme');
@@ -491,6 +566,30 @@ window.addEventListener('click', function(event) {
         popupBell.style.display = 'none';
         popupEllipsis.style.display = 'none';
     }
+});
+    </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toolsLink = document.querySelector('.footer-menu a[href="#blog"]');
+    const toolsPopup = document.getElementById('popup-tools');
+    const closeBtn = toolsPopup.querySelector('.close-btn');
+
+    toolsLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        toolsPopup.style.display = 'block';  // Tampilkan pop-up
+    });
+
+    closeBtn.addEventListener('click', function() {
+        toolsPopup.style.display = 'none';  // Sembunyikan pop-up saat tombol close diklik
+    });
+
+    // Event listener untuk menutup pop-up ketika klik di luar area pop-up
+    document.addEventListener('click', function(event) {
+        if (!toolsPopup.contains(event.target) && !toolsLink.contains(event.target)) {
+            toolsPopup.style.display = 'none';  // Sembunyikan pop-up
+        }
+    });
 });
     </script>
 </body>
