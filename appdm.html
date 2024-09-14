@@ -277,25 +277,54 @@ color: deepskyblue;
     z-index: 1001;
     border-radius: 18px;
 }
+
+/* Style untuk container title */
+#site-title {
+    display: flex;
+    align-items: center;
+}
+
+/* Style untuk image dan title */
+#site-title {
+    max-height: 50px;
+    padding: 0px 0 5px 0;
+    object-fit: contain;
+}
+
+/* Style untuk title */
+.site-name {
+    margin-left: 100px; /* Jarak antara gambar dan title */
+    font-size: 20px; /* Sesuaikan ukuran font sesuai kebutuhan */
+    color: darkgrey; /* Sesuaikan warna font sesuai tema */
+    display: none; /* Default sembunyikan title */
+}
+
+/* Tampilkan title hanya pada layar laptop dan desktop */
+@media (min-width: 1024px) {
+    .site-name {
+        display: inline; /* Tampilkan title */
+    }
+}
     </style>
 </head>
 <body>
 
     <header id="site-header">
-        <div id="site-title">
-            <img src="http://cg3d.org/assets/img/pretended-studio.png" alt="Site Title">
-        </div>
-        <div class="search-bar">
-            <form action="/search" method="get">
-                <input type="text" id="search-input" name="q" placeholder="Search...">
-                <button type="button" class="clear-btn" id="clear-search"><i class="fas fa-times"></i></button>
-                <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
-            </form>
-        </div>
-        <i class="fas fa-paper-plane"></i>
-        <i class="fas fa-bell"></i>
-        <i class="fas fa-ellipsis-vertical"></i>
-    </header>
+    <div id="site-title">
+        <img src="http://cg3d.org/assets/img/pretended-studio.png" alt="Site Title">
+        <span class="site-name">Seni Rekayasa</span> <!-- Title added here -->
+    </div>
+    <div class="search-bar">
+        <form action="/search" method="get">
+            <input type="text" id="search-input" name="q" placeholder="Search...">
+            <button type="button" class="clear-btn" id="clear-search"><i class="fas fa-times"></i></button>
+            <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+        </form>
+    </div>
+    <i class="fas fa-paper-plane"></i>
+    <i class="fas fa-bell"></i>
+    <i class="fas fa-ellipsis-vertical"></i>
+</header>
 
 <!-- Pop-up untuk icon bell -->
 <div id="popup-bell" class="popup-header">
