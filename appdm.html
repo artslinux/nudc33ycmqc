@@ -282,10 +282,11 @@ color: deepskyblue;
 #site-title {
     display: flex;
     align-items: center;
+    flex-grow: 1; /* Membuat container title menempati ruang yang tersisa di header */
 }
 
 /* Style untuk image dan title */
-#site-title {
+#site-title img {
     max-height: 50px;
     padding: 0px 0 5px 0;
     object-fit: contain;
@@ -293,7 +294,7 @@ color: deepskyblue;
 
 /* Style untuk title */
 .site-name {
-    margin-left: 100px; /* Jarak antara gambar dan title */
+    margin-left: 10px; /* Jarak antara gambar dan title */
     font-size: 20px; /* Sesuaikan ukuran font sesuai kebutuhan */
     color: darkgrey; /* Sesuaikan warna font sesuai tema */
     display: none; /* Default sembunyikan title */
