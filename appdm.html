@@ -65,7 +65,7 @@ background-color: #0d1117;
             padding: 0 20px; /* Added padding for spacing */
         }
 
-        header i {
+        .pih i {
             font-size: 18px;
             margin-left: 1.2em;
         }
@@ -301,6 +301,18 @@ color: deepskyblue;
     }
 }
 
+
+.search-bar button.clear-btn {
+    right: 40px; /* Beri jarak lebih dari search button */
+font-size: 18px;
+    display: none; /* Tetap sembunyikan secara default */
+}
+
+.search-bar button.search-btn {
+    right: 10px; /* Tetap pada posisinya */
+font-size: 18px;
+    display: block; /* Tetap tampil */
+}
     </style>
 </head>
 <body>
@@ -317,9 +329,11 @@ color: deepskyblue;
             <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
         </form>
     </div>
+<div class="pih">
     <i class="fas fa-paper-plane"></i>
     <i class="fas fa-bell"></i>
     <i class="fas fa-ellipsis-vertical"></i>
+</div>
 </header>
 
 <!-- Pop-up untuk icon bell -->
