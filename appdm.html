@@ -121,7 +121,12 @@ background-color: #0d1117;
             justify-content: space-around;
         }
 
-        .footer-menu a {
+        .popup-fm {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .footer-menu a, .popup-fm a {
             color: darkgrey;
             text-decoration: none;
             font-size: 12px;
@@ -131,15 +136,15 @@ background-color: #0d1117;
             transition: color 0.3s ease;
         }
 
-        .footer-menu a.active {
+        .footer-menu a.active, .popup-fm a.active {
             color: deepskyblue;
         }
 
-        .footer-menu a:hover {
+        .footer-menu a:hover, .popup-fm a:hover {
             color: orange;
         }
 
-        .footer-menu i {
+        .footer-menu i, .popup-fm i {
             font-size: 20px;
             margin-bottom: 3px;
         }
@@ -352,13 +357,31 @@ font-size: 18px;
     <i id="dark-mode-btn" class="fas fa-moon"></i>
 <i id="light-mode-btn" class="fas fa-sun"></i>
 <i id="toggle-mode-btn" class="fas fa-desktop"></i>
-    <h3><i class="fas fa-list-ul"></i> Categories</h3>
+    <h3><i class="fas fa-cube"></i> 3D Models</h3>
     <ul>
-        <li><a href="#category1">Category 1</a></li>
-        <li><a href="#category2">Category 2</a></li>
-        <li><a href="#category3">Category 3</a></li>
+        <li><a href="#category1">Achitecture</a></li>
+        <li><a href="#category2">Organic</a></li>
+        <li><a href="#category3">Vehicle</a></li>
     </ul>
-    <h3><i class="fas fa-list-ul"></i> Categories</h3>
+    <h3><i class="fas fa-share-nodes"></i> Find Me</h3>
+
+    <div class="popup-fm">
+        <a href="https://youtube.com/@mohamad_rido">
+            <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://tiktok.com/@mohamad_rido">
+            <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://x.com/mohamad_rido">
+            <i class="fab fa-x-twitter"></i>
+        </a>
+        <a href="https://pinterest.com/mohamad_rido">
+            <i class="fab fa-pinterest"></i>
+        </a>
+        <a href="https://t.me/mohamad_rido">
+            <i class="fab fa-telegram"></i>
+        </a>
+    </div>
 </div>
     <div class="content">
         <p>Scroll up to show the footer menu and hide the header. After stopping the scroll, the footer will appear first, followed by the header.</p>
@@ -395,12 +418,21 @@ font-size: 18px;
 <!-- Pop-up untuk menu Tools -->
 <div id="popup-tools" class="popup-footer">
     <button class="close-btn">&times;</button>
-    <h3>Tools Menu</h3>
-    <ul>
-        <li><a href="#tool1">Tool 1</a></li>
-        <li><a href="#tool2">Tool 2</a></li>
-        <li><a href="#tool3">Tool 3</a></li>
-    </ul>
+    <h3>Online Web Tools</h3>
+    <div class="popup-fm">
+        <a href="/tools/try">
+            <i class="fas fa-code"></i>
+            Tryit Editor
+        </a>
+        <a href="/tools/color">
+            <i class="fas fa-swatchbook"></i>
+            Color Picker
+        </a>
+        <a href="/tools/app">
+            <i class="fas fa-calendar-days"></i>
+            Tanggalan Jawa
+        </a>
+    </div>
 </div>
 
     <div class="footer-copyright">
