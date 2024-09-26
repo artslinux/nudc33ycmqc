@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Mohamad Rido</title>
+<meta itemprop="description" name="description" content="Author & 3D Modeler" />
+<meta property="og:locale" content="en">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mohamad Rido">
+<meta property="og:url" content="https://mohamadrido.com/">
+<meta property="og:site_name" content="Mohamad Rido">
+<meta property="article:publisher" content="http://www.facebook.com/blogrido" />
+<meta property="article:author" content="https://www.facebook.com/blogrido" />
+<meta property="og:description" content="Author & 3D Modeler">
+<meta content="Mohamad Rido" name="Author">
+<meta content="https://www.facebook.com/blogrido" property="website:author">
+<meta content="Mohamad Rido" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="@mohamadrido_" name="twitter:creator">
+<link rel="canonical" href="https://mohamadrido.com/">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
+    <style>
+
+body.dark-mode {
+    background-color: darkgrey;
+    color: #c9d1d9;
+}
+
+body.dark-mode header, body.dark-mode .footer-menu, body.dark-mode .popup-header, body.dark-mode .popup-footer {
+    background-color: #161b22; /* Warna latar belakang gelap untuk header dan footer */
+    color: #c9d1d9; /* Warna teks putih */
+    box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.3); /* Sesuaikan bayangan jika perlu */
+}
+
+body.dark-mode .footer-menu a {
+    color: #c9d1d9; /* Warna link putih di footer */
+}
+
+body.dark-mode .footer-menu a:hover {
+    color: #ff9900; /* Warna hover untuk link di footer */
+}
+
+body.dark-mode .content {
+background-color: #0d1117;
+}
+        /* Basic Styles */
+        body {
+            font-family: 'FreeSans', Arial, sans-serif;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* Pastikan semua elemen menggunakan border-box untuk perhitungan lebar */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        header, .footer-menu {
+            width: 100%;
+            height: 64px;
+            position: fixed;
+            left: 0;
+            z-index: 1000;
+            background-color: white;
+            color: darkgrey;
+            padding: 14px 0 0 0;
+            transform: translateY(0);
+            transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+            box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1); /* Transparent shadow */
+        }
+
+        header {
+            top: 0;
+            display: flex;
+            justify-content: space-between; /* Adjusted for search bar */
+            align-items: center;
+            padding: 0 0px; /* Added padding for spacing */
+        }
+
+        .pih {
+            font-size: 24px;
+            margin-left: 0em;
+            background: none;
+            padding-right: 10px;
+        }
+
+        #site-title img {
+            max-height: 50px;
+            padding: 8px 0 6px 20px;
+            object-fit: contain;
+        }
+
+        .search-bar {
+            width: 50%;
+            max-width: 300px; /* Adjust this as needed */
+            position: relative;
+        }
+
+        .search-bar input[type="text"] {
+            width: 100%;
+            height: 36px;
+            padding: 5px 70px 5px 10px; /* Adjusted for both clear and search icons */
+            border: 1px solid darkgrey;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: darkgrey;
+            display: none; /* Hide by default */
+        }
+
+        .search-bar button.clear-btn {
+    right: 40px; /* Posisi sebelum tombol search */
+    display: none; /* Tombol clear disembunyikan secara default */
+}
+
+.search-bar button.search-btn {
+    right: 10px;
+    display: block; /* Pastikan tombol pencarian selalu terlihat */
+}
+        .search-bar button:hover {
+            color: deepskyblue;
+        }
+
+        .footer-menu {
+            bottom: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .popup-fm {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .footer-menu a, .popup-fm a {
+            color: darkgrey;
+            text-decoration: none;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+
+        .footer-menu a.active, .popup-fm a.active {
+            color: deepskyblue;
+        }
+
+        .footer-menu a:hover, .popup-fm a:hover {
+            color: orange;
+        }
+
+        .footer-menu i, .popup-fm i {
+            font-size: 20px;
+            margin-bottom: 3px;
+        }
+
+        /* Content Styling */
+        .content {
+            padding-top: 60px;
+            padding-bottom: 60px;
+            min-height: 150vh;
+            background-color: #f4f4f4;
+            font-size: 18px;
+            text-align: center;
+            line-height: 2;
+        }
+
+        /* Footer Copyright Styles */
+        .footer-copyright {
+            display: none;
+            background-color: #444;
+            padding: 10px 0;
+            font-size: 14px;
+            text-align: center;
+            color: white;
+        }
+
+        /* Transition Styles */
+        .header-hidden {
+            transform: translateY(-100%);
+            box-shadow: none;
+        }
+
+        .footer-hidden {
+            transform: translateY(100%);
+            box-shadow: none;
+        }
+
+        /* Responsive Styles */
+        @media (min-width: 1024px) {
+            .footer-menu {
+                display: none;
+            }
+
+            .footer-copyright {
+                display: block;
+            }
+
+            .content {
+                padding-bottom: 0;
+            }
+
+            .search-bar {
+                max-width: 400px; /* Adjust for larger screens */
+            }
+        }
+
+/* Gaya untuk pop-up */
+.popup-header {
+    display: none;
+    position: fixed;
+    top: 65px; /* Pastikan pop-up muncul di bawah header */
+    right: 20px; /* Sesuaikan posisi berdasarkan layout */
+    width: 300px;
+    background-color: white;
+color: darkgrey;
+    box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 1001; /* Pastikan pop-up berada di atas elemen lainnya */
+    border-radius: 18px;
+    border: 1px solid f9f9f9;
+}
+
+.popup-header .popup-footer h3 {
+    margin-top: 0;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.popup-header form input[type="email"],
+.popup-header form button {
+    width: calc(100% - 0px);
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid darkgrey;
+}
+
+.popup-header form button {
+    background-color: deepskyblue;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.popup-header li a {
+text-decoration: none;
+color: deepskyblue;
+}
+
+.popup-footer li a {
+text-decoration: none;
+color: deepskyblue;
+}
+
+.popup-header form button:hover {
+    background-color: dodgerblue;
+}
+
+/* Gaya untuk tombol close */
+.close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    color: darkgrey;
+}
+
+.close-btn:hover {
+    color: darkorange;
+}
+
+/* Gaya untuk pop-up menu Tools */
+.popup-footer {
+    display: none; /* Sembunyikan pop-up secara default */
+    position: fixed;
+    bottom: 65px; /* Agar muncul di atas footer */
+    left: 20px; /* Sesuaikan posisi berdasarkan layout */
+    width: 300px;
+    background-color: white;
+    color: darkgrey;
+    box-shadow: 0px 1px 9px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    z-index: 1001;
+    border-radius: 18px;
+}
+
+/* Style untuk container title */
+#site-title {
+    display: flex;
+    align-items: center;
+    flex-grow: 1; /* Membuat container title menempati ruang yang tersisa di header */
+}
+
+/* Style untuk title */
+.site-name {
+    margin-left: 10px; /* Jarak antara gambar dan title */
+    font-size: 20px; /* Sesuaikan ukuran font sesuai kebutuhan */
+    color: darkgrey; /* Sesuaikan warna font sesuai tema */
+    display: none; /* Default sembunyikan title */
+}
+
+/* Tampilkan title hanya pada layar laptop dan desktop */
+@media (min-width: 1024px) {
+    .site-name {
+        display: inline; /* Tampilkan title */
+    }
+}
+
+
+.search-bar button.clear-btn {
+    right: 40px; /* Beri jarak lebih dari search button */
+font-size: 18px;
+    display: none; /* Tetap sembunyikan secara default */
+}
+
+.search-bar button.search-btn {
+    right: 10px; /* Tetap pada posisinya */
+font-size: 18px;
+    display: block; /* Tetap tampil */
+}
+.size-6 {
+    width: 24px; /* Adjust the width as needed */
+    height: 24px; /* Adjust the height as needed */
+    cursor: pointer; /* Make it clear it's clickable */
+            margin-top: 5px;
+}
+.size-5 {
+    width: 20px; /* Adjust the width as needed */
+    height: 20px; /* Adjust the height as needed */
+    cursor: pointer; /* Make it clear it's clickable */
+}
+
+    .pih button {
+        background-color: transparent;
+        border: none;
+        display: inline-block;
+
+    </style>
+</head>
+<body>
+
+    <header id="site-header">
+    <div id="site-title">
+        <img src="http://cg3d.org/assets/img/pretended-studio.png" alt="Mohamad Rido">
+        <span class="site-name">Mohamad Rido</span> <!-- Title added here -->
+    </div>
+    <div class="search-bar">
+        <form action="/search" method="get">
+            <input type="text" id="search-input" name="q" placeholder="Search...">
+            <button type="button" class="clear-btn" id="clear-search"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+</svg>
+</button>
+            <button type="submit" class="search-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+</svg>
+</button>
+        </form>
+    </div>
+
+<div class="pih">
+    <button><svg id="planeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+</svg></button>
+<button><svg id="bellIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+</svg></button>
+<button><svg id="ellipsisIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z" />
+</svg></button>
+</div>
+</header>
+
+<!-- Pop-up untuk icon bell -->
+<div id="popup-bell" class="popup-header">
+    <button class="close-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+</svg>
+</button>
+    <h3>Subscribe to our newsletter</h3>
+    <form action="/subscribe" method="post">
+        <input type="email" name="email" placeholder="Enter your email" required>
+        <button type="submit">Subscribe</button>
+    </form>
+</div>
+
+<!-- Pop-up untuk icon bars -->
+<div id="popup-ellipsis" class="popup-header">
+    <button class="close-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+</svg></button>
+    <i id="dark-mode-btn" class="fas fa-moon"></i>
+<i id="light-mode-btn" class="fas fa-sun"></i>
+<i id="toggle-mode-btn" class="fas fa-desktop"></i>
+    <h3><i class="fas fa-cube"></i> 3D Models</h3>
+    <ul>
+        <li><a href="https://cg3d.org/aircraft">Aircraft</a></li>
+        <li><a href="https://cg3d.org/food">Food</a></li>
+        <li><a href="https://cg3d.org/vehicle">Vehicle</a></li>
+    </ul>
+    <h3><i class="fas fa-share-nodes"></i> Find Me</h3>
+
+    <div class="popup-fm">
+        <a href="https://youtube.com/@mohamad_rido">
+            <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://tiktok.com/@mohamad_rido">
+            <i class="fab fa-tiktok"></i>
+        </a>
+        <a href="https://x.com/mohamad_rido">
+            <i class="fab fa-x-twitter"></i>
+        </a>
+        <a href="https://pinterest.com/mohamad_rido">
+            <i class="fab fa-pinterest"></i>
+        </a>
+        <a href="https://t.me/mohamad_rido">
+            <i class="fab fa-telegram"></i>
+        </a>
+    </div>
+</div>
+
+    <!-- Marketplace Grid Section -->
+    <section class="marketplace">
+
+<video width="1080" controls>
+    <source src="https://dev.mohamadrido.com/assets/videos/disaar.mp4" type="video/mp4">
+</video>
+
+<video width="1080" controls>
+    <source src="https://dev.mohamadrido.com/assets/videos/pepsi.mp4" type="video/mp4">
+</video>
+
+<video width="1080" controls>
+    <source src="https://dev.mohamadrido.com/assets/videos/hydrococo.mp4" type="video/mp4">
+</video>
+
+<video width="1080" controls>
+    <source src="https://dev.mohamadrido.com/assets/videos/rustblast.mp4" type="video/mp4">
+</video>
+
+<video width="1080" controls>
+    <source src="https://dev.mohamadrido.com/assets/videos/ultimate.mp4" type="video/mp4">
+</video>
+
+<video width="1080" controls>
+    <source src="https://dev.mohamadrido.com/assets/videos/sealent.mp4" type="video/mp4">
+</video>
+
+<style>
+video {
+    border-radius: 20px; /* Ganti 15px dengan nilai yang diinginkan */
+    overflow: hidden; /* Agar sudut melengkung terlihat */
+}
+
+@media screen and (min-width: 900px) {
+    video {
+        width: 33%;
+        height: auto;
+    }
+}
+@media screen and (max-width: 900px) {
+    video {
+        width: 49%;
+        height: auto;
+    }
+}
+@media screen and (max-width: 600px) {
+    video {
+        width: 100%;
+        height: auto;
+    }
+}
+</style>
+    </section>
+
+
+    <div class="footer-menu" id="site-footer-menu">
+        <a href="https://mohamadrido.com">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+</svg>
+
+            Home
+        </a>
+        <a href="#tools">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17 17.25 21A2.652 2.652 0 0 0 21 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 1 1-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 0 0 4.486-6.336l-3.276 3.277a3.004 3.004 0 0 1-2.25-2.25l3.276-3.276a4.5 4.5 0 0 0-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437 1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008Z" />
+</svg>
+
+            Tools
+        </a>
+        <a href="https://shop.mohamadrido.com">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+</svg>
+
+            Shop
+        </a>
+        <a href="https://blog.mohamadrido.com">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 0 1-2.25 2.25M16.5 7.5V18a2.25 2.25 0 0 0 2.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 0 0 2.25 2.25h13.5M6 7.5h3v3H6v-3Z" />
+</svg>
+
+            Blog
+        </a>
+        <a href="https://mohamadrido.com/about">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+</svg>
+
+            Profile
+        </a>
+    </div>
+
+<!-- Pop-up untuk menu Tools -->
+<div id="popup-tools" class="popup-footer">
+    <button class="close-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+</svg>
+</button>
+    <h3>Online Web Tools</h3>
+    <div class="popup-fm">
+        <a href="https://mohamadrido.com/tools/try">
+            <i class="fas fa-code"></i>
+            Tryit Editor
+        </a>
+        <a href="https://mohamadrido.com/tools/color">
+            <i class="fas fa-swatchbook"></i>
+            Color Picker
+        </a>
+        <a href="https://tanggalan.id">
+            <i class="fas fa-calendar-days"></i>
+            Tanggalan Jawa
+        </a>
+    </div>
+</div>
+
+    <div class="footer-copyright">
+        <p>&copy; 2024 Mohamad Rido. All rights reserved.</p>
+    </div>
+<script>
+// Event Listener untuk Pop-up Bell dan Bars (Ellipsis)
+document.addEventListener('DOMContentLoaded', function() {
+    const bellIcon = document.getElementById('bellIcon');
+    const ellipsisIcon = document.getElementById('ellipsisIcon');
+    const popupBell = document.getElementById('popup-bell');
+    const popupEllipsis = document.getElementById('popup-ellipsis');
+    const closeButtons = document.querySelectorAll('.close-btn');
+
+    // Fungsi untuk toggle pop-up
+    function togglePopup(popup, otherPopup) {
+        popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
+        otherPopup.style.display = 'none'; // Pastikan pop-up lain tertutup
+    }
+
+    bellIcon.addEventListener('click', function() {
+        togglePopup(popupBell, popupEllipsis);
+    });
+
+    ellipsisIcon.addEventListener('click', function() {
+        togglePopup(popupEllipsis, popupBell);
+    });
+
+    // Tutup pop-up saat klik di luar pop-up
+    window.addEventListener('click', function(event) {
+        if (!popupBell.contains(event.target) && !popupEllipsis.contains(event.target) &&
+            event.target !== bellIcon && event.target !== ellipsisIcon) {
+            popupBell.style.display = 'none';
+            popupEllipsis.style.display = 'none';
+        }
+    });
+
+    // Fungsi untuk menutup pop-up jika tombol close diklik
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            this.parentElement.style.display = 'none';
+        });
+    });
+});
+
+// Scroll Behavior for Header and Footer
+let scrollTimeout;
+let lastScrollTop = 0;
+const header = document.getElementById('site-header');
+const footerMenu = document.getElementById('site-footer-menu');
+
+function hideHeaderFooter() {
+    header.classList.add('header-hidden');
+    footerMenu.classList.add('footer-hidden');
+}
+
+function showFooterFirstThenHeader() {
+    footerMenu.classList.remove('footer-hidden');
+    setTimeout(() => {
+        header.classList.remove('header-hidden');
+    }, 200); // Delay untuk menampilkan header setelah footer
+}
+
+window.addEventListener('scroll', function() {
+    clearTimeout(scrollTimeout);
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > lastScrollTop) {
+        hideHeaderFooter();
+    } else {
+        footerMenu.classList.remove('footer-hidden');
+        header.classList.add('header-hidden');
+    }
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+    scrollTimeout = setTimeout(showFooterFirstThenHeader, 800);
+});
+
+// Toggle Dark Mode
+function initTheme() {
+    const currentTheme = localStorage.getItem('theme');
+    document.body.classList.toggle('dark-mode', currentTheme === 'dark');
+}
+
+function setTheme(theme) {
+    document.body.classList.toggle('dark-mode', theme === 'dark');
+    localStorage.setItem('theme', theme);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    initTheme();
+
+    document.getElementById('dark-mode-btn').addEventListener('click', function() {
+        setTheme('dark');
+    });
+
+    document.getElementById('light-mode-btn').addEventListener('click', function() {
+        setTheme('light');
+    });
+
+    document.getElementById('toggle-mode-btn').addEventListener('click', function() {
+        const currentTheme = localStorage.getItem('theme');
+        setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    });
+});
+
+// Search Input with Clear Button
+const searchInput = document.getElementById('search-input');
+const clearButton = document.getElementById('clear-search');
+
+function updateClearButtonVisibility() {
+    clearButton.style.display = searchInput.value.length > 0 ? 'block' : 'none';
+}
+
+searchInput.addEventListener('input', updateClearButtonVisibility);
+
+clearButton.addEventListener('click', function() {
+    searchInput.value = '';
+    updateClearButtonVisibility();
+});
+
+updateClearButtonVisibility();
+
+// Tools Pop-up
+document.addEventListener('DOMContentLoaded', function() {
+    const toolsLink = document.querySelector('.footer-menu a[href="#tools"]');
+    const toolsPopup = document.getElementById('popup-tools');
+    const closeBtn = toolsPopup.querySelector('.close-btn');
+
+    toolsLink.addEventListener('click', function(event) {
+        event.preventDefault();
+        toolsPopup.style.display = 'block';
+    });
+
+    closeBtn.addEventListener('click', function() {
+        toolsPopup.style.display = 'none';
+    });
+
+    // Tutup pop-up saat klik di luar area pop-up
+    document.addEventListener('click', function(event) {
+        if (!toolsPopup.contains(event.target) && !toolsLink.contains(event.target)) {
+            toolsPopup.style.display = 'none';
+        }
+    });
+});
+</script>
+</body>
+</html>
