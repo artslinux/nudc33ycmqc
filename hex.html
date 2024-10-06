@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEX Color Checker</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        .form-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        input[type="text"] {
+            width: 150px;
+            height: 16px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid gray;
+        }
+        button {
+            width: 70px;
+            height: 40px;
+            padding: 0px;
+            font-size: 16px;
+            background-color: deepskyblue;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: orange;
+        }
+        .color-box {
+            width: 40px;
+            height: 40px;
+            border: 1px solid gray;
+            border-radius: 8px;
+        }
+        .rgb-value {
+            font-size: 16px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .documentation {
+            margin-top: 10px;
+            font-size: 14px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<h1>HEX Color Checker</h1>
+<div class="form-container">
+    <input type="text" id="colorInput" placeholder="Enter HEX color">
+    <button onclick="updateColor()">Check</button>
+    <div class="color-box" id="colorBox"></div>
+</div>
+
+<div class="error-message" id="errorMessage"></div> 
+<div class="rgb-value" id="rgbValue"></div>
+
+<script>
+    const validColorNames = [
+    'red', 'green', 'blue', 'white', 'black', 'gray',
+    'aqua', 'fuchsia', 'lime', 'maroon', 'navy', 'olive',
+    'purple', 'silver', 'teal', 'yellow', 'lightcoral',
+    'lightblue', 'lightgreen', 'lightpink', 'lightyellow',
+    'darkred', 'darkgreen', 'darkblue', 'darkorange',
+    'darkviolet', 'cadetblue', 'coral', 'gold', 'khaki',
+    'orchid', 'sandybrown', 'lightgray', 'mediumvioletred',
+    'mediumseagreen', 'deepskyblue', 'lightsteelblue', 'mediumblue',
+    'mediumpurple', 'darkkhaki', 'powderblue', 'lightseagreen',
+    'indigo', 'darkslategray', 'thistle', 'darkgray',
+    'darkorange', 'dimgray', 'rosybrown', 'lightsalmon',
+    'mediumturquoise', 'slateblue', 'chartreuse', 'lightcyan',
+    'seashell', 'lightgoldenrodyellow', 'lightpink', 'whitesmoke',
+    'darkslategrey', 'darkorchid', 'violet', 'cornflowerblue',
+    'mediumslateblue', 'lightyellow', 'khaki', 'plum',
+    'mistyrose', 'tomato', 'hotpink', 'tan',
+    'wheat', 'palevioletred', 'peachpuff', 'mediumaquamarine',
+    'lightslategrey', 'blueviolet', 'dodgerblue', 'lightcoral',
+    'darksalmon', 'lightgrey', 'mediumspringgreen', 'salmon',
+    'forestgreen', 'slategray', 'navajowhite', 'mediumorchid',
+    'crimson', 'darkturquoise', 'sienna', 'antiquewhite',
+    'goldenrod', 'orange', 'springgreen', 'mediumseagreen',
+    'lightgreen', 'lightsalmon', 'palegreen', 'olivedrab',
+    'yellowgreen', 'pink', 'darkpink', 'lightcyan', 'lightgoldenrod', 
+    'skyblue', 'lavender', 'lightpurple', 'darkred', 
+    'lightred', 'lightorange', 'lightpurple', 'navajowhite', 
+    'mintcream', 'snow', 'honeydew', 'aliceblue', 
+    'lavenderblush', 'lemonchiffon', 'papayawhip', 'mistyrose', 
+    'lightslategray', 'steelblue', 'lightseagreen', 'darkkhaki', 
+    'burlywood', 'mediumvioletred', 'lightblue', 'lightpink', 
+    'darkorchid', 'mediumorchid', 'springgreen', 'slateblue', 
+    'rosybrown', 'mediumseagreen', 'darksalmon', 'palegoldenrod', 
+    'darkslateblue', 'mediumslateblue', 'darkolivegreen', 
+    'darkturquoise', 'royalblue', 'lightblue', 'lightpink', 
+    'wheat', 'slategray', 'darkcyan', 'lightcoral', 
+    'lawngreen', 'mediumpurple', 'khaki', 'thistle', 
+    'mediumspringgreen', 'powderblue', 'floralwhite', 
+    'chocolate', 'greenyellow', 'chartreuse', 'darkgoldenrod', 
+    'rosybrown', 'lightskyblue', 'mistyrose', 'mediumaquamarine', 
+    'mediumslateblue', 'darkgoldenrod', 'lavender', 'mintcream',
+    'papayawhip', 'wheat', 'slateblue', 'powderblue'
+];
+
+    function hexToRgb(hex) {
+        hex = hex.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return { r, g, b };
+    }
+
+    function rgbToHex(r, g, b) {
+        const toHex = (c) => {
+            const hex = Math.round(c).toString(16);
+            return hex.length === 1 ? '0' + hex : hex;
+        };
+        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    }
+
+    function updateColor() {
+        const colorInput = document.getElementById('colorInput').value.trim(); // Menghapus spasi di awal dan akhir
+        const colorBox = document.getElementById('colorBox');
+        const rgbValue = document.getElementById('rgbValue');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Reset nilai RGB dan pesan kesalahan
+        rgbValue.textContent = '';
+        errorMessage.textContent = '';
+
+        // Mengubah warna kotak
+        colorBox.style.backgroundColor = colorInput;
+
+        // Mengecek apakah input HEX valid
+        if (/^#[0-9A-F]{6}$/i.test(colorInput)) {
+            const rgb = hexToRgb(colorInput);
+            rgbValue.textContent = `RGB: (${rgb.r}, ${rgb.g}, ${rgb.b})`;
+            return; // Keluar dari fungsi jika HEX valid
+        } 
+        // Mengecek apakah input RGB valid
+        else if (/^rgb\s*\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\s*$/.test(colorInput)) {
+            const rgbMatch = colorInput.match(/^rgb\s*\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\s*$/);
+            const r = parseInt(rgbMatch[1]);
+            const g = parseInt(rgbMatch[2]);
+            const b = parseInt(rgbMatch[3]);
+            colorBox.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+            rgbValue.textContent = `RGB: (${r}, ${g}, ${b})`;
+            return; // Keluar dari fungsi jika RGB valid
+        }
+        // Mengecek apakah input RGBA valid
+        else if (/^rgba\s*\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([01]|0?\.\d+)\s*\s*$/.test(colorInput)) {
+            const rgbaMatch = colorInput.match(/^rgba\s*\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*([01]|0?\.\d+)\s*\s*$/);
+            const r = parseInt(rgbaMatch[1]);
+            const g = parseInt(rgbaMatch[2]);
+            const b = parseInt(rgbaMatch[3]);
+            const a = parseFloat(rgbaMatch[4]);
+            colorBox.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`;
+            rgbValue.textContent = `RGBA: (${r}, ${g}, ${b}, ${a})`;
+            return; // Keluar dari fungsi jika RGBA valid
+        }
+        // Mengecek apakah input adalah nama warna CSS
+        else if (validColorNames.includes(colorInput.toLowerCase())) {
+            colorBox.style.backgroundColor = colorInput;
+            const rgb = getComputedStyle(colorBox).backgroundColor;
+            rgbValue.textContent = `RGB: ${rgb}`;
+            return; // Keluar dari fungsi jika nama warna valid
+        }
+        // Jika tidak valid
+        else {
+            errorMessage.textContent = 'Invalid HEX color format.';
+        }
+    }
+</script>
+
+</body>
+</html>
