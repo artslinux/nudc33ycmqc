@@ -1,9 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Scroll Hide/Show Header and Footer for Marketplace</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="robots" content="index, follow">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Mohamad Rido</title>
+<meta itemprop="description" name="description" content="Author & 3D Modeler" />
+<meta property="og:locale" content="en">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mohamad Rido">
+<meta property="og:url" content="https://mohamadrido.com/">
+<meta property="og:site_name" content="Mohamad Rido">
+<meta property="article:publisher" content="http://www.facebook.com/blogrido" />
+<meta property="article:author" content="https://www.facebook.com/blogrido" />
+<meta property="og:description" content="Author & 3D Modeler">
+<meta content="Mohamad Rido" name="Author">
+<meta content="https://www.facebook.com/blogrido" property="website:author">
+<meta content="Mohamad Rido" name="twitter:site">
+<meta content="summary_large_image" name="twitter:card">
+<meta content="@mohamadrido_" name="twitter:creator">
+<link rel="canonical" href="https://mohamadrido.com/">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.6.0/css/all.css">
     <style>
 
@@ -153,7 +169,7 @@ background-color: #0d1117;
         .content {
             padding-top: 60px;
             padding-bottom: 60px;
-            min-height: 200vh;
+            min-height: 150vh;
             background-color: #f4f4f4;
             font-size: 18px;
             text-align: center;
@@ -324,8 +340,8 @@ font-size: 18px;
 
     <header id="site-header">
     <div id="site-title">
-        <img src="http://cg3d.org/assets/img/pretended-studio.png" alt="Site Title">
-        <span class="site-name">Seni Rekayasa</span> <!-- Title added here -->
+        <img src="http://cg3d.org/assets/img/pretended-studio.png" alt="Mohamad Rido">
+        <span class="site-name">Mohamad Rido</span> <!-- Title added here -->
     </div>
     <div class="search-bar">
         <form action="/search" method="get">
@@ -359,9 +375,9 @@ font-size: 18px;
 <i id="toggle-mode-btn" class="fas fa-desktop"></i>
     <h3><i class="fas fa-cube"></i> 3D Models</h3>
     <ul>
-        <li><a href="#category1">Achitecture</a></li>
-        <li><a href="#category2">Organic</a></li>
-        <li><a href="#category3">Vehicle</a></li>
+        <li><a href="https://cg3d.org/aircraft">Aircraft</a></li>
+        <li><a href="https://cg3d.org/food">Food</a></li>
+        <li><a href="https://cg3d.org/vehicle">Vehicle</a></li>
     </ul>
     <h3><i class="fas fa-share-nodes"></i> Find Me</h3>
 
@@ -383,33 +399,237 @@ font-size: 18px;
         </a>
     </div>
 </div>
-    <div class="content">
-        <p>Scroll up to show the footer menu and hide the header. After stopping the scroll, the footer will appear first, followed by the header.</p>
-        <p>Keep scrolling...</p>
-        <p>... and scrolling...</p>
-        <p>... still scrolling...</p>
-        <p>... almost there...</p>
-        <p>You made it! Now try scrolling back up.</p>
+    
+
+    
+    <style>
+        .parallax {
+    background-color: #FEDCC8;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    perspective: 100px;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    left: 50%;
+    right: 0;
+    bottom: 0;
+    margin-left: -1500px;
+}
+
+.parallax__layer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    will-change: transform;
+}
+
+.parallax__layer img {
+    display: block;
+    position: absolute;
+    bottom: 0;
+}
+
+.parallax__cover {
+    background: #2D112B;
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    height: 2000px;
+    z-index: 7;
+}
+
+.parallax__layer__0 {
+    transform: translateZ(-300px) scale(4);
+}
+
+.parallax__layer__1 {
+    transform: translateZ(-250px) scale(3.5);
+}
+
+.parallax__layer__2 {
+    transform: translateZ(-200px) scale(3);
+}
+
+.parallax__layer__3 {
+    transform: translateZ(-150px) scale(2.5);
+}
+
+.parallax__layer__4 {
+    transform: translateZ(-100px) scale(2);
+}
+
+.parallax__layer__5 {
+    transform: translateZ(-50px) scale(1.5);
+}
+
+.parallax__layer__6 {
+    transform: translateZ(0px) scale(1);
+}
+
+/* Tambahkan ini untuk memastikan urutan z-index yang benar */
+.parallax__layer__0 { z-index: 1; }
+.parallax__layer__1 { z-index: 2; }
+.parallax__layer__2 { z-index: 3; }
+.parallax__layer__3 { z-index: 4; }
+.parallax__layer__4 { z-index: 5; }
+.parallax__layer__5 { z-index: 6; }
+.parallax__layer__6 { z-index: 7; }
+    </style>
+    <div class="parallax">
+        <div class="parallax__layer parallax__layer__0">
+            <img src="https://github.com/samdbeckham/blog/blob/master/dev/_assets/images/articles/firewatch/layer_0.png?raw=true" />
+        </div>
+        <div class="parallax__layer parallax__layer__1">
+            <img src="https://github.com/samdbeckham/blog/blob/master/dev/_assets/images/articles/firewatch/layer_1.png?raw=true" />
+        </div>
+        <div class="parallax__layer parallax__layer__2">
+            <img src="https://github.com/samdbeckham/blog/blob/master/dev/_assets/images/articles/firewatch/layer_2.png?raw=true" />
+        </div>
+        <div class="parallax__layer parallax__layer__3">
+            <img src="https://github.com/samdbeckham/blog/blob/master/dev/_assets/images/articles/firewatch/layer_3.png?raw=true" />
+        </div>
+        <div class="parallax__layer parallax__layer__4">
+            <img src="https://github.com/samdbeckham/blog/blob/master/dev/_assets/images/articles/firewatch/layer_4.png?raw=true" />
+        </div>
+        <div class="parallax__layer parallax__layer__5">
+            <img src="https://github.com/samdbeckham/blog/blob/master/dev/_assets/images/articles/firewatch/layer_5.png?raw=true" />
+        </div>
+        <div class="parallax__layer parallax__layer__6">
+            <img src="https://github.com/samdbeckham/blog/blob/master/dev/_assets/images/articles/firewatch/layer_6.png?raw=true" />
+        <div class="parallax__cover">
+        </div>
+</div>
+</div>
+<section class="product">
+    <div class="video-container">
+        <video controls>
+            <source src="https://dev.mohamadrido.com/assets/videos/disaar.mp4" type="video/mp4">
+        </video>
     </div>
+    <div class="video-container">
+        <video controls>
+            <source src="https://dev.mohamadrido.com/assets/videos/pepsi.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-container">
+        <video controls>
+            <source src="https://dev.mohamadrido.com/assets/videos/hydrococo.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-container">
+        <video controls>
+            <source src="https://dev.mohamadrido.com/assets/videos/rustblast.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-container">
+        <video controls>
+            <source src="https://dev.mohamadrido.com/assets/videos/ultimate.mp4" type="video/mp4">
+        </video>
+    </div>
+    <div class="video-container">
+        <video controls>
+            <source src="https://dev.mohamadrido.com/assets/videos/sealent.mp4" type="video/mp4">
+        </video>
+    </div>
+</section>
+
+<style>
+    .product {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 50px;
+        padding: 20px;
+        margin-top: 100vh;
+        background: linear-gradient(to bottom, #2D112B 0%, rgba(255, 255, 255, 0) 50%), url('https://about.mohamadrido.com/bg.jpg');
+        background-size: cover;
+        background-position: center;
+        z-index: 3;
+        position: relative;
+    }
+
+    .video-container {
+        flex-basis: calc(33.333% - 20px);
+        max-width: 500px;
+    }
+
+    video {
+        width: 100%;
+        height: auto;
+        border-radius: 20px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    @media screen and (max-width: 1200px) {
+        .video-container {
+            flex-basis: calc(50% - 20px);
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .video-container {
+            flex-basis: 100%;
+        }
+    }
+
+    /* Styling untuk kontrol video */
+    .video-container video::-webkit-media-controls-panel {
+        border-radius: 0 0 20px 20px;
+    }
+
+    .video-container video::-webkit-media-controls-enclosure {
+        border-radius: 0 0 20px 20px;
+    }
+
+    /* Untuk Firefox */
+    .video-container video::-moz-range-thumb {
+        border-radius: 20px;
+    }
+
+    /* Untuk Edge */
+    .video-container video::-ms-fill-lower,
+    .video-container video::-ms-fill-upper {
+        border-radius: 20px;
+    }
+
+    @supports (-moz-appearance:none) {
+        .video-container video {
+            border-radius: 20px;
+        }
+    }
+</style>
+
+
 
     <div class="footer-menu" id="site-footer-menu">
-        <a href="https://mohamadrido.com/apphome">
+        <a href="https://mohamadrido.com">
             <i class="fas fa-home"></i>
             Home
         </a>
-        <a href="#blog">
+        <a href="#tools">
             <i class="fas fa-tools"></i>
             Tools
         </a>
-        <a href="#shop">
+        <a href="https://shop.mohamadrido.com">
             <i class="fas fa-shopping-cart"></i>
             Shop
         </a>
-        <a href="#tool">
+        <a href="https://blog.mohamadrido.com">
             <i class="fas fa-file-lines"></i>
             Blog
         </a>
-        <a href="#profile">
+        <a href="https://mohamadrido.com/about">
             <i class="fas fa-user"></i>
             Profile
         </a>
@@ -420,15 +640,15 @@ font-size: 18px;
     <button class="close-btn">&times;</button>
     <h3>Online Web Tools</h3>
     <div class="popup-fm">
-        <a href="/tools/try">
+        <a href="https://mohamadrido.com/tools/try">
             <i class="fas fa-code"></i>
             Tryit Editor
         </a>
-        <a href="/tools/color">
+        <a href="https://mohamadrido.com/tools/color">
             <i class="fas fa-swatchbook"></i>
             Color Picker
         </a>
-        <a href="/tools/app">
+        <a href="https://tanggalan.id">
             <i class="fas fa-calendar-days"></i>
             Tanggalan Jawa
         </a>
@@ -642,7 +862,7 @@ window.addEventListener('click', function(event) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const toolsLink = document.querySelector('.footer-menu a[href="#blog"]');
+    const toolsLink = document.querySelector('.footer-menu a[href="#tools"]');
     const toolsPopup = document.getElementById('popup-tools');
     const closeBtn = toolsPopup.querySelector('.close-btn');
 
