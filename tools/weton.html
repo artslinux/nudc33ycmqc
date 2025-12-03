@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cek Weton Jawa - Kalkulator Neptu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 30px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .app-description {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            font-size: 1rem;
+            color: #555;
+        }
+        
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .input-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        
+        input[type="date"], select {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="date"]:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        
+        button {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .result-section {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .weton-result {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .date-result {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+        }
+        
+        .detail-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .detail-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .detail-title {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+        }
+        
+        .detail-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .neptu-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .neptu-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #e74c3c;
+            margin: 10px 0;
+        }
+        
+        .meaning-section {
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .meaning-title {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        
+        .meaning-text {
+            color: #555;
+            font-size: 1rem;
+        }
+        
+        .info-section {
+            margin-top: 40px;
+            background-color: #f1f2f6;
+            padding: 25px;
+            border-radius: 15px;
+        }
+        
+        .info-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .info-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .info-value {
+            color: #555;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #7f8c8d;
+        }
+        
+        .simple-result {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .simple-weton {
+            font-size: 3rem;
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .simple-date {
+            font-size: 1.3rem;
+            color: #7f8c8d;
+        }
+        
+        .calculation-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            border-left: 4px solid #3498db;
+        }
+        
+        .warning-message {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #ffc107;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cek Weton Jawa</h1>
+            <p class="subtitle">Kalkulator Neptu berdasarkan tanggal lahir</p>
+        </header>
+        
+        <div class="app-description">
+            <p>Weton adalah perhitungan tradisional Jawa yang menggabungkan hari dalam seminggu (7 hari) dengan pasaran Jawa (5 hari: Legi, Pahing, Pon, Wage, Kliwon) untuk menentukan neptu (nilai numerik) seseorang. Aplikasi ini membantu Anda mengetahui weton dan neptu berdasarkan tanggal lahir.</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="birthdate">Tanggal Lahir Anda:</label>
+                <input type="date" id="birthdate">
+                <div class="warning-message" id="future-date-warning">
+                    <strong>Catatan:</strong> Anda memilih tanggal di masa depan. Hasil perhitungan weton akan tetap akurat secara matematis, tapi biasanya digunakan untuk tanggal lahir yang sudah terjadi.
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="calculation-type">Tampilkan Hasil Sebagai:</label>
+                <select id="calculation-type" style="padding: 15px; border: 2px solid #ddd; border-radius: 10px; font-size: 1rem;">
+                    <option value="full">Weton Lengkap + Neptu</option>
+                    <option value="simple">Weton Saja</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="calculation-info" id="calculation-info">
+            Anda akan melihat hasil lengkap weton, neptu, dan maknanya.
+        </div>
+        
+        <button id="calculate-btn">Hitung Weton & Neptu</button>
+        
+        <div class="loading" id="loading">Menghitung weton...</div>
+        
+        <!-- Tampilan Hasil Lengkap -->
+        <div class="result-section" id="full-result-section">
+            <div class="result-card">
+                <div class="result-header">
+                    <div class="weton-result" id="weton-result">Senin Wage</div>
+                    <div class="date-result" id="date-result">1 Januari 2000</div>
+                </div>
+                
+                <div class="detail-section">
+                    <div class="detail-box">
+                        <div class="detail-title">Hari</div>
+                        <div class="detail-value" id="day-result">Senin</div>
+                    </div>
+                    
+                    <div class="detail-box">
+                        <div class="detail-title">Pasaran</div>
+                        <div class="detail-value" id="pasaran-result">Wage</div>
+                    </div>
+                </div>
+                
+                <div class="neptu-section" id="neptu-section">
+                    <div class="detail-title">Total Neptu</div>
+                    <div class="neptu-value" id="neptu-result">14</div>
+                    <div class="meaning-text" id="neptu-description">Nilai neptu diperoleh dari jumlah nilai hari dan pasaran</div>
+                </div>
+                
+                <div class="meaning-section" id="meaning-section">
+                    <div class="meaning-title">Makna Weton Anda</div>
+                    <div class="meaning-text" id="weton-meaning">Orang dengan weton Senin Wage memiliki sifat mandiri, pekerja keras, dan memiliki jiwa kepemimpinan. Mereka cenderung tegas dalam mengambil keputusan namun tetap memperhatikan kebutuhan orang lain.</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tampilan Hasil Sederhana -->
+        <div class="result-section" id="simple-result-section">
+            <div class="simple-result">
+                <div class="simple-weton" id="simple-weton-result">Senin Wage</div>
+                <div class="simple-date" id="simple-date-result">1 Januari 2000</div>
+                <div style="margin-top: 20px; color: #555; font-size: 1.1rem;">
+                    <p><strong>Hari:</strong> <span id="simple-day-result">Senin</span></p>
+                    <p><strong>Pasaran:</strong> <span id="simple-pasaran-result">Wage</span></p>
+                    <p style="margin-top: 15px; font-style: italic;">Untuk melihat detail neptu dan makna weton, pilih opsi "Weton Lengkap + Neptu"</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-title">Informasi Nilai Neptu</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Hari & Nilainya:</span>
+                    <div class="info-value">Minggu=5, Senin=4, Selasa=3, Rabu=7, Kamis=8, Jumat=6, Sabtu=9</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Pasaran & Nilainya:</span>
+                    <div class="info-value">Legi=5, Pahing=9, Pon=7, Wage=4, Kliwon=8</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Total Neptu:</span>
+                    <div class="info-value">Jumlah nilai hari + nilai pasaran (contoh: Senin=4 + Wage=4 = 8)</div>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Siklus Weton:</span>
+                    <div class="info-value">Weton berulang setiap 35 hari (7 hari × 5 pasaran)</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Aplikasi Cek Weton Jawa &copy; 2023 - Digunakan untuk keperluan edukasi budaya Jawa</p>
+            <p>Perhitungan weton didasarkan pada sistem penanggalan Jawa tradisional</p>
+        </footer>
+    </div>
+
+    <script>
+        // Data nilai neptu untuk hari dan pasaran
+        const hariValues = {
+            "Minggu": 5,
+            "Senin": 4,
+            "Selasa": 3,
+            "Rabu": 7,
+            "Kamis": 8,
+            "Jumat": 6,
+            "Sabtu": 9
+        };
+        
+        const pasaranValues = {
+            "Legi": 5,
+            "Pahing": 9,
+            "Pon": 7,
+            "Wage": 4,
+            "Kliwon": 8
+        };
+        
+        // Data makna weton berdasarkan kombinasi hari dan pasaran
+        const wetonMeanings = {
+            "Minggu Legi": "Orang dengan weton Minggu Legi memiliki sifat penyayang dan penuh perhatian. Mereka cenderung harmonis dalam hubungan dan memiliki intuisi yang kuat.",
+            "Minggu Pahing": "Mereka yang lahir dengan weton Minggu Pahing biasanya berjiwa pemimpin dan memiliki karisma alami. Mereka pandai mengambil keputusan penting.",
+            "Minggu Pon": "Pribadi dengan weton Minggu Pon cenderung kreatif dan memiliki banyak ide. Mereka mudah beradaptasi dengan perubahan.",
+            "Minggu Wage": "Orang dengan weton Minggu Wage memiliki sifat mandiri dan pekerja keras. Mereka cenderung tegas dan fokus pada tujuan.",
+            "Minggu Kliwon": "Weton Minggu Kliwon menunjukkan pribadi yang bijaksana dan memiliki ketajaman berpikir. Mereka sering dianggap sebagai penasehat.",
+            "Senin Legi": "Senin Legi menunjukkan pribadi yang ramah dan mudah bergaul. Mereka memiliki kemampuan komunikasi yang baik.",
+            "Senin Pahing": "Orang dengan weton Senin Pahing cenderung ambisius dan berorientasi pada hasil. Mereka adalah pekerja keras yang disiplin.",
+            "Senin Pon": "Mereka yang lahir dengan weton Senin Pon biasanya memiliki jiwa seni dan kreativitas tinggi. Mereka peka terhadap lingkungan sekitar.",
+            "Senin Wage": "Pribadi dengan weton Senin Wage mandiri, pekerja keras, dan memiliki jiwa kepemimpinan. Mereka tegas dalam mengambil keputusan.",
+            "Senin Kliwon": "Orang dengan weton Senin Kliwon cenderung bijaksana dan memiliki pemikiran mendalam. Mereka sering menjadi penengah dalam konflik.",
+            "Selasa Legi": "Weton Selasa Legi menunjukkan pribadi yang energik dan penuh semangat. Mereka suka tantangan dan petualangan.",
+            "Selasa Pahing": "Mereka yang lahir dengan weton Selasa Pahing biasanya berani mengambil risiko dan memiliki jiwa kompetitif yang tinggi.",
+            "Selasa Pon": "Pribadi dengan weton Selasa Pon kreatif dan inovatif. Mereka mampu melihat peluang di tengah kesulitan.",
+            "Selasa Wage": "Orang dengan weton Selasa Wage cenderung praktis dan realistis. Mereka fokus pada solusi yang dapat diwujudkan.",
+            "Selasa Kliwon": "Weton Selasa Kliwon menunjukkan pribadi yang penuh dedikasi dan tanggung jawab. Mereka setia pada komitmen.",
+            "Rabu Legi": "Rabu Legi menunjukkan pribadi yang cerdas dan analitis. Mereka cepat memahami konsep yang kompleks.",
+            "Rabu Pahing": "Orang dengan weton Rabu Pahing biasanya memiliki daya ingat kuat dan kemampuan belajar yang cepat.",
+            "Rabu Pon": "Mereka yang lahir dengan weton Rabu Pon cenderung memiliki intuisi bisnis yang baik dan pandai bernegosiasi.",
+            "Rabu Wage": "Pribadi dengan weton Rabu Wage mandiri dan tidak mudah bergantung pada orang lain. Mereka percaya pada kemampuan diri sendiri.",
+            "Rabu Kliwon": "Orang dengan weton Rabu Kliwon cenderung bijaksana dan menjadi penasehat yang baik. Mereka berpikir sebelum bertindak.",
+            "Kamis Legi": "Weton Kamis Legi menunjukkan pribadi yang harmonis dan menyukai kedamaian. Mereka pandai menjaga hubungan sosial.",
+            "Kamis Pahing": "Mereka yang lahir dengan weton Kamis Pahing biasanya memiliki integritas tinggi dan dihormati oleh orang sekitar.",
+            "Kamis Pon": "Pribadi dengan weton Kamis Pon cenderung artistik dan memiliki apresiasi tinggi terhadap keindahan.",
+            "Kamis Wage": "Orang dengan weton Kamis Wage mandiri dan tidak suka merepotkan orang lain. Mereka menyelesaikan masalah sendiri.",
+            "Kamis Kliwon": "Weton Kamis Kliwon menunjukkan pribadi yang kontemplatif dan spiritual. Mereka mencari makna dalam hidup.",
+            "Jumat Legi": "Jumat Legi menunjukkan pribadi yang sabar dan pengertian. Mereka mampu menempatkan diri dalam berbagai situasi.",
+            "Jumat Pahing": "Orang dengan weton Jumat Pahing biasanya memiliki prinsip hidup yang kuat dan konsisten pada nilai-nilai yang dianut.",
+            "Jumat Pon": "Mereka yang lahir dengan weton Jumat Pon cenderung fleksibel dan mudah menyesuaikan diri dengan perubahan.",
+            "Jumat Wage": "Pribadi dengan weton Jumat Wage mandiri dan percaya diri. Mereka tidak mudah terpengaruh pendapat orang lain.",
+            "Jumat Kliwon": "Orang dengan weton Jumat Kliwon cenderung memiliki kebijaksanaan dan kemampuan melihat dari berbagai perspektif.",
+            "Sabtu Legi": "Weton Sabtu Legi menunjukkan pribadi yang tekun dan tidak mudah menyerah. Mereka menyelesaikan apa yang dimulai.",
+            "Sabtu Pahing": "Mereka yang lahir dengan weton Sabtu Pahing biasanya memiliki keteguhan hati dan komitmen yang kuat.",
+            "Sabtu Pon": "Pribadi dengan weton Sabtu Pon cenderung memiliki kreativitas yang unik dan cara berpikir yang berbeda.",
+            "Sabtu Wage": "Orang dengan weton Sabtu Wage mandiri dan mampu mengatasi kesulitan sendiri. Mereka kuat menghadapi tekanan.",
+            "Sabtu Kliwon": "Weton Sabtu Kliwon menunjukkan pribadi yang dalam pemikirannya dan sering merenungkan hal-hal filosofis."
+        };
+        
+        // Fungsi untuk mendapatkan nama hari dalam bahasa Indonesia
+        function getDayName(date) {
+            const days = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+            return days[date.getDay()];
+        }
+        
+        // Fungsi untuk mendapatkan nama bulan dalam bahasa Indonesia
+        function getMonthName(date) {
+            const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+                           "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            return months[date.getMonth()];
+        }
+        
+        // Fungsi untuk menghitung pasaran Jawa berdasarkan tanggal
+        function calculatePasaran(date) {
+            // Tanggal referensi: 1 Januari 2000 adalah Sabtu Legi
+            const refDate = new Date(2000, 0, 1); // 1 Januari 2000
+            const refPasaran = "Legi";
+            
+            // Daftar pasaran dalam urutan
+            const pasaranList = ["Legi", "Pahing", "Pon", "Wage", "Kliwon"];
+            
+            // Hitung selisih hari antara tanggal input dan tanggal referensi
+            const diffTime = date.getTime() - refDate.getTime();
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // Cari indeks pasaran referensi
+            const refIndex = pasaranList.indexOf(refPasaran);
+            
+            // Hitung indeks pasaran untuk tanggal input
+            let pasaranIndex = (refIndex + diffDays) % pasaranList.length;
+            
+            // Pastikan indeks positif
+            if (pasaranIndex < 0) {
+                pasaranIndex += pasaranList.length;
+            }
+            
+            return pasaranList[pasaranIndex];
+        }
+        
+        // Fungsi untuk menghitung neptu
+        function calculateNeptu(dayName, pasaran) {
+            const dayValue = hariValues[dayName];
+            const pasaranValue = pasaranValues[pasaran];
+            
+            if (dayValue !== undefined && pasaranValue !== undefined) {
+                return dayValue + pasaranValue;
+            }
+            
+            return 0;
+        }
+        
+        // Fungsi untuk mengecek apakah tanggal di masa depan
+        function isFutureDate(date) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Set ke awal hari untuk perbandingan yang akurat
+            return date > today;
+        }
+        
+        // Fungsi untuk mengatur tampilan hasil berdasarkan pilihan
+        function updateResultDisplay() {
+            const calculationType = document.getElementById('calculation-type').value;
+            
+            if (calculationType === 'simple') {
+                document.getElementById('full-result-section').style.display = 'none';
+                document.getElementById('simple-result-section').style.display = 'block';
+            } else {
+                document.getElementById('full-result-section').style.display = 'block';
+                document.getElementById('simple-result-section').style.display = 'none';
+            }
+        }
+        
+        // Fungsi untuk memperbarui teks tombol dan informasi
+        function updateButtonAndInfo() {
+            const calculationType = document.getElementById('calculation-type').value;
+            const button = document.getElementById('calculate-btn');
+            const infoText = document.getElementById('calculation-info');
+            
+            if (calculationType === 'simple') {
+                button.textContent = 'Hitung Weton Saja';
+                infoText.textContent = 'Anda akan melihat hasil weton saja tanpa detail neptu dan makna.';
+            } else {
+                button.textContent = 'Hitung Weton & Neptu';
+                infoText.textContent = 'Anda akan melihat hasil lengkap weton, neptu, dan maknanya.';
+            }
+        }
+        
+        // Fungsi untuk menampilkan hasil
+        function displayResult() {
+            // Tampilkan loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('full-result-section').style.display = 'none';
+            document.getElementById('simple-result-section').style.display = 'none';
+            
+            // Sembunyikan peringatan sebelumnya
+            document.getElementById('future-date-warning').style.display = 'none';
+            
+            // Simulasi proses loading
+            setTimeout(() => {
+                const birthdateInput = document.getElementById('birthdate');
+                const birthdate = new Date(birthdateInput.value);
+                
+                // Validasi input - pastikan tanggal valid
+                if (!birthdateInput.value || isNaN(birthdate.getTime())) {
+                    alert("Silakan pilih tanggal lahir terlebih dahulu!");
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                // Cek apakah tanggal di masa depan
+                if (isFutureDate(birthdate)) {
+                    document.getElementById('future-date-warning').style.display = 'block';
+                }
+                
+                // Validasi: tanggal tidak boleh terlalu jauh di masa lalu
+                // Batasi minimal tahun 1900 untuk menghindari masalah perhitungan
+                if (birthdate.getFullYear() < 1900) {
+                    alert("Tanggal lahir tidak boleh sebelum tahun 1900. Silakan pilih tanggal yang lebih baru.");
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                // Validasi: tanggal tidak boleh terlalu jauh di masa depan
+                // Batasi maksimal tahun 2100
+                if (birthdate.getFullYear() > 2100) {
+                    alert("Tanggal lahir tidak boleh setelah tahun 2100. Silakan pilih tanggal yang lebih awal.");
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                // Hitung hari, pasaran, dan neptu
+                const dayName = getDayName(birthdate);
+                const pasaran = calculatePasaran(birthdate);
+                const neptu = calculateNeptu(dayName, pasaran);
+                const weton = `${dayName} ${pasaran}`;
+                
+                // Format tanggal untuk ditampilkan
+                const dateString = `${birthdate.getDate()} ${getMonthName(birthdate)} ${birthdate.getFullYear()}`;
+                
+                // Tampilkan hasil untuk mode lengkap
+                document.getElementById('weton-result').textContent = weton;
+                document.getElementById('date-result').textContent = dateString;
+                document.getElementById('day-result').textContent = dayName;
+                document.getElementById('pasaran-result').textContent = pasaran;
+                document.getElementById('neptu-result').textContent = neptu;
+                
+                // Tampilkan deskripsi neptu
+                const dayValue = hariValues[dayName];
+                const pasaranValue = pasaranValues[pasaran];
+                document.getElementById('neptu-description').textContent = 
+                    `Nilai neptu diperoleh dari ${dayName}=${dayValue} + ${pasaran}=${pasaranValue} = ${neptu}`;
+                
+                // Tampilkan makna weton
+                const meaning = wetonMeanings[weton] || "Weton ini memiliki makna khusus dalam tradisi Jawa. Orang dengan weton ini biasanya memiliki karakter yang unik dan membawa keberuntungan.";
+                document.getElementById('weton-meaning').textContent = meaning;
+                
+                // Tampilkan hasil untuk mode sederhana
+                document.getElementById('simple-weton-result').textContent = weton;
+                document.getElementById('simple-date-result').textContent = dateString;
+                document.getElementById('simple-day-result').textContent = dayName;
+                document.getElementById('simple-pasaran-result').textContent = pasaran;
+                
+                // Sembunyikan loading
+                document.getElementById('loading').style.display = 'none';
+                
+                // Tampilkan hasil sesuai dengan pilihan dropdown
+                updateResultDisplay();
+                
+                // Scroll ke hasil
+                if (document.getElementById('calculation-type').value === 'simple') {
+                    document.getElementById('simple-result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    document.getElementById('full-result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }, 800);
+        }
+        
+        // Set tanggal default ke hari ini
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            const birthdateInput = document.getElementById('birthdate');
+            
+            // Set nilai default ke hari ini
+            birthdateInput.value = formattedDate;
+            
+            // Atur rentang tanggal yang wajar (opsional)
+            // Minimal tahun 1900, maksimal 100 tahun dari sekarang
+            const minDate = new Date(1900, 0, 1).toISOString().split('T')[0];
+            const maxDate = new Date();
+            maxDate.setFullYear(maxDate.getFullYear() + 100);
+            const maxDateFormatted = maxDate.toISOString().split('T')[0];
+            
+            // Set atribut min dan max secara dinamis
+            birthdateInput.min = minDate;
+            birthdateInput.max = maxDateFormatted;
+            
+            // Set teks tombol dan info berdasarkan pilihan default
+            updateButtonAndInfo();
+            
+            // Hitung weton untuk tanggal default
+            displayResult();
+            
+            // Event listener untuk tombol hitung
+            document.getElementById('calculate-btn').addEventListener('click', displayResult);
+            
+            // Event listener untuk dropdown
+            document.getElementById('calculation-type').addEventListener('change', function() {
+                // Update teks tombol dan info
+                updateButtonAndInfo();
+                
+                // Hanya update tampilan jika hasil sudah dihitung
+                if (document.getElementById('weton-result').textContent !== 'Senin Wage') {
+                    updateResultDisplay();
+                }
+            });
+            
+            // Event listener untuk input tanggal
+            birthdateInput.addEventListener('change', function() {
+                // Sembunyikan peringatan saat tanggal diubah
+                document.getElementById('future-date-warning').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
