@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tryit Editor - Split View</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+            background-color: var(--bg);
+            color: var(--color-text);
+        }
+        .editor-container {
+            display: flex;
+            flex-wrap: wrap;
+            width: 95%;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .editor-box {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        .editor-box h3 {
+            margin: 0 0 10px 0;
+            padding: 5px 10px;
+            background-color: var(--bg-panel);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-family: monospace;
+            resize: vertical;
+            background-color: var(--bg-panel);
+            color: var(--color-text);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        .file-input-container input[type="file"] {
+            flex: 1;
+        }
+        .file-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .paste-btn {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .paste-btn:hover {
+            background-color: var(--btn-bg-hover);
+        }
+        .file-info {
+            font-size: 12px;
+            color: var(--link-color);
+            margin-top: 5px;
+            word-break: break-all;
+        }
+        iframe {
+            width: 95%;
+            height: 400px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: white;
+        }
+        .buttons {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        button, input[type="file"] {
+            margin: 0;
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--btn-bg);
+            color: var(--btn-text);
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover, input[type="file"]:hover {
+            background-color: var(--btn-bg-hover);
+        }
+        .device-buttons {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            text-align: center;
+        }
+        .footer a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .theme-toggle {
+            margin-top: 10px;
+        }
+        
+        /* Theme Variables */
+        html[data-theme='light'] {  
+            --bg: #ffffff;
+            --bg-panel: #f6f8fa;
+            --border-color: #e1e4e8;
+            --color-text: #24292e;
+            --link-color: #0366d6;
+            --btn-bg: #eff3f6;
+            --btn-bg-hover: #e1e4e8;
+            --btn-text: #24292e;
+            --switch-color: #24292e;
+            --html-color: #e34c26;
+            --css-color: #264de4;
+            --js-color: #f0db4f;
+        }
+        html[data-theme='dark'] {
+            --bg: #0d1117;
+            --bg-panel: #161b22;
+            --border-color: #30363d;
+            --color-text: #c9d1d9;
+            --link-color: #58a6ff;
+            --btn-bg: #21262d;
+            --btn-bg-hover: #30363d;
+            --btn-text: #c9d1d9;
+            --switch-color: #58a6ff;
+            --html-color: #ff6b35;
+            --css-color: #2965f1;
+            --js-color: #f7df1e;
+        }
+        
+        /* Theme Switch */
+        input[type=checkbox] {
+            height: 0;
+            width: 0;
+            visibility: hidden;
+        }
+        label {
+            cursor: pointer;
+            text-indent: -9999px;
+            width: 52px;
+            height: 27px;
+            background: var(--switch-color);
+            float: right;
+            border-radius: 100px;
+            position: relative;
+        }
+        label:after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 90px;
+            transition: 0.3s;
+        }
+        input:checked + label {
+            background: var(--switch-color);
+        }
+        input:checked + label:after {
+            left: calc(100% - 3px);
+            transform: translateX(-100%);
+        }
+        label:active:after {
+            width: 45px;
+        }
+        
+        /* Editor headers with colors */
+        .html-header { color: var(--html-color); }
+        .css-header { color: var(--css-color); }
+        .js-header { color: var(--js-color); }
+        
+        @media (max-width: 768px) {
+            .editor-container {
+                flex-direction: column;
+            }
+            .editor-box {
+                min-width: 100%;
+            }
+            .file-input-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .file-actions {
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Tryit Editor - Split View</h1>
+    
+    <div class="editor-container">
+        <!-- HTML Editor -->
+        <div class="editor-box">
+            <h3 class="html-header">HTML</h3>
+            <textarea id="htmlCode" placeholder="<!-- Type your HTML here... -->"></textarea>
+            <div class="file-input-container">
+                <input type="file" id="htmlFileInput" accept=".html,.htm" onchange="loadFile('html')">
+                <div class="file-actions">
+                    <button class="paste-btn" onclick="pasteToEditor('html')">Paste HTML</button>
+                </div>
+            </div>
+            <div class="file-info" id="htmlFileInfo"></div>
+        </div>
+        
+        <!-- CSS Editor -->
+        <div class="editor-box">
+            <h3 class="css-header">CSS</h3>
+            <textarea id="cssCode" placeholder="/* Type your CSS here... */"></textarea>
+            <div class="file-input-container">
+                <input type="file" id="cssFileInput" accept=".css" onchange="loadFile('css')">
+                <div class="file-actions">
+                    <button class="paste-btn" onclick="pasteToEditor('css')">Paste CSS</button>
+                </div>
+            </div>
+            <div class="file-info" id="cssFileInfo"></div>
+        </div>
+        
+        <!-- JavaScript Editor -->
+        <div class="editor-box">
+            <h3 class="js-header">JavaScript</h3>
+            <textarea id="jsCode" placeholder="// Type your JavaScript here..."></textarea>
+            <div class="file-input-container">
+                <input type="file" id="jsFileInput" accept=".js" onchange="loadFile('js')">
+                <div class="file-actions">
+                    <button class="paste-btn" onclick="pasteToEditor('js')">Paste JS</button>
+                </div>
+            </div>
+            <div class="file-info" id="jsFileInfo"></div>
+        </div>
+    </div>
+    
+    <div class="buttons">
+        <button onclick="runCode()">Run Code</button>
+        <button onclick="clearAllCode()">Clear All</button>
+        <button onclick="saveAllFiles()">Save All</button>
+        <button onclick="loadExample()">Load Example</button>
+        <button onclick="undo()">Undo</button>
+        <button onclick="redo()">Redo</button>
+    </div>
+    
+    <iframe id="result" title="Result"></iframe>
+    
+    <div class="device-buttons">
+        <button onclick="setFrameSize('360px', '640px')">Android</button>
+        <button onclick="setFrameSize('375px', '667px')">iPhone</button>
+        <button onclick="setFrameSize('768px', '1024px')">iPad</button>
+        <button onclick="setFrameSize('1366px', '768px')">Laptop</button>
+        <button onclick="setFrameSize('1920px', '1080px')">Desktop</button>
+        <button onclick="resetFrameSize()">Reset Size</button>
+    </div>
+    
+    <div class="theme-toggle">
+        <input type="checkbox" id="themeSwitch" />
+        <label for="themeSwitch">Toggle Dark Mode</label>
+    </div>
+    
+    <div class="footer">
+        <p>ChatGPT Version: GPT-4 | Modified with Split View</p>
+        <p>Source Code: <a href="https://github.com/mohamadrido/tryit" target="_blank">GitHub Repository</a></p>
+    </div>
+    
+    <script>
+        // Initialize undo/redo stacks for each editor
+        let undoStacks = {
+            html: [],
+            css: [],
+            js: []
+        };
+        let redoStacks = {
+            html: [],
+            css: [],
+            js: []
+        };
+        let currentEditor = 'html';
+
+        // Set up event listeners for each editor
+        document.getElementById('htmlCode').addEventListener('input', () => trackChanges('html'));
+        document.getElementById('cssCode').addEventListener('input', () => trackChanges('css'));
+        document.getElementById('jsCode').addEventListener('input', () => trackChanges('js'));
+        
+        // Track which editor is active
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('focus', function() {
+                currentEditor = this.id.replace('Code', '');
+            });
+        });
+
+        function trackChanges(type) {
+            const editor = document.getElementById(type + 'Code');
+            redoStacks[type] = []; // Clear redo stack when new input is made
+            undoStacks[type].push(editor.value);
+        }
+
+        function undo() {
+            if (undoStacks[currentEditor].length > 1) {
+                const editor = document.getElementById(currentEditor + 'Code');
+                redoStacks[currentEditor].push(undoStacks[currentEditor].pop());
+                editor.value = undoStacks[currentEditor][undoStacks[currentEditor].length - 1] || '';
+            }
+        }
+
+        function redo() {
+            if (redoStacks[currentEditor].length > 0) {
+                const editor = document.getElementById(currentEditor + 'Code');
+                const value = redoStacks[currentEditor].pop();
+                editor.value = value;
+                undoStacks[currentEditor].push(value);
+            }
+        }
+
+        function runCode() {
+            const htmlCode = document.getElementById('htmlCode').value;
+            const cssCode = document.getElementById('cssCode').value;
+            const jsCode = document.getElementById('jsCode').value;
+            
+            const resultFrame = document.getElementById('result');
+            
+            // Combine all code into one HTML document
+            const combinedCode = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <style>${cssCode}</style>
+                </head>
+                <body>
+                    ${htmlCode}
+                    <script>${jsCode}<\/script>
+                </body>
+                </html>
+            `;
+            
+            resultFrame.srcdoc = combinedCode;
+        }
+
+        function clearAllCode() {
+            if (confirm('Clear all code from HTML, CSS, and JavaScript editors?')) {
+                document.getElementById('htmlCode').value = '';
+                document.getElementById('cssCode').value = '';
+                document.getElementById('jsCode').value = '';
+                
+                // Clear file info
+                document.querySelectorAll('.file-info').forEach(el => el.textContent = '');
+                
+                // Reset stacks
+                undoStacks = { html: [], css: [], js: [] };
+                redoStacks = { html: [], css: [], js: [] };
+                
+                // Clear iframe
+                document.getElementById('result').srcdoc = '';
+            }
+        }
+
+        function saveAllFiles() {
+            const htmlCode = document.getElementById('htmlCode').value;
+            const cssCode = document.getElementById('cssCode').value;
+            const jsCode = document.getElementById('jsCode').value;
+            
+            // Save HTML
+            if (htmlCode.trim()) {
+                const htmlBlob = new Blob([htmlCode], { type: 'text/html' });
+                const htmlLink = document.createElement('a');
+                htmlLink.href = URL.createObjectURL(htmlBlob);
+                htmlLink.download = 'code.html';
+                htmlLink.click();
+            }
+            
+            // Save CSS
+            if (cssCode.trim()) {
+                const cssBlob = new Blob([cssCode], { type: 'text/css' });
+                const cssLink = document.createElement('a');
+                cssLink.href = URL.createObjectURL(cssBlob);
+                cssLink.download = 'style.css';
+                cssLink.click();
+            }
+            
+            // Save JavaScript
+            if (jsCode.trim()) {
+                const jsBlob = new Blob([jsCode], { type: 'text/javascript' });
+                const jsLink = document.createElement('a');
+                jsLink.href = URL.createObjectURL(jsBlob);
+                jsLink.download = 'script.js';
+                jsLink.click();
+            }
+        }
+
+        function loadFile(type) {
+            const fileInput = document.getElementById(type + 'FileInput');
+            const fileInfo = document.getElementById(type + 'FileInfo');
+            const editor = document.getElementById(type + 'Code');
+            
+            const file = fileInput.files[0];
+            if (file) {
+                // Check file extension
+                const fileName = file.name.toLowerCase();
+                const validExtensions = {
+                    html: ['.html', '.htm'],
+                    css: ['.css'],
+                    js: ['.js']
+                };
+                
+                let isValid = false;
+                for (const ext of validExtensions[type]) {
+                    if (fileName.endsWith(ext)) {
+                        isValid = true;
+                        break;
+                    }
+                }
+                
+                if (!isValid) {
+                    alert(`Please select a valid ${type.toUpperCase()} file (${validExtensions[type].join(', ')})`);
+                    fileInput.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    editor.value = event.target.result;
+                    fileInfo.textContent = `Loaded: ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
+                    trackChanges(type);
+                    
+                    // Auto-run if there's content in all editors
+                    setTimeout(() => {
+                        if (document.getElementById('htmlCode').value.trim() && 
+                            document.getElementById('cssCode').value.trim() && 
+                            document.getElementById('jsCode').value.trim()) {
+                            runCode();
+                        }
+                    }, 100);
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // New function to paste content to specific editor
+        async function pasteToEditor(type) {
+            try {
+                const editor = document.getElementById(type + 'Code');
+                const fileInfo = document.getElementById(type + 'FileInfo');
+                
+                // Try to read from clipboard
+                const text = await navigator.clipboard.readText();
+                
+                if (text && text.trim()) {
+                    // If editor already has content, ask user
+                    if (editor.value.trim()) {
+                        if (!confirm(`Replace existing ${type.toUpperCase()} content with clipboard content?`)) {
+                            return;
+                        }
+                    }
+                    
+                    editor.value = text;
+                    fileInfo.textContent = `Pasted from clipboard (${text.length} chars)`;
+                    trackChanges(type);
+                    
+                    // Show success message briefly
+                    const originalText = fileInfo.textContent;
+                    fileInfo.style.color = '#28a745';
+                    setTimeout(() => {
+                        fileInfo.style.color = '';
+                    }, 2000);
+                    
+                    // Auto-run if there's content in all editors
+                    setTimeout(() => {
+                        if (document.getElementById('htmlCode').value.trim() && 
+                            document.getElementById('cssCode').value.trim() && 
+                            document.getElementById('jsCode').value.trim()) {
+                            runCode();
+                        }
+                    }, 100);
+                } else {
+                    fileInfo.textContent = 'Clipboard is empty or contains no text';
+                    fileInfo.style.color = '#dc3545';
+                    setTimeout(() => {
+                        fileInfo.style.color = '';
+                        fileInfo.textContent = '';
+                    }, 3000);
+                }
+            } catch (err) {
+                console.error('Failed to read clipboard:', err);
+                alert('Unable to access clipboard. Please ensure you have granted clipboard permissions.');
+                
+                // Fallback: prompt user to paste manually
+                const editor = document.getElementById(type + 'Code');
+                const manualPaste = prompt(`Paste your ${type.toUpperCase()} code manually:`);
+                if (manualPaste !== null) {
+                    editor.value = manualPaste;
+                    trackChanges(type);
+                }
+            }
+        }
+
+        function loadExample() {
+            if (confirm('Load example code? This will replace your current code.')) {
+                // Example HTML
+                document.getElementById('htmlCode').value = `<!DOCTYPE html>
+<html>
+<head>
+    <title>Example Page</title>
+</head>
+<body>
+    <h1>Welcome to Tryit Editor</h1>
+    <p id="demo">This is an example text.</p>
+    <button onclick="changeText()">Click Me!</button>
+    <div class="box"></div>
+</body>
+</html>`;
+                
+                // Example CSS
+                document.getElementById('cssCode').value = `body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+.box {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(45deg, #4CAF50, #2196F3);
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 20px auto;
+}
+
+button:hover {
+    background-color: #45a049;
+}`;
+                
+                // Example JavaScript
+                document.getElementById('jsCode').value = `function changeText() {
+    const demo = document.getElementById('demo');
+    const colors = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#33FFF5'];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    
+    demo.textContent = 'Text changed successfully!';
+    demo.style.color = randomColor;
+    demo.style.fontSize = '24px';
+    demo.style.transition = 'all 0.5s ease';
+    
+    // Also animate the box
+    const box = document.querySelector('.box');
+    box.style.transform = 'rotate(45deg) scale(1.1)';
+    box.style.transition = 'transform 0.5s ease';
+    
+    setTimeout(() => {
+        box.style.transform = 'rotate(0deg) scale(1)';
+    }, 500);
+}
+
+console.log('Example JavaScript loaded successfully!');`;
+                
+                // Update file info
+                document.getElementById('htmlFileInfo').textContent = 'Example HTML loaded';
+                document.getElementById('cssFileInfo').textContent = 'Example CSS loaded';
+                document.getElementById('jsFileInfo').textContent = 'Example JavaScript loaded';
+                
+                // Initialize undo stacks
+                undoStacks.html = [document.getElementById('htmlCode').value];
+                undoStacks.css = [document.getElementById('cssCode').value];
+                undoStacks.js = [document.getElementById('jsCode').value];
+                
+                runCode();
+            }
+        }
+
+        function setFrameSize(width, height) {
+            const iframe = document.getElementById('result');
+            iframe.style.width = width;
+            iframe.style.height = height;
+        }
+
+        function resetFrameSize() {
+            const iframe = document.getElementById('result');
+            iframe.style.width = '95%';
+            iframe.style.height = '400px';
+        }
+
+        // Theme functionality
+        let theme = localStorage.getItem('data-theme');
+        const checkbox = document.getElementById("themeSwitch");
+
+        const changeThemeToDark = () => {
+            document.documentElement.setAttribute("data-theme", "dark");
+            localStorage.setItem("data-theme", "dark");
+        }
+
+        const changeThemeToLight = () => {
+            document.documentElement.setAttribute("data-theme", "light");
+            localStorage.setItem("data-theme", 'light');
+        }
+
+        if (theme === 'dark') {
+            changeThemeToDark();
+            checkbox.checked = true;
+        }
+
+        checkbox.addEventListener('change', () => {
+            let theme = localStorage.getItem('data-theme');
+            if (theme === 'dark') {
+                changeThemeToLight();
+            } else {
+                changeThemeToDark();
+            }
+        });
+
+        // Load code from URL parameters if available
+        function loadCodeFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const html = urlParams.get('html');
+            const css = urlParams.get('css');
+            const js = urlParams.get('js');
+            
+            if (html) {
+                document.getElementById('htmlCode').value = decodeURIComponent(html);
+            }
+            if (css) {
+                document.getElementById('cssCode').value = decodeURIComponent(css);
+            }
+            if (js) {
+                document.getElementById('jsCode').value = decodeURIComponent(js);
+            }
+            
+            if (html || css || js) {
+                runCode();
+            }
+        }
+
+        // Initialize undo stacks with initial values
+        window.onload = function() {
+            loadCodeFromUrl();
+            
+            // Initialize undo stacks with current values
+            undoStacks.html = [document.getElementById('htmlCode').value];
+            undoStacks.css = [document.getElementById('cssCode').value];
+            undoStacks.js = [document.getElementById('jsCode').value];
+            
+            // Run example code if all editors are empty
+            if (!document.getElementById('htmlCode').value.trim() &&
+                !document.getElementById('cssCode').value.trim() &&
+                !document.getElementById('jsCode').value.trim()) {
+                loadExample();
+            }
+        }
+    </script>
+</body>
+</html>
