@@ -1,0 +1,2904 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Manager Pro - Upload, Preview & Search PDF</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* Reset dan variabel */
+:root {
+    --primary: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary: #7209b7;
+    --success: #4cc9f0;
+    --danger: #f72585;
+    --warning: #f8961e;
+    --info: #3a86ff;
+    --light: #f8f9fa;
+    --dark: #212529;
+    --gray: #6c757d;
+    --light-gray: #e9ecef;
+    --border-radius: 12px;
+    --box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: var(--dark);
+    line-height: 1.6;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+header h1 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+header h1 i {
+    margin-right: 15px;
+    color: var(--secondary);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--gray);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Layout Utama */
+.main-layout {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.left-column {
+    flex: 1;
+    min-width: 400px;
+    max-width: 600px;
+}
+
+.right-column {
+    flex: 1.5;
+    min-width: 500px;
+}
+
+/* Card */
+.card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 25px;
+    margin-bottom: 30px;
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+}
+
+.section-header h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.5rem;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+}
+
+.section-header h2 i {
+    margin-right: 12px;
+    color: var(--primary);
+}
+
+/* Upload Section */
+.upload-area {
+    border: 3px dashed var(--light-gray);
+    border-radius: var(--border-radius);
+    padding: 50px 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: var(--transition);
+    cursor: pointer;
+    background-color: #fafbfe;
+}
+
+.upload-area:hover, .upload-area.dragover {
+    border-color: var(--primary);
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.upload-icon {
+    font-size: 3.5rem;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+.upload-text {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--dark);
+    font-weight: 500;
+}
+
+.upload-hint {
+    color: var(--gray);
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.file-info {
+    padding: 15px;
+    background-color: var(--light-gray);
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    display: none;
+}
+
+.file-info.show {
+    display: block;
+}
+
+.file-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.file-name {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.file-name i {
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+.file-size {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+/* Buttons */
+.btn-primary, .btn-upload, .btn-secondary, .btn-danger, .btn-warning, .btn-info {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-upload {
+    background-color: var(--success);
+    color: white;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.btn-upload:disabled {
+    background-color: var(--light-gray);
+    color: var(--gray);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-upload:not(:disabled):hover {
+    background-color: #3ab5d6;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--light-gray);
+    color: var(--dark);
+}
+
+.btn-secondary:hover {
+    background-color: #dde1e7;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #e11574;
+}
+
+.btn-warning {
+    background-color: var(--warning);
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #e6891e;
+}
+
+.btn-info {
+    background-color: var(--info);
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #2a75ff;
+}
+
+.btn-primary i, .btn-upload i, .btn-secondary i, .btn-danger i, .btn-warning i, .btn-info i {
+    margin-right: 8px;
+}
+
+/* Tombol Kecil */
+.btn-small {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--light-gray);
+    color: var(--dark);
+}
+
+.btn-small:hover {
+    background-color: #d1d9e6;
+}
+
+.btn-small i {
+    margin-right: 5px;
+}
+
+/* Progress Bar */
+.progress-container {
+    margin-top: 20px;
+    display: none;
+}
+
+.progress-container.show {
+    display: block;
+}
+
+.progress-bar {
+    height: 12px;
+    background-color: var(--light-gray);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-bar::after {
+    content: '';
+    display: block;
+    height: 100%;
+    width: 0%;
+    background-color: var(--success);
+    border-radius: 6px;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: var(--gray);
+    text-align: center;
+    display: block;
+}
+
+/* Files Section */
+.file-count {
+    background-color: var(--light-gray);
+    color: var(--dark);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.search-container {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.search-container i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+}
+
+#searchInput {
+    width: 100%;
+    padding: 14px 14px 14px 45px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.files-list {
+    height: 400px;
+    overflow-y: auto;
+    margin-bottom: 25px;
+}
+
+.file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--light-gray);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.file-item:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+    border-radius: var(--border-radius);
+}
+
+.file-item.selected {
+    background-color: rgba(67, 97, 238, 0.1);
+    border-left: 4px solid var(--primary);
+}
+
+.file-item-info {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.file-icon {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-right: 15px;
+}
+
+.file-details h3 {
+    font-size: 1.05rem;
+    margin-bottom: 5px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px;
+}
+
+.file-details p {
+    color: var(--gray);
+    font-size: 0.85rem;
+}
+
+.file-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--light-gray);
+    color: var(--dark);
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    background-color: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--gray);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    color: var(--light-gray);
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--dark);
+}
+
+.empty-state p {
+    font-size: 1rem;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* Storage Info - Dengan IndexedDB */
+.storage-info {
+    padding-top: 20px;
+    border-top: 1px solid var(--light-gray);
+}
+
+.storage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.storage-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.storage-limit {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 2px;
+}
+
+.storage-bar {
+    height: 8px;
+    background-color: var(--light-gray);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.storage-fill {
+    height: 100%;
+    width: 0%;
+    background-color: var(--primary);
+    border-radius: 4px;
+    transition: width 0.8s ease;
+}
+
+/* Right Column - Preview Section */
+#previewSection {
+    display: none;
+}
+
+#emptyPreview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 800px;
+}
+
+.empty-content {
+    text-align: center;
+    padding: 60px 40px;
+    max-width: 500px;
+}
+
+.empty-content i {
+    font-size: 5rem;
+    color: var(--light-gray);
+    margin-bottom: 25px;
+}
+
+.empty-content h3 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: var(--dark);
+}
+
+.empty-content p {
+    color: var(--gray);
+    font-size: 1.1rem;
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+.empty-features {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.feature i {
+    font-size: 2rem;
+    color: var(--primary);
+    margin-bottom: 0;
+}
+
+.feature span {
+    font-size: 0.9rem;
+    color: var(--gray);
+    font-weight: 500;
+}
+
+/* Info File yang Dipilih */
+.selected-file-info {
+    padding: 20px;
+    background-color: rgba(67, 97, 238, 0.05);
+    border-radius: var(--border-radius);
+    margin-bottom: 25px;
+    border-left: 4px solid var(--primary);
+}
+
+.file-display {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.file-display i {
+    font-size: 3rem;
+    color: var(--primary);
+}
+
+.file-details h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    color: var(--dark);
+}
+
+.file-details p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+/* Container Pencarian Kata Kunci */
+.keyword-search-container {
+    margin-bottom: 25px;
+    border: 2px solid rgba(67, 97, 238, 0.1);
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.search-header h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.3rem;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+}
+
+.search-header h3 i {
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+.search-tips {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(248, 150, 30, 0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: var(--warning);
+    font-size: 0.85rem;
+}
+
+.search-tips i {
+    font-size: 1rem;
+}
+
+/* Interface Pencarian */
+.search-interface {
+    margin-bottom: 20px;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.input-with-icon {
+    position: relative;
+    flex: 1;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray);
+}
+
+.input-with-icon input {
+    width: 100%;
+    padding: 14px 14px 14px 45px;
+    border: 2px solid var(--light-gray);
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.input-with-icon input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.search-options {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--light-gray);
+}
+
+.option-group {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    padding-left: 35px;
+    user-select: none;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.checkbox-label input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 22px;
+    width: 22px;
+    background-color: white;
+    border: 2px solid var(--light-gray);
+    border-radius: 4px;
+    transition: var(--transition);
+}
+
+.checkbox-label:hover input ~ .checkmark {
+    border-color: var(--primary);
+}
+
+.checkbox-label input:checked ~ .checkmark {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.checkbox-label input:checked ~ .checkmark:after {
+    display: block;
+}
+
+.checkbox-label .checkmark:after {
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.manual-select {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.manual-select .input-with-icon {
+    flex: 1;
+    min-width: 250px;
+}
+
+.manual-select .input-with-icon i {
+    color: var(--secondary);
+}
+
+/* Container Hasil Pencarian */
+.search-results-container {
+    border: 1px solid var(--light-gray);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid var(--light-gray);
+}
+
+.results-header h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+}
+
+.results-header h4 i {
+    margin-right: 10px;
+    color: var(--info);
+}
+
+.results-count {
+    background-color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    border: 1px solid var(--light-gray);
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+.search-results {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+}
+
+.empty-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray);
+}
+
+.empty-results i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--light-gray);
+}
+
+.empty-results p {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.empty-results small {
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+.result-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--light-gray);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.result-item:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-checkbox {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.result-info {
+    flex: 1;
+}
+
+.result-page {
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.result-text {
+    font-size: 0.9rem;
+    color: var(--dark);
+    line-height: 1.5;
+}
+
+.result-text .highlight {
+    background-color: rgba(248, 150, 30, 0.3);
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: var(--warning);
+    font-weight: 500;
+}
+
+.result-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* PDF Preview Container */
+.pdf-preview-container {
+    margin-bottom: 30px;
+}
+
+.preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.preview-header h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.3rem;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+}
+
+.preview-header h3 i {
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+.preview-nav {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.page-indicator {
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.page-indicator span {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.pdf-frame-container {
+    height: 500px;
+    border: 1px solid var(--light-gray);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    position: relative;
+}
+
+#pdfPreview {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.pdf-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray);
+}
+
+.pdf-loading i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+.pdf-loading p {
+    font-size: 1.1rem;
+}
+
+/* Page Selection Container */
+.page-selection-container {
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    padding: 25px;
+    border: 1px solid var(--light-gray);
+}
+
+.selection-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.selection-header h3 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.3rem;
+    color: var(--dark);
+    display: flex;
+    align-items: center;
+}
+
+.selection-header h3 i {
+    margin-right: 10px;
+    color: var(--primary);
+}
+
+.selected-count {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--light-gray);
+}
+
+.selected-count i {
+    color: var(--success);
+}
+
+.selected-count span {
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* Selection Controls */
+.selection-controls {
+    margin-bottom: 20px;
+}
+
+.quick-select {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.range-selector {
+    background-color: white;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--light-gray);
+}
+
+.range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.range-inputs input {
+    width: 80px;
+    padding: 10px;
+    border: 1px solid var(--light-gray);
+    border-radius: 6px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.range-inputs span {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+/* Pages Container */
+.pages-container-wrapper {
+    height: 300px;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--light-gray);
+    margin-bottom: 25px;
+}
+
+.pages-container {
+    padding: 15px;
+    min-height: 100%;
+}
+
+.empty-pages {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--gray);
+}
+
+.empty-pages i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--light-gray);
+}
+
+.empty-pages p {
+    font-size: 1rem;
+}
+
+.page-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--light-gray);
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.page-item:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.page-item:last-child {
+    border-bottom: none;
+}
+
+.page-checkbox {
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.page-number {
+    font-weight: 500;
+    color: var(--dark);
+    min-width: 40px;
+    font-size: 1rem;
+}
+
+.page-preview {
+    flex: 1;
+    font-size: 0.9rem;
+    color: var(--gray);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.page-item.selected {
+    background-color: rgba(67, 97, 238, 0.1);
+    border-left: 3px solid var(--primary);
+}
+
+/* Selection Actions */
+.selection-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.selection-actions button {
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 25px;
+    color: var(--gray);
+    font-size: 0.95rem;
+    margin-top: 20px;
+    border-top: 1px solid var(--light-gray);
+}
+
+/* Scrollbar Styling */
+.files-list::-webkit-scrollbar,
+.pages-container-wrapper::-webkit-scrollbar,
+.search-results::-webkit-scrollbar {
+    width: 8px;
+}
+
+.files-list::-webkit-scrollbar-track,
+.pages-container-wrapper::-webkit-scrollbar-track,
+.search-results::-webkit-scrollbar-track {
+    background: var(--light-gray);
+    border-radius: 4px;
+}
+
+.files-list::-webkit-scrollbar-thumb,
+.pages-container-wrapper::-webkit-scrollbar-thumb,
+.search-results::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.files-list::-webkit-scrollbar-thumb:hover,
+.pages-container-wrapper::-webkit-scrollbar-thumb:hover,
+.search-results::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .main-layout {
+        flex-direction: column;
+    }
+    
+    .left-column, .right-column {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    
+    .selection-actions button {
+        min-width: 150px;
+    }
+    
+    .search-input-group {
+        flex-direction: column;
+    }
+    
+    .manual-select {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .manual-select .input-with-icon {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2.2rem;
+    }
+    
+    .card {
+        padding: 20px;
+    }
+    
+    .section-header h2 {
+        font-size: 1.3rem;
+    }
+    
+    .upload-text {
+        font-size: 1.1rem;
+    }
+    
+    .upload-icon {
+        font-size: 3rem;
+    }
+    
+    .file-details h3 {
+        max-width: 200px;
+    }
+    
+    .selection-header, .search-header, .results-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .selected-count, .results-count {
+        align-self: flex-start;
+    }
+    
+    .preview-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .preview-nav {
+        align-self: stretch;
+        justify-content: space-between;
+    }
+    
+    .selection-actions {
+        flex-direction: column;
+    }
+    
+    .selection-actions button {
+        min-width: 100%;
+    }
+    
+    .empty-features {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .feature {
+        flex-direction: row;
+        gap: 15px;
+    }
+    
+    .feature i {
+        font-size: 1.5rem;
+    }
+    
+    .option-group {
+        flex-direction: column;
+        gap: 15px;
+    }
+}
+/* ... (kode CSS sebelumnya) ... */
+
+/* Improved Loading States */
+.pdf-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--gray);
+    z-index: 10;
+}
+
+.pdf-loading i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary);
+}
+
+.pdf-loading p {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.pdf-loading small {
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+/* Error state in loading */
+.pdf-loading .fa-exclamation-triangle {
+    color: var(--warning);
+}
+
+/* Highlight untuk hasil pencarian */
+.highlight {
+    background-color: rgba(248, 150, 30, 0.3);
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: var(--warning);
+    font-weight: 500;
+}
+
+/* Storage info improvements */
+.storage-details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+}
+
+.storage-limit {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 2px;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-file-pdf"></i> PDF Manager Pro</h1>
+            <p class="subtitle">Unggah, cari, dan unduh halaman PDF dengan pencarian kata kunci</p>
+        </header>
+
+        <div class="main-layout">
+            <!-- Kolom Kiri: Upload dan Daftar File -->
+            <div class="left-column">
+                <!-- Bagian Upload -->
+                <section class="upload-section card">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> Unggah PDF</h2>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-file-pdf upload-icon"></i>
+                        <p class="upload-text">Seret file PDF ke sini atau klik untuk memilih</p>
+                        <p class="upload-hint">Ukuran file maksimal disesuaikan dengan kapasitas penyimpanan browser</p>
+                        <input type="file" id="fileInput" accept=".pdf" hidden>
+                        <button id="browseBtn" class="btn-primary">
+                            <i class="fas fa-folder-open"></i> Pilih File
+                        </button>
+                    </div>
+                    <div class="file-info" id="fileInfo">
+                        <!-- Informasi file akan ditampilkan di sini -->
+                    </div>
+                    <button id="uploadBtn" class="btn-upload" disabled>
+                        <i class="fas fa-upload"></i> Unggah File
+                    </button>
+                    <div class="progress-container" id="progressContainer">
+                        <div class="progress-bar" id="progressBar"></div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </section>
+
+                <!-- Bagian Daftar PDF -->
+                <section class="files-section card">
+                    <div class="section-header">
+                        <h2><i class="fas fa-list"></i> File PDF Tersedia</h2>
+                        <div class="file-count" id="fileCount">0 file</div>
+                    </div>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Cari nama file PDF...">
+                    </div>
+                    <div class="files-list" id="filesList">
+                        <!-- Daftar file akan ditampilkan di sini -->
+                        <div class="empty-state" id="emptyState">
+                            <i class="fas fa-file-alt"></i>
+                            <h3>Belum ada file PDF</h3>
+                            <p>Mulai dengan mengunggah file PDF pertama Anda</p>
+                        </div>
+                    </div>
+                    <div class="storage-info">
+                        <div class="storage-header">
+                            <span>Penyimpanan</span>
+                            <span id="storageUsed">0 KB digunakan</span>
+                            <span class="storage-limit">(Hingga 500MB)</span>
+                        </div>
+                        <div class="storage-bar">
+                            <div class="storage-fill" id="storageFill"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Kolom Kanan: Preview, Pencarian, dan Seleksi Halaman -->
+            <div class="right-column" id="rightColumn">
+                <div class="preview-section card" id="previewSection">
+                    <div class="section-header">
+                        <h2><i class="fas fa-eye"></i> Pratinjau & Pencarian PDF</h2>
+                        <button class="btn-small" id="closePreviewBtn">
+                            <i class="fas fa-times"></i> Tutup
+                        </button>
+                    </div>
+                    
+                    <!-- Info File yang Dipilih -->
+                    <div class="selected-file-info" id="selectedFileInfo">
+                        <div class="file-display">
+                            <i class="fas fa-file-pdf"></i>
+                            <div class="file-details">
+                                <h3 id="selectedFileName">Nama File PDF</h3>
+                                <p id="selectedFileDetails">Ukuran • Tanggal Unggah</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Panel Pencarian Kata Kunci -->
+                    <div class="keyword-search-container card">
+                        <div class="search-header">
+                            <h3><i class="fas fa-search"></i> Pencarian Kata Kunci</h3>
+                            <div class="search-tips">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Tips: Cari kata dalam dokumen atau pilih halaman manual</span>
+                            </div>
+                        </div>
+                        
+                        <div class="search-interface">
+                            <div class="search-input-group">
+                                <div class="input-with-icon">
+                                    <i class="fas fa-key"></i>
+                                    <input type="text" id="keywordSearchInput" placeholder="Masukkan kata kunci untuk dicari...">
+                                </div>
+                                <button class="btn-primary" id="searchKeywordBtn">
+                                    <i class="fas fa-search"></i> Cari
+                                </button>
+                            </div>
+                            
+                            <div class="search-options">
+                                <div class="option-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="caseSensitiveCheckbox">
+                                        <span class="checkmark"></span>
+                                        <span>Beda huruf besar/kecil</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="wholeWordCheckbox">
+                                        <span class="checkmark"></span>
+                                        <span>Kata utuh</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="manual-select">
+                                    <div class="input-with-icon">
+                                        <i class="fas fa-list-ol"></i>
+                                        <input type="text" id="manualPageInput" placeholder="Pilih halaman manual (contoh: 1,3,5-8,10)">
+                                    </div>
+                                    <button class="btn-secondary" id="applyManualPagesBtn">
+                                        <i class="fas fa-check"></i> Terapkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Hasil Pencarian -->
+                        <div class="search-results-container" id="searchResultsContainer">
+                            <div class="results-header">
+                                <h4><i class="fas fa-search-result"></i> Hasil Pencarian</h4>
+                                <div class="results-count" id="resultsCount">
+                                    <span>0 hasil ditemukan</span>
+                                </div>
+                            </div>
+                            <div class="search-results" id="searchResults">
+                                <!-- Hasil pencarian akan ditampilkan di sini -->
+                                <div class="empty-results">
+                                    <i class="fas fa-search"></i>
+                                    <p>Masukkan kata kunci untuk mencari dalam dokumen</p>
+                                    <small>atau pilih halaman manual menggunakan input di atas</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview PDF -->
+                    <div class="pdf-preview-container">
+                        <div class="preview-header">
+                            <h3><i class="fas fa-file-pdf"></i> Pratinjau</h3>
+                            <div class="preview-nav">
+                                <button class="btn-small" id="prevPageBtn" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span class="page-indicator">Halaman <span id="currentPage">1</span> dari <span id="totalPreviewPages">1</span></span>
+                                <button class="btn-small" id="nextPageBtn" disabled>
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="pdf-frame-container">
+                            <iframe id="pdfPreview" frameborder="0"></iframe>
+                            <div class="pdf-loading" id="pdfLoading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Memuat pratinjau PDF...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Seleksi Halaman -->
+                    <div class="page-selection-container">
+                        <div class="selection-header">
+                            <h3><i class="fas fa-check-square"></i> Halaman Terpilih untuk Diunduh</h3>
+                            <div class="selected-count" id="selectedCount">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Terpilih: <strong>0</strong> halaman</span>
+                            </div>
+                        </div>
+                        
+                        <div class="selection-controls">
+                            <div class="quick-select">
+                                <button class="btn-small" id="selectAllBtn">
+                                    <i class="fas fa-check-double"></i> Semua
+                                </button>
+                                <button class="btn-small" id="deselectAllBtn">
+                                    <i class="fas fa-times-circle"></i> Hapus
+                                </button>
+                                <button class="btn-small" id="selectEvenBtn">
+                                    <i class="fas fa-sort-numeric-up"></i> Genap
+                                </button>
+                                <button class="btn-small" id="selectOddBtn">
+                                    <i class="fas fa-sort-numeric-down"></i> Ganjil
+                                </button>
+                            </div>
+                            
+                            <div class="range-selector">
+                                <div class="range-inputs">
+                                    <input type="number" id="rangeStart" min="1" value="1" placeholder="Dari">
+                                    <span>sampai</span>
+                                    <input type="number" id="rangeEnd" min="1" value="1" placeholder="Sampai">
+                                    <button class="btn-small" id="applyRangeBtn">
+                                        <i class="fas fa-check"></i> Terapkan
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="pages-container-wrapper">
+                            <div class="pages-container" id="pagesContainer">
+                                <!-- Daftar halaman akan ditampilkan di sini -->
+                                <div class="empty-pages">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <p>Gunakan pencarian kata kunci atau pilih halaman manual</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="selection-actions">
+                            <button class="btn-secondary" id="downloadSelectedBtn" disabled>
+                                <i class="fas fa-download"></i> Unduh Halaman Terpilih
+                            </button>
+                            <button class="btn-primary" id="downloadAllBtn" disabled>
+                                <i class="fas fa-file-download"></i> Unduh Semua Halaman
+                            </button>
+                            <button class="btn-danger" id="deleteBtn">
+                                <i class="fas fa-trash"></i> Hapus File
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Panel Kosong saat tidak ada file yang dipilih -->
+                <div class="empty-preview card" id="emptyPreview">
+                    <div class="empty-content">
+                        <i class="fas fa-file-pdf"></i>
+                        <h3>Pilih File PDF</h3>
+                        <p>Pilih file dari daftar di sebelah kiri untuk melihat pratinjau dan mencari konten</p>
+                        <div class="empty-features">
+                            <div class="feature">
+                                <i class="fas fa-search"></i>
+                                <span>Cari Kata Kunci</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-list-ol"></i>
+                                <span>Pilih Halaman Manual</span>
+                            </div>
+                            <div class="feature">
+                                <i class="fas fa-download"></i>
+                                <span>Unduh Hasil Pencarian</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2026 PDF Manager Pro | Mohamad Rido</p>
+        </footer>
+    </div>
+
+    <!-- Library untuk memanipulasi PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <!-- PDF.js untuk pencarian teks -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<!-- Load PDF.js dengan worker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js"></script>
+
+<!-- Load PDF-Lib -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
+<script src="script.js"></script>
+
+<script>
+// Data file PDF (hanya di memori, tidak ada penyimpanan permanen)
+let pdfFilesMetadata = []; // Metadata file di memori
+let pdfFilesInMemory = new Map(); // File PDF di memori (ArrayBuffer)
+let selectedFile = null;
+let selectedPages = new Set();
+let currentPageNum = 1;
+let totalPageCount = 0;
+let searchResults = [];
+let pdfTextContent = {};
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB per file
+const MAX_TOTAL_STORAGE = 100 * 1024 * 1024; // 100 MB total di memori
+
+// DOM Elements
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const browseBtn = document.getElementById('browseBtn');
+const uploadBtn = document.getElementById('uploadBtn');
+const fileInfo = document.getElementById('fileInfo');
+const progressContainer = document.getElementById('progressContainer');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+const filesList = document.getElementById('filesList');
+const emptyState = document.getElementById('emptyState');
+const searchInput = document.getElementById('searchInput');
+const storageUsed = document.getElementById('storageUsed');
+const storageFill = document.getElementById('storageFill');
+const fileCount = document.getElementById('fileCount');
+const rightColumn = document.getElementById('rightColumn');
+const previewSection = document.getElementById('previewSection');
+const emptyPreview = document.getElementById('emptyPreview');
+const closePreviewBtn = document.getElementById('closePreviewBtn');
+const selectedFileInfo = document.getElementById('selectedFileInfo');
+const selectedFileName = document.getElementById('selectedFileName');
+const selectedFileDetails = document.getElementById('selectedFileDetails');
+const pdfPreview = document.getElementById('pdfPreview');
+const pdfLoading = document.getElementById('pdfLoading');
+const currentPage = document.getElementById('currentPage');
+const totalPreviewPages = document.getElementById('totalPreviewPages');
+const prevPageBtn = document.getElementById('prevPageBtn');
+const nextPageBtn = document.getElementById('nextPageBtn');
+const selectedCount = document.getElementById('selectedCount');
+const selectAllBtn = document.getElementById('selectAllBtn');
+const deselectAllBtn = document.getElementById('deselectAllBtn');
+const selectEvenBtn = document.getElementById('selectEvenBtn');
+const selectOddBtn = document.getElementById('selectOddBtn');
+const rangeStart = document.getElementById('rangeStart');
+const rangeEnd = document.getElementById('rangeEnd');
+const applyRangeBtn = document.getElementById('applyRangeBtn');
+const pagesContainer = document.getElementById('pagesContainer');
+const downloadSelectedBtn = document.getElementById('downloadSelectedBtn');
+const downloadAllBtn = document.getElementById('downloadAllBtn');
+const deleteBtn = document.getElementById('deleteBtn');
+const keywordSearchInput = document.getElementById('keywordSearchInput');
+const searchKeywordBtn = document.getElementById('searchKeywordBtn');
+const caseSensitiveCheckbox = document.getElementById('caseSensitiveCheckbox');
+const wholeWordCheckbox = document.getElementById('wholeWordCheckbox');
+const manualPageInput = document.getElementById('manualPageInput');
+const applyManualPagesBtn = document.getElementById('applyManualPagesBtn');
+const searchResultsContainer = document.getElementById('searchResultsContainer');
+const searchResultsElem = document.getElementById('searchResults');
+const resultsCount = document.getElementById('resultsCount');
+
+// Initialize Application
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('PDF Manager Pro - Session Only Mode');
+    
+    // Setup semua fungsi
+    setupUploadFunctionality();
+    setupFileListFunctionality();
+    setupPreviewFunctionality();
+    setupPageSelectionFunctionality();
+    setupKeywordSearchFunctionality();
+    
+    // Tidak ada file contoh, tidak ada riwayat
+    renderFilesList();
+    updateStorageInfo();
+    
+    // Tampilkan pesan info tentang mode sesi
+    showSessionInfo();
+});
+
+// ========== FUNGSI UPLOAD ==========
+
+function setupUploadFunctionality() {
+    console.log('Setting up upload functionality');
+    
+    // Klik area upload
+    uploadArea.addEventListener('click', (e) => {
+        if (!e.target.closest('#browseBtn')) {
+            fileInput.click();
+        }
+    });
+    
+    // Klik tombol browse
+    browseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.click();
+    });
+    
+    // Drag and drop
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    ['dragenter', 'dragover'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.add('dragover');
+        }, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        uploadArea.addEventListener(eventName, () => {
+            uploadArea.classList.remove('dragover');
+        }, false);
+    });
+    
+    // Handle drop
+    uploadArea.addEventListener('drop', handleDrop, false);
+    
+    // Handle file input change
+    fileInput.addEventListener('change', handleFileSelect);
+    
+    // Handle upload button
+    uploadBtn.addEventListener('click', handleUpload);
+}
+
+function handleDrop(e) {
+    console.log('File dropped');
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    
+    if (files.length > 0) {
+        const file = files[0];
+        processSelectedFile(file);
+    }
+}
+
+function handleFileSelect(e) {
+    console.log('File selected via input');
+    const files = e.target.files;
+    if (files.length > 0) {
+        const file = files[0];
+        processSelectedFile(file);
+    }
+}
+
+function processSelectedFile(file) {
+    console.log('Processing file:', file.name);
+    
+    // Validasi tipe file
+    if (file.type !== 'application/pdf') {
+        showNotification('Hanya file PDF yang diperbolehkan', 'error');
+        fileInput.value = '';
+        return;
+    }
+    
+    // Validasi ukuran file
+    if (file.size > MAX_FILE_SIZE) {
+        showNotification(`Ukuran file terlalu besar. Maksimal ${formatFileSize(MAX_FILE_SIZE)}`, 'error');
+        fileInput.value = '';
+        return;
+    }
+    
+    // Cek total penyimpanan
+    const currentStorage = calculateTotalStorageUsed();
+    if (currentStorage + file.size > MAX_TOTAL_STORAGE) {
+        showNotification(`Penyimpanan memori penuh. Hapus beberapa file untuk mengunggah yang baru`, 'error');
+        return;
+    }
+    
+    // Tampilkan info file
+    displayFileInfo(file);
+    
+    // Enable tombol upload
+    uploadBtn.disabled = false;
+    uploadBtn.dataset.fileName = file.name;
+    uploadBtn.dataset.fileSize = file.size;
+}
+
+function displayFileInfo(file) {
+    fileInfo.innerHTML = `
+        <div class="file-details">
+            <div class="file-name">
+                <i class="fas fa-file-pdf"></i> ${file.name}
+            </div>
+            <div class="file-size">
+                ${formatFileSize(file.size)}
+            </div>
+        </div>
+    `;
+    fileInfo.classList.add('show');
+}
+
+async function handleUpload() {
+    console.log('Upload button clicked');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showNotification('Tidak ada file yang dipilih', 'error');
+        return;
+    }
+    
+    // Tampilkan progress bar
+    progressContainer.classList.add('show');
+    
+    // Simulasi upload progress
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = `${progress}%`;
+        progressText.textContent = `${progress}%`;
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            
+            // Baca file sebagai ArrayBuffer
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    // Simpan file ke memori
+                    const fileId = Date.now();
+                    const fileData = {
+                        id: fileId,
+                        name: file.name,
+                        size: file.size,
+                        arrayBuffer: e.target.result,
+                        uploadDate: new Date().toLocaleDateString('id-ID')
+                    };
+                    
+                    // Simpan ke memori
+                    pdfFilesInMemory.set(fileId, fileData);
+                    
+                    // Simpan metadata ke array memori
+                    pdfFilesMetadata.push({
+                        id: fileId,
+                        name: file.name,
+                        size: file.size,
+                        uploadDate: fileData.uploadDate
+                    });
+                    
+                    // Reset form
+                    resetUploadForm();
+                    
+                    // Update UI
+                    renderFilesList();
+                    updateStorageInfo();
+                    
+                    // Tampilkan notifikasi
+                    showNotification('File berhasil diunggah', 'success');
+                    
+                    // Auto-select file baru
+                    setTimeout(() => {
+                        selectFile(fileId);
+                    }, 500);
+                    
+                } catch (error) {
+                    console.error('Error saving file:', error);
+                    showNotification('Gagal menyimpan file', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    }, 100);
+}
+
+function resetUploadForm() {
+    fileInfo.classList.remove('show');
+    fileInfo.innerHTML = '';
+    uploadBtn.disabled = true;
+    delete uploadBtn.dataset.fileName;
+    delete uploadBtn.dataset.fileSize;
+    fileInput.value = '';
+    progressContainer.classList.remove('show');
+    progressBar.style.width = '0%';
+    progressText.textContent = '0%';
+}
+
+// ========== FILE LIST FUNCTIONALITY ==========
+
+function setupFileListFunctionality() {
+    searchInput.addEventListener('input', filterFiles);
+    
+    filesList.addEventListener('click', (e) => {
+        const fileItem = e.target.closest('.file-item');
+        if (fileItem) {
+            const fileId = parseInt(fileItem.dataset.id);
+            selectFile(fileId);
+        }
+        
+        if (e.target.closest('.action-btn')) {
+            const actionBtn = e.target.closest('.action-btn');
+            const fileItem = actionBtn.closest('.file-item');
+            const fileId = parseInt(fileItem.dataset.id);
+            
+            if (actionBtn.classList.contains('preview-btn')) {
+                selectFile(fileId);
+            } else if (actionBtn.classList.contains('download-btn')) {
+                downloadAllPagesFromList(fileId);
+            }
+        }
+    });
+}
+
+function renderFilesList(filter = '') {
+    if (pdfFilesMetadata.length === 0) {
+        emptyState.style.display = 'block';
+        filesList.innerHTML = '';
+        fileCount.textContent = '0 file';
+        return;
+    }
+    
+    emptyState.style.display = 'none';
+    
+    // Filter file berdasarkan nama
+    const filteredFiles = pdfFilesMetadata.filter(file => 
+        file.name.toLowerCase().includes(filter.toLowerCase())
+    );
+    
+    fileCount.textContent = `${filteredFiles.length} file${filteredFiles.length !== 1 ? 's' : ''}`;
+    
+    if (filteredFiles.length === 0) {
+        filesList.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><h3>Tidak ditemukan</h3><p>Tidak ada file yang cocok dengan pencarian</p></div>';
+        return;
+    }
+    
+    filesList.innerHTML = filteredFiles.map(file => `
+        <div class="file-item ${selectedFile && selectedFile.id === file.id ? 'selected' : ''}" data-id="${file.id}">
+            <div class="file-item-info">
+                <div class="file-icon">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
+                <div class="file-details">
+                    <h3>${file.name}</h3>
+                    <p>${formatFileSize(file.size)} • ${file.uploadDate}</p>
+                </div>
+            </div>
+            <div class="file-actions">
+                <button class="action-btn preview-btn" title="Pratinjau & Cari">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button class="action-btn download-btn" title="Unduh Semua Halaman">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterFiles() {
+    renderFilesList(searchInput.value);
+}
+
+// ========== SELECT FILE FUNCTIONALITY ==========
+
+async function selectFile(fileId) {
+    console.log('Selecting file:', fileId);
+    
+    // Cari metadata
+    const metadata = pdfFilesMetadata.find(file => file.id === fileId);
+    if (!metadata) {
+        showNotification('File tidak ditemukan', 'error');
+        return;
+    }
+    
+    // Cari file di memori
+    const fileData = pdfFilesInMemory.get(fileId);
+    if (!fileData) {
+        showNotification('File tidak tersedia. File hanya tersedia selama sesi browser.', 'warning');
+        return;
+    }
+    
+    selectedFile = fileData;
+    
+    // Reset state
+    selectedPages.clear();
+    currentPageNum = 1;
+    searchResults = [];
+    pdfTextContent = {};
+    
+    // Update UI selection
+    document.querySelectorAll('.file-item').forEach(item => {
+        item.classList.remove('selected');
+        if (parseInt(item.dataset.id) === fileId) {
+            item.classList.add('selected');
+        }
+    });
+    
+    // Tampilkan preview section
+    previewSection.style.display = 'block';
+    emptyPreview.style.display = 'none';
+    
+    // Update file info
+    selectedFileName.textContent = selectedFile.name;
+    selectedFileDetails.textContent = `${formatFileSize(selectedFile.size)} • Diunggah ${selectedFile.uploadDate}`;
+    
+    // Reset pencarian
+    keywordSearchInput.value = '';
+    manualPageInput.value = '';
+    renderSearchResults([]);
+    
+    // Tampilkan loading
+    pdfLoading.style.display = 'flex';
+    
+    try {
+        // Konversi ArrayBuffer ke Blob URL untuk iframe
+        const blob = new Blob([selectedFile.arrayBuffer], { type: 'application/pdf' });
+        const blobUrl = URL.createObjectURL(blob);
+        
+        // Load PDF ke iframe
+        pdfPreview.src = blobUrl;
+        
+        // Setelah iframe selesai loading
+        pdfPreview.onload = async () => {
+            pdfLoading.style.display = 'none';
+            URL.revokeObjectURL(blobUrl); // Hapus URL setelah digunakan
+            
+            try {
+                // Load PDF untuk ekstraksi teks dan jumlah halaman
+                await loadPdfAndExtractText();
+            } catch (error) {
+                console.error('Error loading PDF:', error);
+                totalPageCount = 1;
+                totalPreviewPages.textContent = '1';
+                renderPageList(1);
+                updatePageControls();
+            }
+        };
+        
+    } catch (error) {
+        console.error('Error creating blob URL:', error);
+        pdfLoading.style.display = 'none';
+        showNotification('Gagal memuat file PDF', 'error');
+    }
+    
+    // Enable tombol
+    downloadAllBtn.disabled = false;
+    deleteBtn.disabled = false;
+}
+
+// ========== PDF TEXT EXTRACTION ==========
+
+async function loadPdfAndExtractText() {
+    try {
+        // Gunakan PDF.js untuk ekstraksi teks
+        const loadingTask = pdfjsLib.getDocument({data: selectedFile.arrayBuffer});
+        const pdf = await loadingTask.promise;
+        
+        totalPageCount = pdf.numPages;
+        totalPreviewPages.textContent = totalPageCount;
+        rangeEnd.max = totalPageCount;
+        rangeEnd.value = totalPageCount;
+        
+        // Ekstrak teks dari setiap halaman
+        pdfTextContent = {};
+        for (let i = 1; i <= totalPageCount; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const textItems = textContent.items.map(item => item.str);
+            pdfTextContent[i] = textItems.join(' ');
+        }
+        
+        // Render daftar halaman
+        renderPageList(totalPageCount);
+        
+        // Pilih semua halaman secara default
+        selectAllPages(true);
+        
+        // Update kontrol halaman
+        updatePageControls();
+        
+    } catch (error) {
+        console.error('Error loading PDF for text extraction:', error);
+        totalPageCount = 1;
+        totalPreviewPages.textContent = '1';
+        renderPageList(1);
+        selectAllPages(true);
+        updatePageControls();
+    }
+}
+
+// ========== PREVIEW FUNCTIONALITY ==========
+
+function setupPreviewFunctionality() {
+    closePreviewBtn.addEventListener('click', closePreview);
+    prevPageBtn.addEventListener('click', goToPrevPage);
+    nextPageBtn.addEventListener('click', goToNextPage);
+}
+
+function closePreview() {
+    previewSection.style.display = 'none';
+    emptyPreview.style.display = 'flex';
+    
+    document.querySelectorAll('.file-item').forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    keywordSearchInput.value = '';
+    manualPageInput.value = '';
+    renderSearchResults([]);
+}
+
+// ========== PAGE SELECTION ==========
+
+function setupPageSelectionFunctionality() {
+    selectAllBtn.addEventListener('click', () => selectAllPages(true));
+    deselectAllBtn.addEventListener('click', () => selectAllPages(false));
+    selectEvenBtn.addEventListener('click', selectEvenPages);
+    selectOddBtn.addEventListener('click', selectOddPages);
+    applyRangeBtn.addEventListener('click', applyRangeSelection);
+    downloadSelectedBtn.addEventListener('click', downloadSelectedPages);
+    downloadAllBtn.addEventListener('click', downloadAllPages);
+    deleteBtn.addEventListener('click', deleteSelectedFile);
+    
+    pagesContainer.addEventListener('change', (e) => {
+        if (e.target.classList.contains('page-checkbox')) {
+            const pageNum = parseInt(e.target.value);
+            if (e.target.checked) {
+                selectedPages.add(pageNum);
+                e.target.closest('.page-item').classList.add('selected');
+            } else {
+                selectedPages.delete(pageNum);
+                e.target.closest('.page-item').classList.remove('selected');
+            }
+            updateSelectedCount();
+        }
+    });
+}
+
+function renderPageList(pageCount) {
+    if (pageCount <= 0) {
+        pagesContainer.innerHTML = '<div class="empty-pages"><i class="fas fa-exclamation-circle"></i><p>Tidak ada halaman</p></div>';
+        return;
+    }
+    
+    let pagesHTML = '';
+    for (let i = 1; i <= pageCount; i++) {
+        const pageText = pdfTextContent[i] ? 
+            pdfTextContent[i].substring(0, 50) + '...' : 
+            `Halaman ${i}`;
+        
+        pagesHTML += `
+            <div class="page-item">
+                <input type="checkbox" class="page-checkbox" value="${i}" id="page-${i}" checked>
+                <label for="page-${i}" class="page-number">${i}</label>
+                <div class="page-preview" title="${pageText}">${pageText}</div>
+            </div>
+        `;
+    }
+    
+    pagesContainer.innerHTML = pagesHTML;
+    
+    selectedPages = new Set(Array.from({length: pageCount}, (_, i) => i + 1));
+    
+    document.querySelectorAll('.page-item').forEach(item => {
+        item.classList.add('selected');
+    });
+    
+    updateSelectedCount();
+}
+
+function updatePageControls() {
+    currentPage.textContent = currentPageNum;
+    prevPageBtn.disabled = currentPageNum <= 1;
+    nextPageBtn.disabled = currentPageNum >= totalPageCount;
+}
+
+function goToPrevPage() {
+    if (currentPageNum > 1) {
+        currentPageNum--;
+        updatePageControls();
+    }
+}
+
+function goToNextPage() {
+    if (currentPageNum < totalPageCount) {
+        currentPageNum++;
+        updatePageControls();
+    }
+}
+
+function selectAllPages(select = true) {
+    const checkboxes = pagesContainer.querySelectorAll('.page-checkbox');
+    const pageItems = pagesContainer.querySelectorAll('.page-item');
+    
+    checkboxes.forEach((checkbox, index) => {
+        checkbox.checked = select;
+        if (select) {
+            pageItems[index].classList.add('selected');
+            selectedPages.add(index + 1);
+        } else {
+            pageItems[index].classList.remove('selected');
+            selectedPages.delete(index + 1);
+        }
+    });
+    
+    updateSelectedCount();
+}
+
+function selectEvenPages() {
+    const checkboxes = pagesContainer.querySelectorAll('.page-checkbox');
+    const pageItems = pagesContainer.querySelectorAll('.page-item');
+    
+    checkboxes.forEach((checkbox, index) => {
+        const pageNum = index + 1;
+        const isEven = pageNum % 2 === 0;
+        checkbox.checked = isEven;
+        
+        if (isEven) {
+            pageItems[index].classList.add('selected');
+            selectedPages.add(pageNum);
+        } else {
+            pageItems[index].classList.remove('selected');
+            selectedPages.delete(pageNum);
+        }
+    });
+    
+    updateSelectedCount();
+}
+
+function selectOddPages() {
+    const checkboxes = pagesContainer.querySelectorAll('.page-checkbox');
+    const pageItems = pagesContainer.querySelectorAll('.page-item');
+    
+    checkboxes.forEach((checkbox, index) => {
+        const pageNum = index + 1;
+        const isOdd = pageNum % 2 === 1;
+        checkbox.checked = isOdd;
+        
+        if (isOdd) {
+            pageItems[index].classList.add('selected');
+            selectedPages.add(pageNum);
+        } else {
+            pageItems[index].classList.remove('selected');
+            selectedPages.delete(pageNum);
+        }
+    });
+    
+    updateSelectedCount();
+}
+
+function applyRangeSelection() {
+    const start = parseInt(rangeStart.value);
+    const end = parseInt(rangeEnd.value);
+    
+    if (isNaN(start) || isNaN(end) || start < 1 || end > totalPageCount || start > end) {
+        showNotification('Rentang halaman tidak valid', 'error');
+        return;
+    }
+    
+    const checkboxes = pagesContainer.querySelectorAll('.page-checkbox');
+    const pageItems = pagesContainer.querySelectorAll('.page-item');
+    
+    checkboxes.forEach((checkbox, index) => {
+        const pageNum = index + 1;
+        const inRange = pageNum >= start && pageNum <= end;
+        checkbox.checked = inRange;
+        
+        if (inRange) {
+            pageItems[index].classList.add('selected');
+            selectedPages.add(pageNum);
+        } else {
+            pageItems[index].classList.remove('selected');
+            selectedPages.delete(pageNum);
+        }
+    });
+    
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    const count = selectedPages.size;
+    selectedCount.querySelector('strong').textContent = count;
+    downloadSelectedBtn.disabled = count === 0;
+    
+    if (count === 0) {
+        selectedCount.querySelector('i').className = 'fas fa-times-circle';
+        selectedCount.querySelector('i').style.color = 'var(--danger)';
+    } else {
+        selectedCount.querySelector('i').className = 'fas fa-check-circle';
+        selectedCount.querySelector('i').style.color = 'var(--success)';
+    }
+}
+
+// ========== KEYWORD SEARCH ==========
+
+function setupKeywordSearchFunctionality() {
+    searchKeywordBtn.addEventListener('click', searchKeywords);
+    keywordSearchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+            searchKeywords();
+        }
+    });
+    applyManualPagesBtn.addEventListener('click', applyManualPages);
+    
+    searchResultsElem.addEventListener('change', (e) => {
+        if (e.target.classList.contains('result-checkbox')) {
+            const resultId = e.target.value;
+            const result = searchResults.find(r => r.id === resultId);
+            if (result) {
+                const pageNum = result.page;
+                if (e.target.checked) {
+                    selectedPages.add(pageNum);
+                    const pageCheckbox = document.querySelector(`.page-checkbox[value="${pageNum}"]`);
+                    if (pageCheckbox) {
+                        pageCheckbox.checked = true;
+                        pageCheckbox.closest('.page-item').classList.add('selected');
+                    }
+                } else {
+                    selectedPages.delete(pageNum);
+                    const pageCheckbox = document.querySelector(`.page-checkbox[value="${pageNum}"]`);
+                    if (pageCheckbox) {
+                        pageCheckbox.checked = false;
+                        pageCheckbox.closest('.page-item').classList.remove('selected');
+                    }
+                }
+                updateSelectedCount();
+            }
+        }
+    });
+}
+
+async function searchKeywords() {
+    const keyword = keywordSearchInput.value.trim();
+    
+    if (!keyword) {
+        showNotification('Masukkan kata kunci untuk dicari', 'warning');
+        return;
+    }
+    
+    if (!selectedFile || !pdfTextContent || Object.keys(pdfTextContent).length === 0) {
+        showNotification('File belum siap untuk pencarian', 'error');
+        return;
+    }
+    
+    try {
+        showNotification('Mencari kata kunci...', 'info');
+        
+        const caseSensitive = caseSensitiveCheckbox.checked;
+        const wholeWord = wholeWordCheckbox.checked;
+        
+        let searchPattern;
+        if (wholeWord) {
+            searchPattern = caseSensitive ? 
+                new RegExp(`\\b${keyword}\\b`, 'g') : 
+                new RegExp(`\\b${keyword}\\b`, 'gi');
+        } else {
+            searchPattern = caseSensitive ? 
+                new RegExp(keyword, 'g') : 
+                new RegExp(keyword, 'gi');
+        }
+        
+        searchResults = [];
+        let resultId = 1;
+        
+        for (let pageNum = 1; pageNum <= totalPageCount; pageNum++) {
+            const pageText = pdfTextContent[pageNum] || '';
+            
+            if (pageText) {
+                const matches = pageText.match(searchPattern);
+                if (matches && matches.length > 0) {
+                    const matchIndex = caseSensitive ? 
+                        pageText.indexOf(keyword) : 
+                        pageText.toLowerCase().indexOf(keyword.toLowerCase());
+                    
+                    let textExcerpt = '';
+                    if (matchIndex !== -1) {
+                        const start = Math.max(0, matchIndex - 50);
+                        const end = Math.min(pageText.length, matchIndex + keyword.length + 100);
+                        textExcerpt = pageText.substring(start, end);
+                        
+                        if (start > 0) textExcerpt = '...' + textExcerpt;
+                        if (end < pageText.length) textExcerpt = textExcerpt + '...';
+                        
+                        textExcerpt = textExcerpt.replace(searchPattern, '<span class="highlight">$&</span>');
+                    }
+                    
+                    searchResults.push({
+                        id: resultId++,
+                        page: pageNum,
+                        matches: matches.length,
+                        text: textExcerpt || `Kata "${keyword}" ditemukan ${matches.length} kali`
+                    });
+                }
+            }
+        }
+        
+        renderSearchResults(searchResults);
+        
+        if (searchResults.length > 0) {
+            showNotification(`Ditemukan ${searchResults.length} halaman dengan kata kunci "${keyword}"`, 'success');
+            const pagesWithResults = searchResults.map(r => r.page);
+            selectPagesFromArray(pagesWithResults);
+        } else {
+            showNotification(`Kata kunci "${keyword}" tidak ditemukan dalam dokumen`, 'warning');
+        }
+        
+    } catch (error) {
+        console.error('Error searching keywords:', error);
+        showNotification('Terjadi kesalahan saat mencari', 'error');
+    }
+}
+
+function renderSearchResults(results) {
+    if (!results || results.length === 0) {
+        searchResultsElem.innerHTML = `
+            <div class="empty-results">
+                <i class="fas fa-search"></i>
+                <p>Tidak ada hasil ditemukan</p>
+                <small>Coba kata kunci lain atau gunakan pencarian manual</small>
+            </div>
+        `;
+        resultsCount.innerHTML = '<span>0 hasil ditemukan</span>';
+        return;
+    }
+    
+    let resultsHTML = '';
+    results.forEach(result => {
+        resultsHTML += `
+            <div class="result-item">
+                <input type="checkbox" class="result-checkbox" value="${result.id}" id="result-${result.id}" checked>
+                <div class="result-info">
+                    <div class="result-page">Halaman ${result.page} (${result.matches} ditemukan)</div>
+                    <div class="result-text">${result.text}</div>
+                </div>
+                <div class="result-select">
+                    <button class="btn-small goto-page-btn" data-page="${result.page}">
+                        <i class="fas fa-external-link-alt"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+    
+    searchResultsElem.innerHTML = resultsHTML;
+    resultsCount.innerHTML = `<span>${results.length} hasil ditemukan</span>`;
+    
+    document.querySelectorAll('.goto-page-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const pageNum = parseInt(e.target.closest('.goto-page-btn').dataset.page);
+            goToPage(pageNum);
+        });
+    });
+}
+
+function applyManualPages() {
+    const input = manualPageInput.value.trim();
+    
+    if (!input) {
+        showNotification('Masukkan nomor halaman untuk dipilih', 'warning');
+        return;
+    }
+    
+    try {
+        const pages = parsePageInput(input);
+        
+        if (pages.length === 0) {
+            showNotification('Format input tidak valid. Gunakan format seperti: 1,3,5-8,10', 'error');
+            return;
+        }
+        
+        const invalidPages = pages.filter(page => page < 1 || page > totalPageCount);
+        if (invalidPages.length > 0) {
+            showNotification(`Beberapa halaman tidak valid: ${invalidPages.join(', ')}. Dokumen hanya memiliki ${totalPageCount} halaman.`, 'error');
+            return;
+        }
+        
+        selectPagesFromArray(pages);
+        
+        if (pages.length > 0) {
+            const minPage = Math.min(...pages);
+            const maxPage = Math.max(...pages);
+            rangeStart.value = minPage;
+            rangeEnd.value = maxPage;
+        }
+        
+        showNotification(`${pages.length} halaman berhasil dipilih`, 'success');
+        
+    } catch (error) {
+        console.error('Error parsing manual page input:', error);
+        showNotification('Format input tidak valid. Gunakan format seperti: 1,3,5-8,10', 'error');
+    }
+}
+
+function parsePageInput(input) {
+    const pages = new Set();
+    const parts = input.replace(/\s/g, '').split(',');
+    
+    for (const part of parts) {
+        if (!part) continue;
+        
+        if (part.includes('-')) {
+            const [start, end] = part.split('-').map(Number);
+            if (!isNaN(start) && !isNaN(end) && start <= end) {
+                for (let i = start; i <= end; i++) {
+                    pages.add(i);
+                }
+            }
+        } else {
+            const page = Number(part);
+            if (!isNaN(page)) {
+                pages.add(page);
+            }
+        }
+    }
+    
+    return Array.from(pages).sort((a, b) => a - b);
+}
+
+function selectPagesFromArray(pagesArray) {
+    selectedPages.clear();
+    
+    const checkboxes = document.querySelectorAll('.page-checkbox');
+    const pageItems = document.querySelectorAll('.page-item');
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    pageItems.forEach(item => {
+        item.classList.remove('selected');
+    });
+    
+    pagesArray.forEach(pageNum => {
+        selectedPages.add(pageNum);
+        const checkbox = document.querySelector(`.page-checkbox[value="${pageNum}"]`);
+        const pageItem = document.querySelector(`.page-checkbox[value="${pageNum}"]`)?.closest('.page-item');
+        
+        if (checkbox) {
+            checkbox.checked = true;
+        }
+        if (pageItem) {
+            pageItem.classList.add('selected');
+        }
+    });
+    
+    updateSelectedCount();
+}
+
+function goToPage(pageNum) {
+    if (pageNum < 1 || pageNum > totalPageCount) return;
+    
+    currentPageNum = pageNum;
+    updatePageControls();
+    showNotification(`Pergi ke halaman ${pageNum}`, 'info');
+}
+
+// ========== DOWNLOAD FUNCTIONALITY ==========
+
+async function downloadSelectedPages() {
+    if (!selectedFile || selectedPages.size === 0) {
+        showNotification('Pilih setidaknya satu halaman untuk diunduh', 'error');
+        return;
+    }
+    
+    try {
+        showNotification('Membuat PDF dengan halaman terpilih...', 'info');
+        
+        // Muat PDF dengan pdf-lib
+        const pdfDoc = await window.PDFLib.PDFDocument.load(selectedFile.arrayBuffer);
+        
+        // Buat PDF baru
+        const newPdfDoc = await window.PDFLib.PDFDocument.create();
+        
+        // Salin halaman yang dipilih
+        const selectedPagesArray = Array.from(selectedPages).sort((a, b) => a - b);
+        
+        for (const pageNum of selectedPagesArray) {
+            const [copiedPage] = await newPdfDoc.copyPages(pdfDoc, [pageNum - 1]);
+            newPdfDoc.addPage(copiedPage);
+        }
+        
+        // Simpan PDF baru
+        const newPdfBytes = await newPdfDoc.save();
+        
+        // Buat Blob untuk download
+        const blob = new Blob([newPdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        const fileName = selectedFile.name.replace('.pdf', '') + 
+                       `_halaman_${selectedPagesArray.join('-')}.pdf`;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Hapus URL
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+        
+        showNotification('File berhasil diunduh dengan halaman terpilih', 'success');
+        
+    } catch (error) {
+        console.error('Error creating PDF:', error);
+        showNotification('Gagal membuat PDF dengan halaman terpilih', 'error');
+    }
+}
+
+async function downloadAllPages() {
+    if (!selectedFile) return;
+    
+    try {
+        showNotification('Menyiapkan unduhan...', 'info');
+        
+        // Buat Blob langsung dari arrayBuffer
+        const blob = new Blob([selectedFile.arrayBuffer], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = selectedFile.name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        setTimeout(() => URL.revokeObjectURL(url), 100);
+        
+        showNotification('File berhasil diunduh', 'success');
+        
+    } catch (error) {
+        console.error('Error downloading PDF:', error);
+        showNotification('Gagal mengunduh file', 'error');
+    }
+}
+
+async function downloadAllPagesFromList(fileId) {
+    const fileData = pdfFilesInMemory.get(fileId);
+    if (!fileData) {
+        showNotification('File tidak ditemukan di memori. File hanya tersedia selama sesi browser.', 'warning');
+        return;
+    }
+    
+    const blob = new Blob([fileData.arrayBuffer], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileData.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+    
+    showNotification('File berhasil diunduh', 'success');
+}
+
+// ========== DELETE FUNCTIONALITY ==========
+
+function deleteSelectedFile() {
+    if (!selectedFile) return;
+    
+    if (!confirm(`Apakah Anda yakin ingin menghapus "${selectedFile.name}"?`)) return;
+    
+    // Hapus dari memori
+    pdfFilesInMemory.delete(selectedFile.id);
+    
+    // Hapus metadata dari array
+    pdfFilesMetadata = pdfFilesMetadata.filter(file => file.id !== selectedFile.id);
+    
+    // Reset selection
+    selectedFile = null;
+    selectedPages.clear();
+    searchResults = [];
+    pdfTextContent = {};
+    
+    // Update UI
+    renderFilesList();
+    updateStorageInfo();
+    closePreview();
+    
+    showNotification('File berhasil dihapus', 'success');
+}
+
+// ========== UTILITY FUNCTIONS ==========
+
+function calculateTotalStorageUsed() {
+    let total = 0;
+    pdfFilesInMemory.forEach(file => {
+        total += file.size;
+    });
+    return total;
+}
+
+function updateStorageInfo() {
+    const used = calculateTotalStorageUsed();
+    const usedPercent = Math.min((used / MAX_TOTAL_STORAGE) * 100, 100);
+    
+    storageUsed.textContent = `${formatFileSize(used)} / ${formatFileSize(MAX_TOTAL_STORAGE)}`;
+    storageFill.style.width = `${usedPercent}%`;
+    
+    if (usedPercent > 90) {
+        storageFill.style.backgroundColor = 'var(--danger)';
+    } else if (usedPercent > 70) {
+        storageFill.style.backgroundColor = 'var(--warning)';
+    } else {
+        storageFill.style.backgroundColor = 'var(--primary)';
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// ========== SESSION INFO ==========
+
+function showSessionInfo() {
+    // Tampilkan info tentang mode sesi sekali saat aplikasi dimulai
+    console.log('PDF Manager Pro berjalan dalam mode sesi');
+    console.log('File hanya tersimpan di memori selama sesi browser aktif');
+    console.log('File akan hilang saat halaman direfresh atau browser ditutup');
+}
+
+// ========== NOTIFICATION SYSTEM ==========
+
+function showNotification(message, type) {
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 
+                         type === 'error' ? 'exclamation-circle' : 
+                         type === 'info' ? 'info-circle' : 
+                         type === 'warning' ? 'exclamation-triangle' : 'check-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+    
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Tambah style untuk notifikasi dan highlight
+const notificationStyle = document.createElement('style');
+notificationStyle.textContent = `
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: var(--border-radius);
+        background-color: white;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        z-index: 2000;
+        transform: translateX(150%);
+        transition: transform 0.3s ease;
+        max-width: 400px;
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification-success {
+        border-left: 5px solid var(--success);
+    }
+    
+    .notification-error {
+        border-left: 5px solid var(--danger);
+    }
+    
+    .notification-info {
+        border-left: 5px solid var(--info);
+    }
+    
+    .notification-warning {
+        border-left: 5px solid var(--warning);
+    }
+    
+    .notification i {
+        margin-right: 12px;
+        font-size: 1.2rem;
+    }
+    
+    .notification-success i {
+        color: var(--success);
+    }
+    
+    .notification-error i {
+        color: var(--danger);
+    }
+    
+    .notification-info i {
+        color: var(--info);
+    }
+    
+    .notification-warning i {
+        color: var(--warning);
+    }
+    
+    @media (max-width: 768px) {
+        .notification {
+            top: 10px;
+            right: 10px;
+            left: 10px;
+            max-width: none;
+        }
+    }
+    
+    .highlight {
+        background-color: rgba(248, 150, 30, 0.3);
+        padding: 2px 4px;
+        border-radius: 3px;
+        color: var(--warning);
+        font-weight: 500;
+    }
+`;
+document.head.appendChild(notificationStyle);
+
+// Tambah style untuk info sesi di footer
+const sessionInfoStyle = document.createElement('style');
+sessionInfoStyle.textContent = `
+    .session-info {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        z-index: 1000;
+        max-width: 300px;
+    }
+`;
+document.head.appendChild(sessionInfoStyle);
+</script>
+</body>
+</html>
