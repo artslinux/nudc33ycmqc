@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Ubah ukuran gambar secara online - Crop & Resize</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mengubah ukuran gambar secara batch. Crop, resize, dan download hasil potongan">
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        /* Global Styles */
+        * { box-sizing: border-box; }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        /* Chess Background untuk Preview - Dinamis */
+        .chessbg {
+            background-image: 
+                linear-gradient(45deg, #ccc 25%, transparent 25%),
+                linear-gradient(-45deg, #ccc 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #ccc 75%),
+                linear-gradient(-45deg, transparent 75%, #ccc 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            background-color: #fff;
+            position: relative;
+            border: 1px solid #ddd;
+        }
+        
+        /* File List Styles */
+        #files-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 100px;
+            border: 2px dashed #00d1b2;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            background: #f5f5f5;
+        }
+        
+        .entry {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .entry:hover { transform: scale(1.05); }
+        .entry.current { border-color: #00d1b2; box-shadow: 0 0 0 2px rgba(0,209,178,0.3); }
+        .entry img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .entry .close {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            background: #ff3860;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.2s;
+            border: 2px solid white;
+            z-index: 10;
+        }
+        .entry:hover .close { opacity: 1; }
+        
+        /* Preview Container */
+        #previewOuter {
+            position: relative;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* FIXED: Preview container yang dinamis */
+        #preview {
+            position: relative;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #previewImage {
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            position: relative;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        /* FIXED: Selection Area dengan posisi absolut terhadap preview container */
+        #selection {
+            position: absolute;
+            border: 2px solid #00d1b2;
+            background: rgba(0,209,178,0.1);
+            cursor: move;
+            z-index: 10;
+            box-sizing: border-box;
+        }
+        
+        .selectShadow {
+            position: absolute;
+            background: rgba(0,0,0,0.5);
+            z-index: 5;
+            pointer-events: none;
+        }
+        
+        /* Resize Handles */
+        .resize {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            background: #00d1b2;
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            z-index: 20;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .resize:hover { transform: scale(1.2); background: #00c4a7; }
+        
+        /* Crop Form Icons */
+        #cropForm {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        #cropForm div {
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            padding: 2px;
+            transition: all 0.2s;
+        }
+        
+        #cropForm div:hover { border-color: #00d1b2; background: rgba(0,209,178,0.1); }
+        #cropForm div.active { border-color: #00d1b2; background: rgba(0,209,178,0.2); }
+        
+        #cropForm img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; z-index: 1000; }
+        .modal.is-active { display: flex; }
+        .noselect { user-select: none; }
+        
+        /* Color Picker */
+        .colorPicker { 
+            width: 100%;
+            height: 40px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        /* Loading Indicator */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0,209,178,0.3);
+            border-radius: 50%;
+            border-top-color: #00d1b2;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #00d1b2;
+            transition: width 0.3s;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .columns { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div id="hVue" class="container">
+        <!-- Language Modal -->
+        <div id="modalLanguage" class="modal noselect">
+            <div class="modal-background hideModal" data-modalid="modalLanguage"></div>
+            <div class="modal-card">
+                <div class="modal-card-body">
+                    <div class="columns is-multiline">
+                        <div class="column is-half">
+                            <a href="#" class="navbar-item" onclick="setLanguage('en')">
+                                <img src="data:image/gif;base64,R0lGODlhEAAQAMQAAORHHOVSKudfOulrSOp3WOyDZu6QdvCchPGolfO0o/XBs/fNwfjZ0frl3/zy7////wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAkAABAALAAAAAAQABAAAAVVICSOZGlCQAosJ6mu7fiyZeKqNKToQGDsM8hBADgUXoGAiqhSvp5QAnQKGIgUhwFUYLCVDFCrKUE1lBavAViFIDlTImbKC5Gm2hB0SlBCBMQiB0UjIQA7" alt="en">&nbsp;&nbsp;English
+                            </a>
+                        </div>
+                        <div class="column is-half">
+                            <a href="#" class="navbar-item" onclick="setLanguage('id')">
+                                <img src="data:image/gif;base64,R0lGODlhEAAQAIABAGZmZv///yH5BAEAAAEALAAAAAAQABAAAAIgjI+py+0PEQiT1lkB0nVAK4FgYDoOy5daAoFg6DwAAQA7" alt="id">&nbsp;&nbsp;Indonesia
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navbar -->
+        <nav class="navbar" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="#"><b>BatchTools.pro</b></a>
+                <a id="burgerBtn" role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+            <div id="navbarBasicExample" class="navbar-menu">
+                <div class="navbar-start"></div>
+                <div class="navbar-end">
+                    <a class="navbar-item showModal" data-modalid="modalSupport" href="#">🏳&nbsp;Dukungan teknis/FAQ</a>
+                    <a class="navbar-item showModal" data-modalid="modalLanguage" href="#">🌐&nbsp;Language</a>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Support Modal -->
+        <div id="modalSupport" class="modal">
+            <div class="modal-background hideModal" data-modalid="modalSupport"></div>
+            <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Dukungan teknis</p>
+                    <button class="delete hideModal" aria-label="close" data-modalid="modalSupport"></button>
+                </header>
+                <section class="modal-card-body">
+                    <p>Untuk pertanyaan apa pun, tulis ke pengembang di Telegram:</p>
+                    <p><a href="https://t.me/ivashka8" target="_blank" rel="nofollow">t.me/ivashka8</a></p>
+                    <p>WhatsApp:</p>
+                    <p><a href="https://wa.me/79514589411" target="_blank" rel="nofollow">wa.me/79514589411</a></p>
+                    <hr>
+                    <h2 class="subtitle">FAQ:</h2>
+                    <p class="is-clickable faqShow" data-id="faq1" data-show="flex"><b>Ke mana saya mengirim donasi saya?</b></p>
+                    <div id="faq1" class="field has-addons mt-2" style="display: none;">
+                        <div class="control">
+                            <button class="button is-static is-small">Ethereum</button>
+                        </div>
+                        <div class="control is-expanded">
+                            <input value="0x82DeF6edE422D6c034b4861b1B184B1F931db44D" class="input is-small" type="text" readonly>
+                        </div>
+                        <div class="control">
+                            <button class="button is-small copyText is-warning" data-text="0x82DeF6edE422D6c034b4861b1B184B1F931db44D">
+                                <span class="icon">📋</span>
+                                <span>Salin</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h1 class="title" style="text-align: center;">Ubah ukuran gambar secara online</h1>
+        
+        <!-- Main App -->
+        <div id="app">
+            <div class="columns">
+                <!-- Left Column -->
+                <div id="leftColumn" class="column noselect">
+                    <!-- Upload Area -->
+                    <div id="source-box" class="px-3">
+                        <p class="py-3">Transfer gambar di sini<br>atau pilih file</p>
+                        <div class="file is-warning is-large">
+                            <label class="file-label">
+                                <input id="uploadbtn" type="file" name="resume" multiple class="file-input" accept="image/*">
+                                <span class="file-cta">
+                                    <span class="file-icon"><i class="fa fa-upload"></i></span>
+                                    <span class="file-label">Memilih file</span>
+                                </span>
+                            </label>
+                        </div>
+                        <p class="py-3">
+                            Pemrosesan batch:<br>
+                            Jumlah file tidak terbatas<br>
+                            Ukuran gambar tidak dibatasi
+                        </p>
+                    </div>
+                    
+                    <!-- Files List -->
+                    <div id="files-list" class="has-text-centered"></div>
+                    
+                    <!-- Action Buttons -->
+                    <div class="buttons has-addons is-centered py-3 mb-0">
+                        <button id="clearAllBtn" class="button is-danger is-rounded is-small">
+                            <span class="icon is-small"><i class="fa fa-trash"></i></span>
+                            <span>Jelas (0)</span>
+                        </button>
+                        <label for="uploadbtn" class="button is-success is-rounded is-small">
+                            <span class="icon is-small"><i class="fa fa-plus"></i></span>
+                            <span>Tambahkan lagi</span>
+                        </label>
+                    </div>
+                    
+                    <!-- Preview - FIXED: Dinamis sesuai rasio gambar -->
+                    <h2 class="subtitle has-text-centered">Pratinjau:</h2>
+                    <div id="previewOuter">
+                        <div id="preview" class="chessbg" style="width: 500px; height: 500px;">
+                            <!-- Shadow areas - akan diupdate JavaScript -->
+                            <div class="selectShadow" style="left: 0px; top: 0px; width: 0px; height: 0px;"></div>
+                            <div class="selectShadow" style="top: 0px; left: 0px; width: 0px; height: 0px;"></div>
+                            <div class="selectShadow" style="top: 0px; left: 0px; width: 0px; height: 0px;"></div>
+                            <div class="selectShadow" style="left: 0px; top: 0px; width: 0px; height: 0px;"></div>
+                            
+                            <!-- Selection Area -->
+                            <div id="selection" style="left: 0px; top: 0px; width: 0px; height: 0px; display: none;">
+                                <div class="resize" style="left: -11px; top: -11px;"></div>
+                                <div class="resize" style="right: -11px; top: -11px;"></div>
+                                <div class="resize" style="left: -11px; bottom: -11px;"></div>
+                                <div class="resize" style="right: -11px; bottom: -11px;"></div>
+                            </div>
+                            
+                            <img id="previewImage" src="" alt="Preview">
+                        </div>
+                    </div>
+                    
+                    <!-- Download Buttons -->
+                    <div class="buttons is-centered py-3">
+                        <button id="downloadBtn" class="button is-success is-large">
+                            <span class="icon"><i class="fa fa-download"></i></span>
+                            <span>Unduh (Crop)</span>
+                        </button>
+                        <button id="downloadAllBtn" class="button is-success is-large">
+                            <span class="icon"><i class="fa fa-download"></i></span>
+                            <span>Unduh Semua (zip)</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div class="column">
+                    <!-- Mode Selection -->
+                    <div class="box mb-0">
+                        <h4 class="subtitle">Mode</h4>
+                        <div class="field mb-1">
+                            <input class="is-checkradio" id="mode1" type="radio" name="mode" value="free" checked>
+                            <label for="mode1">Area sewenang-wenang</label>
+                        </div>
+                        <div class="field mb-1">
+                            <input class="is-checkradio" id="mode2" type="radio" name="mode" value="sizes">
+                            <label for="mode2">Potong sesuai ukuran</label>
+                        </div>
+                        <div class="field mb-1">
+                            <input class="is-checkradio" id="mode3" type="radio" name="mode" value="bg">
+                            <label for="mode3">Menambahkan latar belakang</label>
+                        </div>
+                        <div class="field mb-0">
+                            <input class="is-checkradio" id="mode4" type="radio" name="mode" value="stretch">
+                            <label for="mode4">Peregangan / Kompres</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Width/Height Inputs -->
+                    <div class="columns mt-1">
+                        <div class="column">
+                            <div class="field has-addons">
+                                <p class="control"><button class="button is-static">Lebar</button></p>
+                                <p class="control">
+                                    <input id="widthInput" type="number" step="1" min="1" class="input" value="400">
+                                </p>
+                                <p class="control">
+                                    <span class="select">
+                                        <select id="widthUnit">
+                                            <option value="px" selected>px</option>
+                                            <option value="cm">cm</option>
+                                            <option value="in">in</option>
+                                        </select>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="field has-addons">
+                                <p class="control"><button class="button is-static">Tinggi</button></p>
+                                <p class="control">
+                                    <input id="heightInput" type="number" step="1" min="1" class="input" value="400">
+                                </p>
+                                <p class="control">
+                                    <span class="select">
+                                        <select id="heightUnit">
+                                            <option value="px" selected>px</option>
+                                            <option value="cm">cm</option>
+                                            <option value="in">in</option>
+                                        </select>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- DPI Input -->
+                    <div class="field has-addons" id="dpiField" style="display: none;">
+                        <p class="control"><button class="button is-static">DPI</button></p>
+                        <p class="control">
+                            <input id="dpiInput" type="number" step="1" min="1" class="input" value="72">
+                        </p>
+                    </div>
+                    
+                    <!-- Crop Form Selection -->
+                    <div id="cropForm" class="box">
+                        <h2 class="subtitle">Bentuk Pemotongan gambar</h2>
+                        <div class="active" data-shape="rect">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'%3E%3Crect width='50' height='50' fill='%2300d1b2'/%3E%3C/svg%3E" alt="rect">
+                        </div>
+                        <div data-shape="circle">
+                            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='50' height='50' viewBox='0 0 50 50'%3E%3Ccircle cx='25' cy='25' r='25' fill='%2300d1b2'/%3E%3C/svg%3E" alt="circle">
+                        </div>
+                    </div>
+                    
+                    <!-- Background Settings -->
+                    <div id="bgSettings" style="display: none;">
+                        <div class="field">
+                            <input class="is-checkradio" id="blurred" type="checkbox" name="blurred">
+                            <label for="blurred">Gambar asli sebagai latar belakang</label>
+                        </div>
+                        <div class="field has-addons">
+                            <p class="control"><button class="button is-static">Latar belakang</button></p>
+                            <p class="control">
+                                <input id="bgColor" class="input colorPicker" type="color" value="#ffffff">
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Format Selection -->
+                    <div class="field has-addons mt-3">
+                        <p class="control"><button class="button is-static is-small">Format</button></p>
+                        <p class="control">
+                            <button id="formatOriginal" class="button is-small is-warning">Asli</button>
+                        </p>
+                        <p class="control">
+                            <button id="formatJpeg" class="button is-small">JPEG</button>
+                        </p>
+                        <p class="control">
+                            <button id="formatPng" class="button is-small">PNG</button>
+                        </p>
+                        <p class="control">
+                            <button id="formatWebp" class="button is-small">WEBP</button>
+                        </p>
+                    </div>
+                    
+                    <!-- Crop Info -->
+                    <div class="box mt-3">
+                        <h4 class="subtitle">Informasi Crop:</h4>
+                        <p id="cropInfo">Upload gambar terlebih dahulu</p>
+                    </div>
+                    
+                    <!-- Batch Progress -->
+                    <div id="batchProgress" class="box mt-3" style="display: none;">
+                        <h4 class="subtitle">Memproses batch...</h4>
+                        <div id="progressText" class="has-text-centered mb-2">0/0 gambar</div>
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Preview Info -->
+                    <div class="box mt-3">
+                        <h4 class="subtitle">Info Preview:</h4>
+                        <p id="previewInfo">Ukuran preview: 500 x 500 px (maksimal)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Application Script -->
+    <script>
+        // ============================================
+        // Image Resizer & Cropper - Vanilla JavaScript
+        // FIXED: Preview dinamis sesuai rasio gambar
+        // ============================================
+        
+        class ImageCropperApp {
+            constructor() {
+                this.images = [];
+                this.currentImageIndex = -1;
+                this.isDragging = false;
+                this.isResizing = false;
+                this.currentResizeHandle = null;
+                this.dragStartX = 0;
+                this.dragStartY = 0;
+                this.selectionStartX = 0;
+                this.selectionStartY = 0;
+                this.selectionStartWidth = 0;
+                this.selectionStartHeight = 0;
+                this.aspectRatio = 1;
+                this.previewMaxSize = 500; // Maksimal ukuran preview
+                this.currentMode = 'free';
+                this.currentShape = 'rect';
+                this.currentFormat = 'original';
+                this.bgColor = '#ffffff';
+                
+                // FIXED: Dynamic preview dimensions
+                this.previewWidth = 500;
+                this.previewHeight = 500;
+                this.displayWidth = 0;
+                this.displayHeight = 0;
+                this.displayX = 0;
+                this.displayY = 0;
+                
+                // Image dimensions cache
+                this.imageDimensions = new Map();
+                
+                // Store crop data PER IMAGE
+                this.imageCropData = new Map(); // key: image src, value: crop data
+                
+                this.init();
+            }
+            
+            init() {
+                this.cacheElements();
+                this.attachEvents();
+                this.initModals();
+                this.updateClearButton();
+            }
+            
+            cacheElements() {
+                // Upload elements
+                this.uploadBtn = document.getElementById('uploadbtn');
+                this.filesList = document.getElementById('files-list');
+                this.previewImage = document.getElementById('previewImage');
+                this.clearAllBtn = document.getElementById('clearAllBtn');
+                this.downloadBtn = document.getElementById('downloadBtn');
+                this.downloadAllBtn = document.getElementById('downloadAllBtn');
+                
+                // Preview elements
+                this.preview = document.getElementById('preview');
+                this.selection = document.getElementById('selection');
+                this.selectShadows = document.querySelectorAll('.selectShadow');
+                
+                // Form elements
+                this.modeRadios = document.querySelectorAll('input[name="mode"]');
+                this.widthInput = document.getElementById('widthInput');
+                this.heightInput = document.getElementById('heightInput');
+                this.widthUnit = document.getElementById('widthUnit');
+                this.heightUnit = document.getElementById('heightUnit');
+                this.dpiField = document.getElementById('dpiField');
+                this.dpiInput = document.getElementById('dpiInput');
+                this.cropForm = document.getElementById('cropForm');
+                this.bgSettings = document.getElementById('bgSettings');
+                this.bgColor = document.getElementById('bgColor');
+                this.blurred = document.getElementById('blurred');
+                this.cropInfo = document.getElementById('cropInfo');
+                this.previewInfo = document.getElementById('previewInfo');
+                
+                // Batch progress
+                this.batchProgress = document.getElementById('batchProgress');
+                this.progressText = document.getElementById('progressText');
+                this.progressFill = document.getElementById('progressFill');
+                
+                // Format buttons
+                this.formatOriginal = document.getElementById('formatOriginal');
+                this.formatJpeg = document.getElementById('formatJpeg');
+                this.formatPng = document.getElementById('formatPng');
+                this.formatWebp = document.getElementById('formatWebp');
+            }
+            
+            attachEvents() {
+                // Upload events
+                if (this.uploadBtn) {
+                    this.uploadBtn.addEventListener('change', (e) => this.handleUpload(e));
+                }
+                
+                // Clear all button
+                if (this.clearAllBtn) {
+                    this.clearAllBtn.addEventListener('click', () => this.clearAll());
+                }
+                
+                // Download buttons
+                if (this.downloadBtn) {
+                    this.downloadBtn.addEventListener('click', () => this.downloadCurrent());
+                }
+                
+                if (this.downloadAllBtn) {
+                    this.downloadAllBtn.addEventListener('click', () => this.downloadAllWithIndividualCrops());
+                }
+                
+                // Mode selection
+                this.modeRadios.forEach(radio => {
+                    radio.addEventListener('change', (e) => this.onModeChange(e.target.value));
+                });
+                
+                // Width/Height inputs
+                if (this.widthInput) {
+                    this.widthInput.addEventListener('input', () => this.updateSelectionFromInputs());
+                }
+                
+                if (this.heightInput) {
+                    this.heightInput.addEventListener('input', () => this.updateSelectionFromInputs());
+                }
+                
+                // Crop shape selection
+                if (this.cropForm) {
+                    const shapes = this.cropForm.querySelectorAll('div[data-shape]');
+                    shapes.forEach(shape => {
+                        shape.addEventListener('click', () => this.setCropShape(shape.dataset.shape));
+                    });
+                }
+                
+                // Selection drag events
+                if (this.selection) {
+                    this.selection.addEventListener('mousedown', (e) => this.startDrag(e));
+                    
+                    const handles = this.selection.querySelectorAll('.resize');
+                    handles.forEach(handle => {
+                        handle.addEventListener('mousedown', (e) => this.startResize(e));
+                    });
+                }
+                
+                // Global mouse events
+                document.addEventListener('mousemove', (e) => this.onMouseMove(e));
+                document.addEventListener('mouseup', (e) => this.onMouseUp(e));
+                
+                // Background color
+                if (this.bgColor) {
+                    this.bgColor.addEventListener('input', (e) => {
+                        this.bgColor = e.target.value;
+                    });
+                }
+                
+                // Format buttons
+                if (this.formatOriginal) {
+                    this.formatOriginal.addEventListener('click', () => this.setFormat('original'));
+                }
+                if (this.formatJpeg) {
+                    this.formatJpeg.addEventListener('click', () => this.setFormat('jpeg'));
+                }
+                if (this.formatPng) {
+                    this.formatPng.addEventListener('click', () => this.setFormat('png'));
+                }
+                if (this.formatWebp) {
+                    this.formatWebp.addEventListener('click', () => this.setFormat('webp'));
+                }
+                
+                // Burger menu
+                const burgerBtn = document.getElementById('burgerBtn');
+                if (burgerBtn) {
+                    burgerBtn.addEventListener('click', () => {
+                        document.getElementById('navbarBasicExample').classList.toggle('is-active');
+                    });
+                }
+                
+                // Close buttons in entries
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('close')) {
+                        const entry = e.target.closest('.entry');
+                        if (entry) this.removeImage(entry);
+                    }
+                });
+                
+                // Entry click to preview
+                document.addEventListener('click', (e) => {
+                    const entry = e.target.closest('.entry');
+                    if (entry && !e.target.classList.contains('close')) {
+                        this.setCurrentImage(entry);
+                    }
+                });
+                
+                // Window resize
+                window.addEventListener('resize', () => {
+                    if (this.currentImageIndex !== -1) {
+                        this.adjustPreviewToImage();
+                    }
+                });
+                
+                // Modal triggers
+                document.querySelectorAll('.showModal').forEach(el => {
+                    el.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.showModal(el.dataset.modalid);
+                    });
+                });
+                
+                document.querySelectorAll('.hideModal').forEach(el => {
+                    el.addEventListener('click', () => {
+                        this.hideModal(el.dataset.modalid);
+                    });
+                });
+                
+                // FAQ toggle
+                document.querySelectorAll('.faqShow').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const faq = document.getElementById(el.dataset.id);
+                        if (faq) faq.style.display = faq.style.display === 'none' ? 'flex' : 'none';
+                    });
+                });
+                
+                // Copy text
+                document.querySelectorAll('.copyText').forEach(el => {
+                    el.addEventListener('click', () => {
+                        navigator.clipboard.writeText(el.dataset.text);
+                        alert('Teks disalin!');
+                    });
+                });
+            }
+            
+            // ========================================
+            // FIXED: Dynamic Preview berdasarkan rasio gambar
+            // ========================================
+            
+            adjustPreviewToImage() {
+                if (this.currentImageIndex === -1 || !this.images[this.currentImageIndex]) return;
+                
+                const imgSrc = this.images[this.currentImageIndex].src;
+                const dims = this.imageDimensions.get(imgSrc);
+                
+                if (!dims) return;
+                
+                // HITUNG ukuran preview DINAMIS berdasarkan rasio gambar
+                const maxWidth = this.previewMaxSize;
+                const maxHeight = this.previewMaxSize;
+                
+                const imgWidth = dims.width;
+                const imgHeight = dims.height;
+                const imgRatio = imgWidth / imgHeight;
+                
+                // Tentukan ukuran preview yang optimal
+                if (imgRatio > 1) {
+                    // Landscape / Horizontal
+                    this.previewWidth = maxWidth;
+                    this.previewHeight = maxWidth / imgRatio;
+                } else {
+                    // Portrait / Vertikal
+                    this.previewHeight = maxHeight;
+                    this.previewWidth = maxHeight * imgRatio;
+                }
+                
+                // Bulatkan ke integer
+                this.previewWidth = Math.round(this.previewWidth);
+                this.previewHeight = Math.round(this.previewHeight);
+                
+                // Update preview container
+                this.preview.style.width = this.previewWidth + 'px';
+                this.preview.style.height = this.previewHeight + 'px';
+                
+                // Update preview image
+                this.previewImage.style.width = this.previewWidth + 'px';
+                this.previewImage.style.height = this.previewHeight + 'px';
+                
+                // Hitung display area (dengan object-fit: contain)
+                const previewRatio = this.previewWidth / this.previewHeight;
+                const imageRatio = imgWidth / imgHeight;
+                
+                if (imageRatio > previewRatio) {
+                    // Image wider than preview
+                    this.displayWidth = this.previewWidth;
+                    this.displayHeight = this.previewWidth / imageRatio;
+                    this.displayX = 0;
+                    this.displayY = (this.previewHeight - this.displayHeight) / 2;
+                } else {
+                    // Image taller than preview
+                    this.displayHeight = this.previewHeight;
+                    this.displayWidth = this.previewHeight * imageRatio;
+                    this.displayX = (this.previewWidth - this.displayWidth) / 2;
+                    this.displayY = 0;
+                }
+                
+                // Update preview info
+                if (this.previewInfo) {
+                    this.previewInfo.innerHTML = `
+                        Ukuran preview: ${this.previewWidth} x ${this.previewHeight} px<br>
+                        Gambar asli: ${imgWidth} x ${imgHeight} px<br>
+                        Rasio: ${imgRatio.toFixed(2)}
+                    `;
+                }
+                
+                // Reset dan load crop data
+                this.loadCropDataForCurrentImage();
+                this.updateShadows();
+            }
+            
+            // ========================================
+            // Image Upload & Management
+            // ========================================
+            
+            handleUpload(e) {
+                const files = Array.from(e.target.files);
+                
+                files.forEach(file => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = (readerEvent) => {
+                            // Get image dimensions
+                            const img = new Image();
+                            img.onload = () => {
+                                this.imageDimensions.set(readerEvent.target.result, {
+                                    width: img.width,
+                                    height: img.height,
+                                    filename: file.name
+                                });
+                                this.addImage(readerEvent.target.result, file.name);
+                            };
+                            img.src = readerEvent.target.result;
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    }
+                });
+                
+                this.uploadBtn.value = '';
+            }
+            
+            addImage(src, filename = 'image.png') {
+                const entry = document.createElement('div');
+                entry.className = 'entry';
+                if (this.images.length === 0) {
+                    entry.classList.add('current');
+                }
+                
+                entry.innerHTML = `
+                    <div class="close">×</div>
+                    <img src="${src}" alt="Preview">
+                `;
+                
+                this.filesList.appendChild(entry);
+                
+                this.images.push({
+                    src: src,
+                    filename: filename,
+                    entry: entry
+                });
+                
+                // Initialize default crop data for this image
+                if (!this.imageCropData.has(src)) {
+                    const dims = this.imageDimensions.get(src);
+                    let defaultWidth = 400;
+                    let defaultHeight = 400;
+                    
+                    if (dims) {
+                        // Scale default crop to preview size
+                        const maxDim = Math.max(dims.width, dims.height);
+                        const scale = 0.7;
+                        defaultWidth = Math.round(dims.width * scale);
+                        defaultHeight = Math.round(dims.height * scale);
+                    }
+                    
+                    const defaultCrop = {
+                        left: 50,
+                        top: 50,
+                        width: 200,
+                        height: 200,
+                        shape: 'rect',
+                        mode: 'free'
+                    };
+                    this.imageCropData.set(src, defaultCrop);
+                }
+                
+                if (this.images.length === 1) {
+                    this.currentImageIndex = 0;
+                    this.previewImage.src = src;
+                    
+                    // FIXED: Adjust preview size to image ratio
+                    setTimeout(() => {
+                        this.adjustPreviewToImage();
+                        this.loadCropDataForCurrentImage();
+                        this.updateCropInfo();
+                    }, 50);
+                }
+                
+                this.updateClearButton();
+            }
+            
+            removeImage(entry) {
+                const index = Array.from(this.filesList.children).indexOf(entry);
+                
+                if (index !== -1) {
+                    const imgSrc = this.images[index].src;
+                    
+                    // Clean up crop data
+                    this.imageCropData.delete(imgSrc);
+                    this.imageDimensions.delete(imgSrc);
+                    
+                    this.images.splice(index, 1);
+                    entry.remove();
+                    
+                    if (this.images.length === 0) {
+                        this.currentImageIndex = -1;
+                        this.previewImage.src = '';
+                        this.selection.style.display = 'none';
+                        this.hideShadows();
+                        this.cropInfo.textContent = 'Upload gambar terlebih dahulu';
+                        
+                        // Reset preview size
+                        this.previewWidth = 500;
+                        this.previewHeight = 500;
+                        this.preview.style.width = '500px';
+                        this.preview.style.height = '500px';
+                    } else {
+                        if (index === this.currentImageIndex) {
+                            const firstEntry = this.filesList.querySelector('.entry');
+                            if (firstEntry) this.setCurrentImage(firstEntry);
+                        } else if (index < this.currentImageIndex) {
+                            this.currentImageIndex--;
+                        }
+                    }
+                    
+                    this.updateClearButton();
+                }
+            }
+            
+            setCurrentImage(entry) {
+                document.querySelectorAll('.entry').forEach(el => el.classList.remove('current'));
+                entry.classList.add('current');
+                
+                const index = Array.from(this.filesList.children).indexOf(entry);
+                this.currentImageIndex = index;
+                
+                if (this.images[index]) {
+                    this.previewImage.src = this.images[index].src;
+                    
+                    // FIXED: Adjust preview to this image's ratio
+                    this.adjustPreviewToImage();
+                    
+                    // Load saved crop data for this specific image
+                    this.loadCropDataForCurrentImage();
+                    
+                    this.updateShadows();
+                    this.updateInputsFromSelection();
+                    this.updateCropInfo();
+                }
+            }
+            
+            // Save current crop data to the current image
+            saveCurrentCropData() {
+                if (this.currentImageIndex === -1 || !this.images[this.currentImageIndex]) return;
+                
+                const imgSrc = this.images[this.currentImageIndex].src;
+                
+                // FIXED: Save relative to preview dimensions
+                const left = parseInt(this.selection.style.left) || 0;
+                const top = parseInt(this.selection.style.top) || 0;
+                const width = parseInt(this.selection.style.width) || 0;
+                const height = parseInt(this.selection.style.height) || 0;
+                
+                // Only save if selection is visible and has size
+                if (width > 0 && height > 0) {
+                    const cropData = {
+                        left: left,
+                        top: top,
+                        width: width,
+                        height: height,
+                        shape: this.currentShape,
+                        mode: this.currentMode,
+                        previewWidth: this.previewWidth,
+                        previewHeight: this.previewHeight
+                    };
+                    
+                    this.imageCropData.set(imgSrc, cropData);
+                }
+            }
+            
+            // Load saved crop data for current image
+            loadCropDataForCurrentImage() {
+                if (this.currentImageIndex === -1 || !this.images[this.currentImageIndex]) return;
+                
+                const imgSrc = this.images[this.currentImageIndex].src;
+                const savedCrop = this.imageCropData.get(imgSrc);
+                
+                if (savedCrop) {
+                    this.selection.style.display = 'block';
+                    
+                    // FIXED: Adjust saved crop to current preview size
+                    let left = savedCrop.left;
+                    let top = savedCrop.top;
+                    let width = savedCrop.width;
+                    let height = savedCrop.height;
+                    
+                    // Scale if preview size changed
+                    if (savedCrop.previewWidth && savedCrop.previewHeight) {
+                        const scaleX = this.previewWidth / savedCrop.previewWidth;
+                        const scaleY = this.previewHeight / savedCrop.previewHeight;
+                        
+                        left = Math.round(left * scaleX);
+                        top = Math.round(top * scaleY);
+                        width = Math.round(width * scaleX);
+                        height = Math.round(height * scaleY);
+                    }
+                    
+                    // Ensure within bounds
+                    left = Math.max(0, Math.min(left, this.previewWidth - 50));
+                    top = Math.max(0, Math.min(top, this.previewHeight - 50));
+                    width = Math.max(50, Math.min(width, this.previewWidth - left));
+                    height = Math.max(50, Math.min(height, this.previewHeight - top));
+                    
+                    this.selection.style.left = left + 'px';
+                    this.selection.style.top = top + 'px';
+                    this.selection.style.width = width + 'px';
+                    this.selection.style.height = height + 'px';
+                    
+                    // Restore shape
+                    if (savedCrop.shape) {
+                        this.currentShape = savedCrop.shape;
+                        this.selection.style.borderRadius = savedCrop.shape === 'circle' ? '50%' : '0';
+                        
+                        // Update active class in crop form
+                        const shapes = this.cropForm.querySelectorAll('div[data-shape]');
+                        shapes.forEach(s => s.classList.remove('active'));
+                        const activeShape = this.cropForm.querySelector(`div[data-shape="${savedCrop.shape}"]`);
+                        if (activeShape) activeShape.classList.add('active');
+                    }
+                    
+                    // Restore mode
+                    if (savedCrop.mode) {
+                        this.currentMode = savedCrop.mode;
+                        const radio = document.querySelector(`input[name="mode"][value="${savedCrop.mode}"]`);
+                        if (radio) radio.checked = true;
+                        this.onModeChange(savedCrop.mode);
+                    }
+                } else {
+                    // FIXED: Default crop position based on image size
+                    const width = Math.min(300, this.previewWidth * 0.7);
+                    const height = Math.min(300, this.previewHeight * 0.7);
+                    const left = (this.previewWidth - width) / 2;
+                    const top = (this.previewHeight - height) / 2;
+                    
+                    this.selection.style.display = 'block';
+                    this.selection.style.left = left + 'px';
+                    this.selection.style.top = top + 'px';
+                    this.selection.style.width = width + 'px';
+                    this.selection.style.height = height + 'px';
+                }
+            }
+            
+            clearAll() {
+                this.filesList.innerHTML = '';
+                this.images = [];
+                this.imageCropData.clear();
+                this.imageDimensions.clear();
+                this.currentImageIndex = -1;
+                this.previewImage.src = '';
+                this.selection.style.display = 'none';
+                this.hideShadows();
+                this.updateClearButton();
+                this.cropInfo.textContent = 'Upload gambar terlebih dahulu';
+                
+                // Reset preview size
+                this.previewWidth = 500;
+                this.previewHeight = 500;
+                this.preview.style.width = '500px';
+                this.preview.style.height = '500px';
+            }
+            
+            updateClearButton() {
+                if (this.clearAllBtn) {
+                    const count = this.images.length;
+                    const span = this.clearAllBtn.querySelector('span:last-child');
+                    if (span) span.textContent = `Jelas (${count})`;
+                }
+            }
+            
+            // ========================================
+            // Selection & Cropping
+            // ========================================
+            
+            initSelection() {
+                if (this.images.length === 0) return;
+                
+                const width = Math.min(300, this.previewWidth * 0.7);
+                const height = Math.min(300, this.previewHeight * 0.7);
+                const left = (this.previewWidth - width) / 2;
+                const top = (this.previewHeight - height) / 2;
+                
+                this.selection.style.display = 'block';
+                this.selection.style.left = left + 'px';
+                this.selection.style.top = top + 'px';
+                this.selection.style.width = width + 'px';
+                this.selection.style.height = height + 'px';
+                
+                this.aspectRatio = 1;
+                this.updateShadows();
+                this.updateInputsFromSelection();
+                
+                // Save initial crop data
+                this.saveCurrentCropData();
+            }
+            
+            // FIXED: Update shadows based on dynamic preview size
+            updateShadows() {
+                if (!this.selection || this.selectShadows.length < 4) return;
+                
+                const left = parseInt(this.selection.style.left) || 0;
+                const top = parseInt(this.selection.style.top) || 0;
+                const width = parseInt(this.selection.style.width) || 0;
+                const height = parseInt(this.selection.style.height) || 0;
+                
+                // Left shadow
+                this.selectShadows[0].style.left = '0px';
+                this.selectShadows[0].style.top = '0px';
+                this.selectShadows[0].style.width = left + 'px';
+                this.selectShadows[0].style.height = this.previewHeight + 'px';
+                
+                // Right shadow
+                this.selectShadows[1].style.left = (left + width) + 'px';
+                this.selectShadows[1].style.top = '0px';
+                this.selectShadows[1].style.width = (this.previewWidth - left - width) + 'px';
+                this.selectShadows[1].style.height = this.previewHeight + 'px';
+                
+                // Top shadow
+                this.selectShadows[2].style.left = left + 'px';
+                this.selectShadows[2].style.top = '0px';
+                this.selectShadows[2].style.width = width + 'px';
+                this.selectShadows[2].style.height = top + 'px';
+                
+                // Bottom shadow
+                this.selectShadows[3].style.left = left + 'px';
+                this.selectShadows[3].style.top = (top + height) + 'px';
+                this.selectShadows[3].style.width = width + 'px';
+                this.selectShadows[3].style.height = (this.previewHeight - top - height) + 'px';
+            }
+            
+            hideShadows() {
+                this.selectShadows.forEach(shadow => {
+                    shadow.style.width = '0px';
+                    shadow.style.height = '0px';
+                });
+            }
+            
+            // ========================================
+            // Selection Drag Handlers - FIXED with dynamic bounds
+            // ========================================
+            
+            startDrag(e) {
+                if (e.target === this.selection) {
+                    e.preventDefault();
+                    this.isDragging = true;
+                    this.dragStartX = e.clientX;
+                    this.dragStartY = e.clientY;
+                    
+                    this.selectionStartX = parseInt(this.selection.style.left) || 0;
+                    this.selectionStartY = parseInt(this.selection.style.top) || 0;
+                }
+            }
+            
+            startResize(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                this.isResizing = true;
+                this.currentResizeHandle = e.target;
+                
+                this.dragStartX = e.clientX;
+                this.dragStartY = e.clientY;
+                
+                this.selectionStartX = parseInt(this.selection.style.left) || 0;
+                this.selectionStartY = parseInt(this.selection.style.top) || 0;
+                this.selectionStartWidth = parseInt(this.selection.style.width) || 0;
+                this.selectionStartHeight = parseInt(this.selection.style.height) || 0;
+            }
+            
+            onMouseMove(e) {
+                if (!this.selection) return;
+                
+                if (this.isDragging) {
+                    e.preventDefault();
+                    
+                    const dx = e.clientX - this.dragStartX;
+                    const dy = e.clientY - this.dragStartY;
+                    
+                    let newLeft = this.selectionStartX + dx;
+                    let newTop = this.selectionStartY + dy;
+                    
+                    const width = parseInt(this.selection.style.width);
+                    const height = parseInt(this.selection.style.height);
+                    
+                    // FIXED: Constrain to preview bounds
+                    newLeft = Math.max(0, Math.min(newLeft, this.previewWidth - width));
+                    newTop = Math.max(0, Math.min(newTop, this.previewHeight - height));
+                    
+                    this.selection.style.left = newLeft + 'px';
+                    this.selection.style.top = newTop + 'px';
+                    
+                    this.updateShadows();
+                    this.updateInputsFromSelection();
+                }
+                
+                if (this.isResizing) {
+                    e.preventDefault();
+                    
+                    const dx = e.clientX - this.dragStartX;
+                    const dy = e.clientY - this.dragStartY;
+                    
+                    let newWidth = this.selectionStartWidth;
+                    let newHeight = this.selectionStartHeight;
+                    let newLeft = this.selectionStartX;
+                    let newTop = this.selectionStartY;
+                    
+                    const handleStyle = this.currentResizeHandle.style;
+                    
+                    // Top-left
+                    if (handleStyle.left === '-11px' && handleStyle.top === '-11px') {
+                        newWidth = this.selectionStartWidth - dx;
+                        newHeight = this.selectionStartHeight - dy;
+                        newLeft = this.selectionStartX + dx;
+                        newTop = this.selectionStartY + dy;
+                    }
+                    // Top-right
+                    else if (handleStyle.right === '-11px' && handleStyle.top === '-11px') {
+                        newWidth = this.selectionStartWidth + dx;
+                        newHeight = this.selectionStartHeight - dy;
+                        newTop = this.selectionStartY + dy;
+                    }
+                    // Bottom-left
+                    else if (handleStyle.left === '-11px' && handleStyle.bottom === '-11px') {
+                        newWidth = this.selectionStartWidth - dx;
+                        newHeight = this.selectionStartHeight + dy;
+                        newLeft = this.selectionStartX + dx;
+                    }
+                    // Bottom-right
+                    else if (handleStyle.right === '-11px' && handleStyle.bottom === '-11px') {
+                        newWidth = this.selectionStartWidth + dx;
+                        newHeight = this.selectionStartHeight + dy;
+                    }
+                    
+                    // FIXED: Constraints with dynamic preview bounds
+                    newWidth = Math.max(50, Math.min(newWidth, this.previewWidth - newLeft));
+                    newHeight = Math.max(50, Math.min(newHeight, this.previewHeight - newTop));
+                    
+                    // Maintain aspect ratio for 'sizes' mode
+                    if (this.currentMode === 'sizes') {
+                        const ratio = this.aspectRatio;
+                        newHeight = newWidth / ratio;
+                        
+                        if (newTop + newHeight > this.previewHeight) {
+                            newHeight = this.previewHeight - newTop;
+                            newWidth = newHeight * ratio;
+                        }
+                        
+                        if (newLeft + newWidth > this.previewWidth) {
+                            newWidth = this.previewWidth - newLeft;
+                            newHeight = newWidth / ratio;
+                        }
+                    }
+                    
+                    this.selection.style.width = newWidth + 'px';
+                    this.selection.style.height = newHeight + 'px';
+                    this.selection.style.left = newLeft + 'px';
+                    this.selection.style.top = newTop + 'px';
+                    
+                    this.updateShadows();
+                    this.updateInputsFromSelection();
+                }
+            }
+            
+            onMouseUp(e) {
+                this.isDragging = false;
+                this.isResizing = false;
+                this.currentResizeHandle = null;
+                
+                // Save crop data when user finishes dragging/resizing
+                this.saveCurrentCropData();
+                this.updateCropInfo();
+            }
+            
+            // ========================================
+            // Crop Calculation & Download - FIXED with dynamic preview
+            // ========================================
+            
+            updateCropInfo() {
+                if (this.currentImageIndex === -1 || !this.images[this.currentImageIndex]) {
+                    this.cropInfo.textContent = 'Upload gambar terlebih dahulu';
+                    return;
+                }
+                
+                const imgSrc = this.images[this.currentImageIndex].src;
+                const dims = this.imageDimensions.get(imgSrc);
+                
+                if (!dims) {
+                    this.cropInfo.textContent = 'Memuat dimensi gambar...';
+                    return;
+                }
+                
+                // Get selection position relative to preview
+                const selLeft = parseInt(this.selection.style.left) || 0;
+                const selTop = parseInt(this.selection.style.top) || 0;
+                const selWidth = parseInt(this.selection.style.width) || 0;
+                const selHeight = parseInt(this.selection.style.height) || 0;
+                
+                // FIXED: Use dynamic display dimensions
+                const imgWidth = dims.width;
+                const imgHeight = dims.height;
+                
+                // Calculate scale between display and actual image
+                const scaleX = imgWidth / this.displayWidth;
+                const scaleY = imgHeight / this.displayHeight;
+                
+                // Adjust selection relative to displayed image
+                const cropX = Math.max(0, selLeft - this.displayX);
+                const cropY = Math.max(0, selTop - this.displayY);
+                const cropWidth = Math.min(selWidth, this.displayWidth - cropX);
+                const cropHeight = Math.min(selHeight, this.displayHeight - cropY);
+                
+                // FIXED: Ensure crop doesn't exceed image bounds
+                const originalCropX = Math.max(0, Math.min(Math.round(cropX * scaleX), imgWidth - 1));
+                const originalCropY = Math.max(0, Math.min(Math.round(cropY * scaleY), imgHeight - 1));
+                const originalCropWidth = Math.max(1, Math.min(Math.round(cropWidth * scaleX), imgWidth - originalCropX));
+                const originalCropHeight = Math.max(1, Math.min(Math.round(cropHeight * scaleY), imgHeight - originalCropY));
+                
+                // Update crop info
+                this.cropInfo.innerHTML = `
+                    <strong>Ukuran crop:</strong> ${originalCropWidth} x ${originalCropHeight} px<br>
+                    <strong>Posisi:</strong> X: ${originalCropX}, Y: ${originalCropY}<br>
+                    <strong>Gambar asli:</strong> ${imgWidth} x ${imgHeight} px<br>
+                    <strong>Preview:</strong> ${this.previewWidth} x ${this.previewHeight} px
+                `;
+                
+                // Store crop data for current image
+                this.currentCropData = {
+                    x: originalCropX,
+                    y: originalCropY,
+                    width: originalCropWidth,
+                    height: originalCropHeight,
+                    originalWidth: imgWidth,
+                    originalHeight: imgHeight,
+                    displayX: this.displayX,
+                    displayY: this.displayY,
+                    displayWidth: this.displayWidth,
+                    displayHeight: this.displayHeight,
+                    scaleX: scaleX,
+                    scaleY: scaleY,
+                    previewWidth: this.previewWidth,
+                    previewHeight: this.previewHeight
+                };
+            }
+            
+            async cropImage(imageSrc, cropData, targetFormat = 'png', imageIndex = 0) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.crossOrigin = 'Anonymous';
+                    
+                    img.onload = () => {
+                        // Create canvas for cropped image
+                        const canvas = document.createElement('canvas');
+                        canvas.width = cropData.width;
+                        canvas.height = cropData.height;
+                        
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Fill background if needed
+                        if (this.currentMode === 'bg') {
+                            ctx.fillStyle = this.bgColor;
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+                        
+                        // Draw cropped image
+                        ctx.drawImage(
+                            img,
+                            cropData.x, cropData.y, cropData.width, cropData.height, // Source
+                            0, 0, cropData.width, cropData.height // Destination
+                        );
+                        
+                        // Apply shape mask
+                        if (this.currentShape === 'circle') {
+                            ctx.globalCompositeOperation = 'destination-in';
+                            ctx.beginPath();
+                            ctx.arc(
+                                canvas.width / 2,
+                                canvas.height / 2,
+                                Math.min(canvas.width, canvas.height) / 2,
+                                0,
+                                Math.PI * 2
+                            );
+                            ctx.fill();
+                            ctx.globalCompositeOperation = 'source-over';
+                        }
+                        
+                        // Convert to requested format
+                        let format = 'image/png';
+                        let extension = 'png';
+                        
+                        switch(targetFormat) {
+                            case 'jpeg':
+                                format = 'image/jpeg';
+                                extension = 'jpg';
+                                break;
+                            case 'webp':
+                                format = 'image/webp';
+                                extension = 'webp';
+                                break;
+                            case 'original':
+                                // Detect from original image
+                                const originalFormat = imageSrc.split(';')[0].split('/')[1];
+                                format = `image/${originalFormat}`;
+                                extension = originalFormat;
+                                break;
+                        }
+                        
+                        canvas.toBlob((blob) => {
+                            resolve({
+                                blob: blob,
+                                url: URL.createObjectURL(blob),
+                                filename: `crop_${imageIndex + 1}_${cropData.width}x${cropData.height}.${extension}`
+                            });
+                        }, format, 0.95);
+                    };
+                    
+                    img.onerror = reject;
+                    img.src = imageSrc;
+                });
+            }
+            
+            async downloadCurrent() {
+                if (this.currentImageIndex === -1 || !this.images[this.currentImageIndex]) {
+                    alert('Tidak ada gambar untuk diunduh');
+                    return;
+                }
+                
+                if (!this.currentCropData) {
+                    alert('Tidak ada area crop yang dipilih');
+                    return;
+                }
+                
+                try {
+                    // Show loading state
+                    this.downloadBtn.classList.add('is-loading');
+                    
+                    const img = this.images[this.currentImageIndex];
+                    const cropData = this.currentCropData;
+                    
+                    const result = await this.cropImage(
+                        img.src, 
+                        cropData, 
+                        this.currentFormat,
+                        this.currentImageIndex
+                    );
+                    
+                    // Download cropped image
+                    const link = document.createElement('a');
+                    link.href = result.url;
+                    link.download = result.filename;
+                    link.click();
+                    
+                    // Cleanup
+                    setTimeout(() => URL.revokeObjectURL(result.url), 100);
+                } catch (error) {
+                    console.error('Crop failed:', error);
+                    alert('Gagal memotong gambar: ' + error.message);
+                } finally {
+                    this.downloadBtn.classList.remove('is-loading');
+                }
+            }
+            
+            // Download All with INDIVIDUAL Crop Areas
+            async downloadAllWithIndividualCrops() {
+                if (this.images.length === 0) {
+                    alert('Tidak ada gambar untuk diunduh');
+                    return;
+                }
+                
+                // Show progress bar
+                this.batchProgress.style.display = 'block';
+                this.progressFill.style.width = '0%';
+                this.progressText.textContent = `0/${this.images.length} gambar`;
+                
+                const results = [];
+                
+                for (let i = 0; i < this.images.length; i++) {
+                    try {
+                        // Update progress
+                        this.progressText.textContent = `${i + 1}/${this.images.length} gambar`;
+                        this.progressFill.style.width = `${((i + 1) / this.images.length) * 100}%`;
+                        
+                        const img = this.images[i];
+                        
+                        // Save current index
+                        const currentIndex = this.currentImageIndex;
+                        
+                        // Switch to this image
+                        this.setCurrentImage(img.entry);
+                        
+                        // Wait for crop data to update
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        
+                        // Get the calculated crop data for this image
+                        if (this.currentCropData) {
+                            const result = await this.cropImage(
+                                img.src,
+                                this.currentCropData,
+                                this.currentFormat,
+                                i
+                            );
+                            
+                            results.push(result);
+                        }
+                        
+                        // Switch back to original image
+                        if (currentIndex !== -1 && this.images[currentIndex]) {
+                            this.setCurrentImage(this.images[currentIndex].entry);
+                        }
+                        
+                    } catch (error) {
+                        console.error(`Failed to crop image ${i + 1}:`, error);
+                    }
+                }
+                
+                // Hide progress bar
+                this.batchProgress.style.display = 'none';
+                
+                // Download all results
+                if (results.length > 0) {
+                    alert(`Berhasil memproses ${results.length} gambar. Download akan dimulai...`);
+                    
+                    results.forEach((result, index) => {
+                        setTimeout(() => {
+                            const link = document.createElement('a');
+                            link.href = result.url;
+                            link.download = result.filename;
+                            link.click();
+                            
+                            setTimeout(() => URL.revokeObjectURL(result.url), 100);
+                        }, index * 500);
+                    });
+                } else {
+                    alert('Tidak ada gambar yang berhasil diproses');
+                }
+            }
+            
+            // ========================================
+            // Mode & Settings
+            // ========================================
+            
+            onModeChange(mode) {
+                this.currentMode = mode;
+                
+                if (mode === 'bg') {
+                    this.bgSettings.style.display = 'block';
+                    this.cropForm.style.display = 'flex';
+                    this.dpiField.style.display = 'flex';
+                    this.selection.style.display = 'block';
+                } else if (mode === 'sizes') {
+                    this.bgSettings.style.display = 'none';
+                    this.cropForm.style.display = 'flex';
+                    this.dpiField.style.display = 'flex';
+                    this.selection.style.display = 'block';
+                    this.updateAspectRatio();
+                    this.updateSelectionFromInputs();
+                } else if (mode === 'free') {
+                    this.bgSettings.style.display = 'none';
+                    this.cropForm.style.display = 'flex';
+                    this.dpiField.style.display = 'none';
+                    this.selection.style.display = 'block';
+                } else if (mode === 'stretch') {
+                    this.bgSettings.style.display = 'none';
+                    this.cropForm.style.display = 'none';
+                    this.dpiField.style.display = 'none';
+                    this.selection.style.display = 'none';
+                    this.hideShadows();
+                }
+                
+                // Save mode change
+                this.saveCurrentCropData();
+            }
+            
+            // FIXED: Update selection from inputs with dynamic preview
+            updateSelectionFromInputs() {
+                if (this.currentMode === 'sizes' && this.images.length > 0) {
+                    const width = parseInt(this.widthInput.value) || 400;
+                    const height = parseInt(this.heightInput.value) || 400;
+                    
+                    // Scale to preview - FIXED with dynamic preview size
+                    const maxDim = Math.max(width, height);
+                    const scale = (Math.min(this.previewWidth, this.previewHeight) * 0.7) / maxDim;
+                    
+                    let previewWidth = Math.round(width * scale);
+                    let previewHeight = Math.round(height * scale);
+                    
+                    previewWidth = Math.min(previewWidth, this.previewWidth - 40);
+                    previewHeight = Math.min(previewHeight, this.previewHeight - 40);
+                    
+                    const left = (this.previewWidth - previewWidth) / 2;
+                    const top = (this.previewHeight - previewHeight) / 2;
+                    
+                    this.selection.style.display = 'block';
+                    this.selection.style.width = previewWidth + 'px';
+                    this.selection.style.height = previewHeight + 'px';
+                    this.selection.style.left = left + 'px';
+                    this.selection.style.top = top + 'px';
+                    
+                    this.aspectRatio = width / height;
+                    this.updateShadows();
+                    this.updateCropInfo();
+                    
+                    // Save crop data
+                    this.saveCurrentCropData();
+                }
+            }
+            
+            updateInputsFromSelection() {
+                if (!this.selection || this.currentImageIndex === -1) return;
+                
+                const width = parseInt(this.selection.style.width);
+                const height = parseInt(this.selection.style.height);
+                
+                if (this.widthInput && this.heightInput) {
+                    this.widthInput.value = Math.round(width);
+                    this.heightInput.value = Math.round(height);
+                }
+                
+                this.updateCropInfo();
+            }
+            
+            updateAspectRatio() {
+                const width = parseInt(this.widthInput.value) || 400;
+                const height = parseInt(this.heightInput.value) || 400;
+                this.aspectRatio = width / height;
+            }
+            
+            setCropShape(shape) {
+                this.currentShape = shape;
+                
+                const shapes = this.cropForm.querySelectorAll('div[data-shape]');
+                shapes.forEach(s => s.classList.remove('active'));
+                
+                const activeShape = this.cropForm.querySelector(`div[data-shape="${shape}"]`);
+                if (activeShape) activeShape.classList.add('active');
+                
+                if (this.selection) {
+                    this.selection.style.borderRadius = shape === 'circle' ? '50%' : '0';
+                }
+                
+                // Save shape
+                this.saveCurrentCropData();
+            }
+            
+            setFormat(format) {
+                this.currentFormat = format;
+                
+                [this.formatOriginal, this.formatJpeg, this.formatPng, this.formatWebp].forEach(btn => {
+                    if (btn) btn.classList.remove('is-warning');
+                });
+                
+                if (format === 'original') this.formatOriginal?.classList.add('is-warning');
+                if (format === 'jpeg') this.formatJpeg?.classList.add('is-warning');
+                if (format === 'png') this.formatPng?.classList.add('is-warning');
+                if (format === 'webp') this.formatWebp?.classList.add('is-warning');
+            }
+            
+            // ========================================
+            // Modal Functions
+            // ========================================
+            
+            initModals() {
+                document.querySelectorAll('.modal-background, .modal .delete').forEach(el => {
+                    el.addEventListener('click', () => {
+                        const modal = el.closest('.modal');
+                        if (modal) modal.classList.remove('is-active');
+                    });
+                });
+            }
+            
+            showModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) modal.classList.add('is-active');
+            }
+            
+            hideModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) modal.classList.remove('is-active');
+            }
+        }
+        
+        // ========================================
+        // Language Function
+        // ========================================
+        
+        function setLanguage(lang) {
+            alert('Bahasa diubah ke: ' + lang);
+            document.getElementById('modalLanguage')?.classList.remove('is-active');
+        }
+        
+        // ========================================
+        // Initialize Application
+        // ========================================
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new ImageCropperApp();
+        });
+    </script>
+    
+    <!-- Footer -->
+    <hr>
+    <div class="has-text-centered">
+        Crop & resize gambar secara batch. Preview DINAMIS sesuai rasio gambar. Crop tidak melebihi batas gambar asli.
+    </div>
+    <div class="has-text-centered" style="padding: 20px;">
+        <a href="#">150x150</a> | <a href="#">350x350</a> | <a href="#">1024x576</a> | <a href="#">1024x1024</a> | <a href="#">480x360</a>
+    </div>
+</body>
+</html>
