@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konverter DOCX ke HTML</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #cbd5e0;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .upload-area i {
+            font-size: 50px;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            color: #4a5568;
+            font-size: 16px;
+        }
+
+        .upload-area .small {
+            font-size: 14px;
+            color: #718096;
+            margin-top: 10px;
+        }
+
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .file-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .file-name {
+            color: #2d3748;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .file-size {
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .preview-area {
+            margin-top: 30px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .preview-area.show {
+            display: block;
+        }
+
+        .preview-header {
+            background: #f7fafc;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-header h3 {
+            color: #2d3748;
+            font-size: 18px;
+        }
+
+        .preview-content {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            color: #e53e3e;
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        #testPreview {
+            border: none;
+            width: 100%;
+            min-height: 300px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Konverter DOCX ke HTML</h1>
+        <p class="subtitle">Upload file DOCX untuk mengkonversinya ke format HTML</p>
+        
+        <!-- Upload Area -->
+        <div class="upload-area" id="uploadArea">
+            <div>
+                📤
+            </div>
+            <p>Klik atau drag & drop file DOCX di sini</p>
+            <p class="small">Hanya mendukung file .docx</p>
+            <input type="file" id="fileInput" accept=".docx,.doc" style="display: none;">
+        </div>
+        
+        <!-- File Info -->
+        <div class="file-info" id="fileInfo">
+            <div class="file-details">
+                <span class="file-name" id="fileName"></span>
+                <span class="file-size" id="fileSize"></span>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage"></div>
+        
+        <!-- Button Group -->
+        <div class="button-group">
+            <button class="btn btn-primary" id="convertBtn" disabled>
+                🔄 Konversi ke HTML
+            </button>
+            <button class="btn btn-secondary" id="downloadBtn" style="display: none;">
+                ⬇️ Download HTML
+            </button>
+            <button class="btn btn-secondary" id="resetBtn">
+                🔄 Reset
+            </button>
+        </div>
+        
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Mengkonversi file...</p>
+        </div>
+        
+        <!-- Preview Area -->
+        <div class="preview-area" id="previewArea">
+            <div class="preview-header">
+                <h3>📱 Hasil Preview</h3>
+                <button class="btn btn-secondary" id="testBtn">
+                    🧪 Test Hasil
+                </button>
+            </div>
+            <div class="preview-content" id="previewContent">
+                <!-- Hasil konversi akan ditampilkan di sini -->
+            </div>
+        </div>
+        
+        <!-- Test Preview Modal (hidden by default) -->
+        <div id="testModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; overflow-y: auto;">
+            <div style="background: white; margin: 50px auto; max-width: 900px; width: 90%; border-radius: 10px; padding: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="color: #333;">🧪 Test Preview</h2>
+                    <button onclick="closeTestModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+                </div>
+                <iframe id="testPreview" style="width: 100%; height: 70vh; border: 1px solid #e2e8f0; border-radius: 5px;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script>
+        // DOM Elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const convertBtn = document.getElementById('convertBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const loading = document.getElementById('loading');
+        const previewArea = document.getElementById('previewArea');
+        const previewContent = document.getElementById('previewContent');
+        const errorMessage = document.getElementById('errorMessage');
+        const testBtn = document.getElementById('testBtn');
+        
+        let currentFile = null;
+        let convertedHtml = '';
+        
+        // Event Listeners
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#667eea';
+            uploadArea.style.background = '#f0f4ff';
+        });
+        
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#cbd5e0';
+            uploadArea.style.background = '#f8fafc';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#cbd5e0';
+            uploadArea.style.background = '#f8fafc';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        resetBtn.addEventListener('click', () => {
+            resetApp();
+        });
+        
+        convertBtn.addEventListener('click', () => {
+            if (currentFile) {
+                convertToHtml(currentFile);
+            }
+        });
+        
+        downloadBtn.addEventListener('click', () => {
+            downloadHtml();
+        });
+        
+        testBtn.addEventListener('click', () => {
+            testPreview();
+        });
+        
+        // Functions
+        function handleFile(file) {
+            // Validasi tipe file
+            const validTypes = [
+                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                'application/msword',
+                'application/vnd.oasis.opendocument.text'
+            ];
+            
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            
+            if (!validTypes.includes(file.type) && !['docx', 'doc', 'odt'].includes(fileExtension)) {
+                showError('Hanya file DOCX, DOC, atau ODT yang diperbolehkan!');
+                return;
+            }
+            
+            currentFile = file;
+            
+            // Tampilkan info file
+            fileName.textContent = file.name;
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.add('show');
+            
+            // Enable convert button
+            convertBtn.disabled = false;
+            
+            // Hide error if any
+            errorMessage.classList.remove('show');
+        }
+        
+        function convertToHtml(file) {
+            loading.classList.add('show');
+            convertBtn.disabled = true;
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const arrayBuffer = e.target.result;
+                
+                // Konfigurasi Mammoth
+                const options = {
+                    styleMap: [
+                        "p[style-name='Heading 1'] => h1",
+                        "p[style-name='Heading 2'] => h2",
+                        "p[style-name='Heading 3'] => h3",
+                        "p[style-name='Title'] => h1.title",
+                        "p[style-name='Subtitle'] => h2.subtitle",
+                        "r[style-name='Strong'] => strong",
+                        "r[style-name='Emphasis'] => em",
+                        "p => p:fr"
+                    ],
+                    includeDefaultStyleMap: true,
+                    convertImage: mammoth.images.imgElement(function(image) {
+                        return image.read().then(function(encodedImage) {
+                            return {
+                                src: "data:" + image.contentType + ";base64," + encodedImage
+                            };
+                        });
+                    })
+                };
+                
+                mammoth.convertToHtml({arrayBuffer: arrayBuffer}, options)
+                    .then(function(result) {
+                        convertedHtml = result.value;
+                        
+                        // Tampilkan preview
+                        previewContent.innerHTML = convertedHtml;
+                        previewArea.classList.add('show');
+                        downloadBtn.style.display = 'block';
+                        loading.classList.remove('show');
+                        
+                        console.log("Warnings: ", result.messages);
+                    })
+                    .catch(function(error) {
+                        loading.classList.remove('show');
+                        convertBtn.disabled = false;
+                        showError('Gagal mengkonversi file: ' + error.message);
+                    });
+            };
+            
+            reader.onerror = function() {
+                loading.classList.remove('show');
+                convertBtn.disabled = false;
+                showError('Gagal membaca file');
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+        
+        function downloadHtml() {
+            if (!convertedHtml) return;
+            
+            // Buat HTML lengkap dengan styling
+            const fullHtml = `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Konversi DOCX</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    ${convertedHtml}
+</body>
+</html>`;
+            
+            // Buat blob dan download
+            const blob = new Blob([fullHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentFile ? currentFile.name.replace('.docx', '.html').replace('.doc', '.html').replace('.odt', '.html') : 'hasil-konversi.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function testPreview() {
+            if (!convertedHtml) return;
+            
+            const modal = document.getElementById('testModal');
+            const testPreview = document.getElementById('testPreview');
+            
+            // Buat HTML lengkap untuk test
+            const fullHtml = `<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Preview - Hasil Konversi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        td, th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    ${convertedHtml}
+</body>
+</html>`;
+            
+            testPreview.srcdoc = fullHtml;
+            modal.style.display = 'block';
+        }
+        
+        function closeTestModal() {
+            const modal = document.getElementById('testModal');
+            modal.style.display = 'none';
+        }
+        
+        function resetApp() {
+            currentFile = null;
+            convertedHtml = '';
+            fileInput.value = '';
+            fileInfo.classList.remove('show');
+            previewArea.classList.remove('show');
+            downloadBtn.style.display = 'none';
+            convertBtn.disabled = true;
+            errorMessage.classList.remove('show');
+            previewContent.innerHTML = '';
+        }
+        
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Global function untuk modal
+        window.closeTestModal = closeTestModal;
+        
+        // Clean up modal on outside click
+        window.onclick = function(event) {
+            const modal = document.getElementById('testModal');
+            if (event.target === modal) {
+                closeTestModal();
+            }
+        };
+    </script>
+</body>
+</html>
