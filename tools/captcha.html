@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Style Puzzle CAPTCHA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f0f2f5 0%, #e6e9f0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .captcha-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            padding: 16px;
+            width: 340px;
+            transition: all 0.2s ease;
+        }
+
+        .captcha-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .captcha-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .captcha-title i {
+            color: #00f2ea;
+            font-size: 16px;
+        }
+
+        .captcha-badge {
+            background: #f1f3f7;
+            padding: 4px 8px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #65676b;
+        }
+
+        .puzzle-wrapper {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 12px;
+            border: 1px solid #edf0f5;
+        }
+
+        .puzzle-container {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: #eef2f6;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            cursor: default;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .puzzle-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+        }
+
+        .puzzle-piece {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            cursor: grab;
+            z-index: 20;
+            left: 0;
+            top: 0;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            transition: opacity 0.2s ease;
+            border-radius: 10px 2px 10px 2px;
+            overflow: hidden;
+            background: transparent;
+            will-change: top, bottom;
+        }
+
+        .puzzle-piece.dragging {
+            cursor: grabbing;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            transform: scale(1.01);
+            z-index: 30;
+        }
+
+        .puzzle-piece.in-hole {
+            opacity: 0;
+            cursor: default;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .puzzle-piece-bg {
+            width: 100%;
+            height: 100%;
+            object-fit: none;
+            pointer-events: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        .puzzle-hole {
+            position: absolute;
+            width: 56px;
+            height: 56px;
+            pointer-events: none;
+            z-index: 10;
+            border-radius: 10px 2px 10px 2px;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(0px);
+            transition: all 0.2s ease;
+        }
+
+        .puzzle-hole.active {
+            border: 0px solid none;
+            border: 2px dashed rgba(255, 255, 255, 0.01);
+            background: rgba(0, 242, 234, 0.01);
+            backdrop-filter: blur(0px);
+        }
+
+        .puzzle-hole.highlight {
+            border: 0px solid none;
+            background: rgba(254, 44, 85, 0.04);
+        }
+
+        .control-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .status-chip {
+            background: #f1f3f7;
+            padding: 8px 12px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #2c2e30;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .status-chip i {
+            color: #8e8e9e;
+            font-size: 14px;
+            width: 16px;
+            text-align: center;
+        }
+
+        .status-chip.success {
+            background: #e5f9f0;
+            color: #00a86b;
+        }
+
+        .status-chip.success i {
+            color: #00a86b;
+        }
+
+        .status-chip.error {
+            background: #ffeae9;
+            color: #fe2c55;
+        }
+
+        .status-chip.error i {
+            color: #fe2c55;
+        }
+
+        .reset-btn {
+            background: white;
+            border: 1px solid #e4e8ee;
+            width: 38px;
+            height: 38px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #5f6470;
+            font-size: 15px;
+            transition: all 0.15s ease;
+        }
+
+        .reset-btn:hover {
+            background: #f5f7fa;
+            border-color: #cbd0d9;
+            color: #fe2c55;
+        }
+
+        .refresh-notice {
+            background: #fef5e7;
+            border-radius: 30px;
+            padding: 8px 12px;
+            margin-top: 8px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #b76e00;
+            border: 1px solid #ffe3b2;
+        }
+
+        .refresh-notice i {
+            font-size: 13px;
+            color: #ff9500;
+            width: 16px;
+        }
+
+        .refresh-notice .countdown {
+            margin-left: auto;
+            background: white;
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #fe2c55;
+        }
+
+        .coordinate-pill {
+            background: #f1f3f7;
+            padding: 6px 8px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: #5e6873;
+            margin-top: 8px;
+        }
+
+        .coordinate-pill span {
+            background: white;
+            padding: 2px 6px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .coordinate-pill i {
+            color: #8a919e;
+            width: 12px;
+            text-align: center;
+        }
+
+        .session-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #edf0f5;
+            font-size: 11px;
+            color: #9399a6;
+        }
+
+        .attempt-badge {
+            background: #f1f3f7;
+            padding: 4px 8px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .attempt-badge i {
+            color: #8a919e;
+            font-size: 11px;
+        }
+
+        .session-id {
+            font-family: monospace;
+            background: #f8fafc;
+            padding: 3px 6px;
+            border-radius: 6px;
+        }
+
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .refreshing {
+            animation: subtle-pulse 1s ease infinite;
+        }
+
+        /* Fix untuk icon */
+        .fa-regular, .fa-solid, .fa-brands {
+            font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands";
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="captcha-card">
+        <div class="captcha-header">
+            <div class="captcha-title">
+                <i class="fa-brands fa-tiktok"></i>
+                Verify with puzzle
+            </div>
+            <div class="captcha-badge">
+                <i class="fa-regular fa-clock"></i> 3 attempts
+            </div>
+        </div>
+
+        <div class="puzzle-wrapper">
+            <div class="puzzle-container" id="puzzleContainer">
+                <img class="puzzle-bg" id="puzzleBg" src="" alt="puzzle background">
+                <div class="puzzle-hole" id="puzzleHole"></div>
+                <div class="puzzle-piece" id="puzzlePiece">
+                    <img class="puzzle-piece-bg" id="puzzlePieceBg" src="" alt="puzzle piece">
+                </div>
+            </div>
+
+            <div class="control-bar">
+                <div class="status-chip" id="statusChip">
+                    <i class="fa-regular fa-hand-pointer" id="statusIcon"></i>
+                    <span id="statusText">Drag to fit</span>
+                </div>
+                <button class="reset-btn" id="resetBtn">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+            </div>
+
+            <div id="refreshNotice" class="refresh-notice" style="display: none;">
+                <i class="fa-solid fa-rotate"></i>
+                <span id="refreshMessage">Position incorrect</span>
+                <span class="countdown" id="countdownTimer">3s</span>
+            </div>
+
+            <div class="coordinate-pill">
+                <i class="fa-regular fa-compass"></i>
+                <span id="posX">0</span> : <span id="posY">0</span>
+                <i class="fa-regular fa-bullseye" style="margin-left: 6px;"></i>
+                <span id="targetDisplay">0,0</span>
+            </div>
+
+            <div class="session-footer">
+                <div class="attempt-badge">
+                    <i class="fa-regular fa-flag"></i>
+                    <span id="attemptCount">0</span> / <span id="failCount">0</span>
+                </div>
+                <div class="session-id" id="sessionId"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class MinimalCaptcha {
+            constructor() {
+                // Tiny image pool (minimal & fast loading)
+                this.images = [
+                    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=240&fit=crop&auto=format',
+                    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=240&fit=crop&auto=format',
+                    'https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=400&h=240&fit=crop&auto=format',
+                    'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=400&h=240&fit=crop&auto=format'
+                ];
+
+                // Core elements
+                this.piece = document.getElementById('puzzlePiece');
+                this.pieceBg = document.getElementById('puzzlePieceBg');
+                this.bg = document.getElementById('puzzleBg');
+                this.hole = document.getElementById('puzzleHole');
+                this.container = document.getElementById('puzzleContainer');
+                
+                // UI elements
+                this.statusChip = document.getElementById('statusChip');
+                this.statusIcon = document.getElementById('statusIcon');
+                this.statusText = document.getElementById('statusText');
+                this.refreshNotice = document.getElementById('refreshNotice');
+                this.countdownTimer = document.getElementById('countdownTimer');
+                this.posX = document.getElementById('posX');
+                this.posY = document.getElementById('posY');
+                this.targetDisplay = document.getElementById('targetDisplay');
+                this.attemptCount = document.getElementById('attemptCount');
+                this.failCount = document.getElementById('failCount');
+                this.sessionIdSpan = document.getElementById('sessionId');
+                
+                // State
+                this.targetX = 20;
+                this.targetY = 20;
+                this.pieceSize = 56;
+                this.tolerance = 6;
+                this.maxX = 0;
+                this.maxY = 0;
+                
+                this.isDragging = false;
+                this.isVerified = false;
+                this.isRefreshing = false;
+                this.holeDetected = false;
+                
+                this.attempts = 0;
+                this.fails = 0;
+                this.dragStart = { x: 0, y: 0 };
+                this.pieceStart = { x: 0, y: 0 };
+                this.refreshTimer = null;
+                
+                this.sessionId = Math.random().toString(36).substring(2, 10).toUpperCase();
+                
+                this.init();
+            }
+
+            init() {
+                this.updateBounds();
+                this.loadRandomImage();
+                this.setupEvents();
+                this.updateSessionInfo();
+                this.updateUI();
+            }
+
+            updateBounds() {
+                if (!this.container) return;
+                this.maxX = this.container.offsetWidth - this.pieceSize;
+                this.maxY = this.container.offsetHeight - this.pieceSize;
+            }
+
+            loadRandomImage() {
+                const idx = Math.floor(Math.random() * this.images.length);
+                const url = this.images[idx];
+                
+                if (this.bg) this.bg.src = url;
+                if (this.pieceBg) this.pieceBg.src = url;
+                
+                // Generate target after image loads
+                Promise.all([
+                    new Promise(r => this.bg.complete ? r() : this.bg.onload = r),
+                    new Promise(r => this.pieceBg.complete ? r() : this.pieceBg.onload = r)
+                ]).then(() => {
+                    this.generateRandomTarget();
+                });
+            }
+
+            generateRandomTarget() {
+                this.updateBounds();
+                this.targetX = Math.floor(Math.random() * (this.maxX - 15 + 1)) + 15;
+                this.targetY = Math.floor(Math.random() * (this.maxY - 15 + 1)) + 15;
+                
+                if (this.hole) {
+                    this.hole.style.left = this.targetX + 'px';
+                    this.hole.style.top = this.targetY + 'px';
+                }
+                
+                if (this.targetDisplay) {
+                    this.targetDisplay.textContent = `${this.targetX},${this.targetY}`;
+                }
+                
+                this.updatePieceBackground();
+            }
+
+            updatePieceBackground() {
+                if (!this.pieceBg || !this.bg || !this.container) return;
+                
+                const containerRect = this.container.getBoundingClientRect();
+                const bgRect = this.bg.getBoundingClientRect();
+                
+                const scaleX = this.bg.naturalWidth / bgRect.width;
+                const scaleY = this.bg.naturalHeight / bgRect.height;
+                
+                const offsetX = (this.targetX + (containerRect.left - bgRect.left)) * scaleX;
+                const offsetY = (this.targetY + (containerRect.top - bgRect.top)) * scaleY;
+                
+                this.pieceBg.style.objectPosition = `-${Math.round(offsetX)}px -${Math.round(offsetY)}px`;
+            }
+
+            setupEvents() {
+                if (!this.piece) return;
+                
+                this.piece.addEventListener('mousedown', (e) => this.startDrag(e));
+                this.piece.addEventListener('touchstart', (e) => this.startDrag(e), { passive: false });
+                
+                document.addEventListener('mousemove', (e) => this.onDrag(e));
+                document.addEventListener('touchmove', (e) => this.onDrag(e), { passive: false });
+                document.addEventListener('mouseup', () => this.stopDrag());
+                document.addEventListener('touchend', () => this.stopDrag());
+                
+                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+                window.addEventListener('resize', () => {
+                    this.updateBounds();
+                    if (!this.isVerified) this.resetPosition();
+                });
+                
+                this.piece.addEventListener('dragstart', (e) => e.preventDefault());
+            }
+
+            startDrag(e) {
+                if (this.isVerified || this.isRefreshing) return;
+                e.preventDefault();
+                
+                const clientX = e.type === 'mousedown' ? e.clientX : e.touches[0].clientX;
+                const clientY = e.type === 'mousedown' ? e.clientY : e.touches[0].clientY;
+                
+                this.dragStart = { x: clientX, y: clientY };
+                this.pieceStart.x = parseInt(this.piece.style.left) || 0;
+                this.pieceStart.y = parseInt(this.piece.style.top) || 0;
+                
+                this.isDragging = true;
+                this.piece.classList.add('dragging');
+                this.hole.classList.remove('highlight');
+            }
+
+            onDrag(e) {
+                if (!this.isDragging || this.isVerified || this.isRefreshing) return;
+                e.preventDefault();
+                
+                const clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
+                const clientY = e.type === 'mousemove' ? e.clientY : e.touches[0].clientY;
+                
+                const deltaX = clientX - this.dragStart.x;
+                const deltaY = clientY - this.dragStart.y;
+                
+                let newLeft = this.pieceStart.x + deltaX;
+                let newTop = this.pieceStart.y + deltaY;
+                
+                newLeft = Math.max(0, Math.min(newLeft, this.maxX));
+                newTop = Math.max(0, Math.min(newTop, this.maxY));
+                
+                this.piece.style.left = newLeft + 'px';
+                this.piece.style.top = newTop + 'px';
+                
+                this.updateCoordinates();
+                this.checkProximity(newLeft, newTop);
+            }
+
+            checkProximity(x, y) {
+                const distX = Math.abs(x - this.targetX);
+                const distY = Math.abs(y - this.targetY);
+                
+                if (distX <= 15 && distY <= 15) {
+                    this.hole.classList.add('highlight');
+                } else {
+                    this.hole.classList.remove('highlight');
+                }
+                
+                if (!this.isVerified && !this.holeDetected && !this.isRefreshing) {
+                    if (distX <= this.tolerance && distY <= this.tolerance) {
+                        this.enterHole();
+                    }
+                }
+            }
+
+            enterHole() {
+                if (this.isVerified || this.holeDetected || this.isRefreshing) return;
+                
+                this.holeDetected = true;
+                this.isDragging = false;
+                
+                this.piece.style.left = this.targetX + 'px';
+                this.piece.style.top = this.targetY + 'px';
+                this.piece.classList.add('in-hole');
+                this.piece.classList.remove('dragging');
+                
+                this.hole.classList.add('active');
+                this.hole.classList.remove('highlight');
+                
+                // Update status dengan benar
+                this.statusChip.className = 'status-chip success';
+                this.statusIcon.className = 'fa-regular fa-circle-check';
+                this.statusText.textContent = 'Verified!';
+                
+                setTimeout(() => this.verifySuccess(), 300);
+            }
+
+            verifySuccess() {
+                this.isVerified = true;
+                this.attempts++;
+                
+                this.statusChip.className = 'status-chip success';
+                this.statusIcon.className = 'fa-regular fa-circle-check';
+                this.statusText.textContent = 'Verified!';
+                
+                this.updateStats();
+                this.hideRefreshNotice();
+            }
+
+            stopDrag() {
+                if (this.isDragging && !this.holeDetected && !this.isVerified && !this.isRefreshing) {
+                    this.isDragging = false;
+                    this.piece.classList.remove('dragging');
+                    
+                    const x = parseInt(this.piece.style.left) || 0;
+                    const y = parseInt(this.piece.style.top) || 0;
+                    const distX = Math.abs(x - this.targetX);
+                    const distY = Math.abs(y - this.targetY);
+                    
+                    if (distX <= this.tolerance && distY <= this.tolerance) {
+                        this.enterHole();
+                    } else {
+                        this.handleFail();
+                    }
+                }
+            }
+
+            handleFail() {
+                if (this.isVerified || this.isRefreshing) return;
+                
+                this.fails++;
+                this.attempts++;
+                
+                this.statusChip.className = 'status-chip error';
+                this.statusIcon.className = 'fa-regular fa-circle-xmark';
+                this.statusText.textContent = 'Wrong position';
+                
+                this.hole.classList.add('highlight');
+                
+                this.updateStats();
+                this.startRefreshCountdown();
+            }
+
+            startRefreshCountdown() {
+                if (this.isRefreshing) return;
+                
+                this.isRefreshing = true;
+                this.piece.style.pointerEvents = 'none';
+                
+                let countdown = 3;
+                this.refreshNotice.style.display = 'flex';
+                this.countdownTimer.textContent = countdown + 's';
+                
+                this.refreshTimer = setInterval(() => {
+                    countdown--;
+                    this.countdownTimer.textContent = countdown + 's';
+                    
+                    if (countdown <= 0) {
+                        clearInterval(this.refreshTimer);
+                        this.resetPosition();
+                    }
+                }, 1000);
+            }
+
+            resetPosition() {
+                this.piece.style.left = '0px';
+                this.piece.style.top = '0px';
+                this.piece.style.pointerEvents = 'auto';
+                this.piece.classList.remove('in-hole', 'dragging');
+                
+                this.hole.classList.remove('active', 'highlight');
+                
+                this.isRefreshing = false;
+                this.holeDetected = false;
+                this.isVerified = false;
+                
+                // Reset status dengan benar
+                this.statusChip.className = 'status-chip';
+                this.statusIcon.className = 'fa-regular fa-hand-pointer';
+                this.statusText.textContent = 'Drag to fit';
+                
+                this.hideRefreshNotice();
+                this.updateCoordinates();
+            }
+
+            reset() {
+                // Bersihkan timer
+                if (this.refreshTimer) {
+                    clearInterval(this.refreshTimer);
+                    this.refreshTimer = null;
+                }
+                
+                this.hideRefreshNotice();
+                this.sessionId = Math.random().toString(36).substring(2, 10).toUpperCase();
+                this.updateSessionInfo();
+                
+                // Reset stats (opsional)
+                // this.attempts = 0;
+                // this.fails = 0;
+                
+                this.loadRandomImage();
+                this.resetPosition();
+                this.updateStats();
+                this.updateUI();
+            }
+
+            hideRefreshNotice() {
+                this.refreshNotice.style.display = 'none';
+                if (this.refreshTimer) {
+                    clearInterval(this.refreshTimer);
+                    this.refreshTimer = null;
+                }
+            }
+
+            updateCoordinates() {
+                const x = parseInt(this.piece.style.left) || 0;
+                const y = parseInt(this.piece.style.top) || 0;
+                
+                this.posX.textContent = x;
+                this.posY.textContent = y;
+            }
+
+            updateStats() {
+                this.attemptCount.textContent = this.attempts;
+                this.failCount.textContent = this.fails;
+            }
+
+            updateSessionInfo() {
+                this.sessionIdSpan.textContent = this.sessionId;
+            }
+
+            updateUI() {
+                // Pastikan icon selalu konsisten
+                this.statusIcon.className = 'fa-regular fa-hand-pointer';
+                this.statusText.textContent = 'Drag to fit';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            new MinimalCaptcha();
+        });
+    </script>
+</body>
+</html>
